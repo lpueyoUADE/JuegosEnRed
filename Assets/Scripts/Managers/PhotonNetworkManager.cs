@@ -1,22 +1,40 @@
 using Photon.Pun;
 using Photon.Realtime;
-using ExitGames.Client.Photon;
 using UnityEngine;
+using System;
+using System.Collections;
 
 public class PhotonNetworkManager : MonoBehaviourPunCallbacks
 {
     private static PhotonNetworkManager instance;
 
-    private string inputPassword;
-
+    private event Action onJoinedRoomEvent;
+    //private event Action onLeftRoomEvent;
+    private event Action onPlayerEnteredRoomEvent;
+    private event Action onPlayerLeftRoomEvent;
+    private event Action<short> onCreateRoomFailedEvent;
+    private event Action<short> onJoinRoomFailedEvent;
 
     public static PhotonNetworkManager Instance { get => instance; }
+
+    public Action OnJoinedRoomEvent { get => onJoinedRoomEvent; set => onJoinedRoomEvent = value; }
+    //public Action OnLeftRoomEvent { get => onLeftRoomEvent; set => onLeftRoomEvent = value; }
+    public Action OnPlayerEnteredRoomEvent { get => onPlayerEnteredRoomEvent; set => onPlayerEnteredRoomEvent = value; }
+    public Action OnPlayerLeftRoomEvent { get => onPlayerLeftRoomEvent; set => onPlayerLeftRoomEvent = value; }
+    public Action<short> OnCreateRoomFailedEvent { get => onCreateRoomFailedEvent; set => onCreateRoomFailedEvent = value; }
+    public Action<short> OnJoinRoomFailedEvent { get => onJoinRoomFailedEvent; set => onJoinRoomFailedEvent = value; }
+
+    public bool IsHost { get => PhotonNetwork.IsMasterClient; }
 
 
     void Awake()
     {
         CreateSingleton();
-        InitializePhoton();
+    }
+
+    void Start()
+    {
+        InitializePhotonSettings();
     }
 
 
@@ -28,18 +46,52 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
     }
 
-    public override void OnJoinedLobby()
-    {
-        Debug.Log("Entró al lobby");
-    }
-
     // Se ejecute cuando se une alguien a una room porque la creo o porque se unio
     public override void OnJoinedRoom()
     {
-        Debug.Log("Entró a la sala");
+        Debug.Log("Entro a una room");
 
-        JoinRoomAsNoHost();
-        JoinRoomAsHost();
+        StartCoroutine(ExucuteOnJoinedRoomCallback());
+    }
+
+    // Se ejecute cuando alguien abandona una room
+    public override void OnLeftRoom()
+    {
+        Debug.Log("Abandono la room");
+
+        StartCoroutine(ExecuteOnLeftRoomCallback());
+    }
+
+    // Se ejecuta en todas las instancias cuando alguien se une a una room
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.Log($"El jugador {newPlayer.NickName} se unió a la room");
+
+        onPlayerEnteredRoomEvent?.Invoke();
+    }
+
+    // Se ejecuta en todas las instancias cuando alguien abandona una room
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log($"El jugador {otherPlayer.NickName} se fue de la room");
+
+        onPlayerLeftRoomEvent?.Invoke();
+    }
+
+    // Se ejecuta cuando no se puede crear una room
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("No se pudo crear la room");
+
+        onCreateRoomFailedEvent?.Invoke(returnCode);
+    }
+
+    // Se ejecuta cuando no se puede unir a una room
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("No se pudo unir a la room");
+
+        onJoinRoomFailedEvent?.Invoke(returnCode);
     }
 
 
@@ -48,17 +100,29 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 4;
 
-        Hashtable customProperties = new Hashtable();
-        customProperties["password"] = password;
-        roomOptions.CustomRoomProperties = customProperties;
-
-        PhotonNetwork.CreateRoom(roomName, roomOptions);
+        string roomId = $"{roomName}_{password}";
+        PhotonNetwork.CreateRoom(roomId, roomOptions);
     }
 
     public void JoinRoom(string roomName, string password)
     {
-        inputPassword = password;
-        PhotonNetwork.JoinRoom(roomName);
+        string roomId = $"{roomName}_{password}";
+        PhotonNetwork.JoinRoom(roomId);
+    }
+
+    public void LeaveRoom()
+    {
+        PhotonNetwork.LeaveRoom();
+    }
+
+    public int GetCurrentPlayersCountInRoom()
+    {
+        if (PhotonNetwork.CurrentRoom != null)
+        {
+            return PhotonNetwork.CurrentRoom.PlayerCount;
+        }
+
+        return 0;
     }
 
 
@@ -78,32 +142,26 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
         DontDestroyOnLoad(gameObject);
     }
 
-    private void InitializePhoton()
+    private void InitializePhotonSettings()
     {
         PhotonNetwork.ConnectUsingSettings();
     }
 
-    private void JoinRoomAsNoHost()
+    private IEnumerator ExucuteOnJoinedRoomCallback()
     {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("password", out object actualPassword))
-            {
-                if ((string)actualPassword != inputPassword)
-                {
-                    Debug.Log("Contraseña incorrecta, saliendo...");
-                    PhotonNetwork.LeaveRoom();
-                    return;
-                }
-            }
-        }
+        ScenesManager.Instance.LoadScene("Room");
+
+        yield return new WaitForSecondsRealtime(1);
+
+        onJoinedRoomEvent?.Invoke();
     }
 
-    private void JoinRoomAsHost()
+    private IEnumerator ExecuteOnLeftRoomCallback()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.LoadLevel("Room");
-        }
+        ScenesManager.Instance.LoadScene("MainMenu");
+
+        yield return new WaitForSecondsRealtime(1);
+
+        //onLeftRoomEvent?.Invoke();
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using Photon.Realtime;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -16,14 +17,23 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private TMP_Text errorTextJoinRoom;
 
 
+    void Awake()
+    {
+        SuscribeToPhotonNetworkManagerEvents();
+    }
+
     void Update()
     {
         CleanAllInformation();
     }
 
+    void OnDestroy()
+    {
+        UnsuscribeToPhotonNetworkManagerEvents();
+    }
+
 
     // Funciones asignadas a botones de la UI
-
     public void ButtonShowCreateRoomPanel()
     {
         createRoomPanel.SetActive(true);
@@ -41,13 +51,13 @@ public class MainMenuUI : MonoBehaviour
 
         if (roomName.Length < 3 || roomName.Length > 12)
         {
-            errorTextCreateRoom.text = "El nombre de la sala debe tener entre 3 y 12 caracteres.";
+            errorTextCreateRoom.text = "The room name must be between 3 and 12 characters.";
             return;
         }
 
         if (roomPassword.Length < 3 || roomPassword.Length > 12)
         {
-            errorTextCreateRoom.text = "La contraseña debe tener entre 3 y 12 caracteres.";
+            errorTextCreateRoom.text = "The password must be between 3 and 12 characters.";
             return;
         }
 
@@ -63,13 +73,13 @@ public class MainMenuUI : MonoBehaviour
 
         if (roomName.Length < 3 || roomName.Length > 12)
         {
-            errorTextJoinRoom.text = "El nombre de la sala debe tener entre 3 y 12 caracteres.";
+            errorTextJoinRoom.text = "The room name must be between 3 and 12 characters.";
             return;
         }
 
         if (roomPassword.Length < 3 || roomPassword.Length > 12)
         {
-            errorTextJoinRoom.text = "La contraseña debe tener entre 3 y 12 caracteres.";
+            errorTextJoinRoom.text = "The password must be between 3 and 12 characters.";
             return;
         }
 
@@ -85,9 +95,43 @@ public class MainMenuUI : MonoBehaviour
 
     public void ButtonExitGame()
     {
-
+        StartCoroutine(ScenesManager.Instance.ExitGame());
     }
 
+
+    private void SuscribeToPhotonNetworkManagerEvents()
+    {
+        PhotonNetworkManager.Instance.OnCreateRoomFailedEvent += OnShowErrorWhileCreatingRoom;
+        PhotonNetworkManager.Instance.OnJoinRoomFailedEvent += OnShowErrorWhileJoiningRoom;
+    }
+
+    private void UnsuscribeToPhotonNetworkManagerEvents()
+    {
+        PhotonNetworkManager.Instance.OnCreateRoomFailedEvent -= OnShowErrorWhileCreatingRoom;
+        PhotonNetworkManager.Instance.OnJoinRoomFailedEvent -= OnShowErrorWhileJoiningRoom;
+    }
+
+    private void OnShowErrorWhileCreatingRoom(short returnCode)
+    {
+        if (returnCode == ErrorCode.GameIdAlreadyExists)
+        {
+            errorTextCreateRoom.text = "There is already a room with that name.";
+        }
+    }
+
+    private void OnShowErrorWhileJoiningRoom(short returnCode)
+    {
+        switch (returnCode)
+        {
+            case ErrorCode.GameDoesNotExist:
+                errorTextJoinRoom.text = "The room name or password are incorrect";
+                    break;
+
+            case ErrorCode.GameFull:
+                errorTextJoinRoom.text = "The room is full";
+                break;
+        }
+    }
 
     private void InitializeInputFieldsCharactersLimits()
     {

@@ -1,10 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerSkinManager : MonoBehaviour
+public class PlayerDataManager : SingletonMonoBehaviour<PlayerDataManager>
 {
-    private static PlayerSkinManager instance;
-
     [SerializeField] private Color[] playersSkins;
 
     private Color firstRandomSkin;
@@ -12,15 +10,13 @@ public class PlayerSkinManager : MonoBehaviour
 
     private int indexSkin = 0;
 
-    public static PlayerSkinManager Instance { get => instance; }
-
     public Color FirstRandomSkin { get =>  firstRandomSkin; }
     public Color CurrentSelectedSkin { get => currentSelectedSkin; }
 
 
     void Awake()
     {
-        CreateSingleton();
+        CreateSingleton(true);
     }
 
     void Start()
@@ -29,34 +25,22 @@ public class PlayerSkinManager : MonoBehaviour
     }
 
 
-    public void ChangeSkinIndex(Image roomUISkinPreview)
-    {        
-        indexSkin ++;
+    public void ChangeSkinIndex(Image roomUISkinPreview, int direction)
+    {
+        indexSkin += direction;
 
         if (indexSkin >= playersSkins.Length)
         {
-            indexSkin = 0;
+            indexSkin = 0; 
+        }
+
+        else if (indexSkin < 0)
+        {
+            indexSkin = playersSkins.Length - 1;
         }
 
         currentSelectedSkin = playersSkins[indexSkin];
         roomUISkinPreview.color = currentSelectedSkin;
-    }
-
-
-    private void CreateSingleton()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        DontDestroyOnLoad(gameObject);
     }
 
     private void SuscribeToPhotonNetworkManagerEvent()

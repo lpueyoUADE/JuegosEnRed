@@ -1,6 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
 
 public class RoomUI : MonoBehaviour
 {
@@ -8,13 +9,15 @@ public class RoomUI : MonoBehaviour
     [SerializeField] private TMP_Text buttonStartGameText;
     [SerializeField] private GameObject panelBackToMainMenu;
 
-    [Header("SkinInformation:")]
+    [Header("PlayerInformation:")]
     [SerializeField] private Image currentSkinPreview;
+    [SerializeField] private TextMeshProUGUI playerNameText;
 
 
     void Awake()
     {
         SuscribeToPhotonNetworkManagerEvents();
+        SetNickName();
     }
 
     void Update()
@@ -56,9 +59,9 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    public void ButtonSelectNextSkin()
+    public void ButtonSelectNextSkin(int direction)
     {
-        PlayerSkinManager.Instance.ChangeSkinIndex(currentSkinPreview);
+        PlayerDataManager.Instance.ChangeSkinIndex(currentSkinPreview, direction);
     }
 
     public void ButtonYes()
@@ -90,6 +93,8 @@ public class RoomUI : MonoBehaviour
 
     private void OnShowButtonStartGameIfIsHost()
     {
+        buttonStartGame.gameObject.SetActive(false);
+
         if (PhotonNetworkManager.Instance.IsHost)
         {
             buttonStartGame.gameObject.SetActive(true);
@@ -116,7 +121,12 @@ public class RoomUI : MonoBehaviour
 
     private void OnSetRandomColorSkin()
     {
-        currentSkinPreview.color = PlayerSkinManager.Instance.FirstRandomSkin;
+        currentSkinPreview.color = PlayerDataManager.Instance.FirstRandomSkin;
+    }
+
+    private void SetNickName()
+    {
+        playerNameText.text = PhotonNetwork.NickName;
     }
 
     private void ShowPanelToGoBackToMainMenu()

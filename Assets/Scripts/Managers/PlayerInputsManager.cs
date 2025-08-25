@@ -1,42 +1,21 @@
 using UnityEngine;
 
-public class PlayerInputsManager : MonoBehaviour
+public class PlayerInputsManager : SingletonMonoBehaviour<PlayerInputsManager>
 {
-    private static PlayerInputsManager instance;
-
     [SerializeField] private Inputs inputs;
-
-    public static PlayerInputsManager Instance { get =>  instance; } 
     
     public Inputs Inputs { get => inputs; }
 
 
     void Awake()
     {
-        CreateSingleton();
+        CreateSingleton(true);
     }
 
 
     public Vector2 GetMoveAxis()
     {
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-    }
-
-
-    private void CreateSingleton()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        DontDestroyOnLoad(gameObject);
     }
 }
 

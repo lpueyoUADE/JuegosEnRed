@@ -8,6 +8,7 @@ public class PlayerModel : MonoBehaviourPun
 
     [SerializeField] private float speed = 10f;
 
+
     void Awake()
     {
         GetComponents();
@@ -21,7 +22,7 @@ public class PlayerModel : MonoBehaviourPun
 
     void Update()
     {
-
+   
     }
 
 
@@ -33,7 +34,7 @@ public class PlayerModel : MonoBehaviourPun
 
     private void InitializeSkin()
     {
-        sprite.color = PlayerSkinManager.Instance.CurrentSelectedSkin;
+        sprite.color = PlayerDataManager.Instance.CurrentSelectedSkin;
     }
 
     private void Movement()

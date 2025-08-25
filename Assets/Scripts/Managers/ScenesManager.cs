@@ -3,20 +3,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 
-public class ScenesManager : MonoBehaviour
+public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
 {
-    private static ScenesManager instance;
-
+    [SerializeField] private GameObject connectingToOnlineServicesPanel;
     [SerializeField] private GameObject loadingScenePanel;
     [SerializeField] private GameObject exitGamePanel;
 
+    [SerializeField] private float duringTimeconnectingToOnlineServicesPanel;
     [SerializeField] private float duringTimeLoadingScenePanel;
     [SerializeField] private float duringTimeExitGamePanel;
 
     private bool isInLoadingScenePanel = false;
     private bool isInExitGamePanel = false;
-
-    public static ScenesManager Instance { get => instance; }
 
     //public bool IsInLoadingScenePanel { get => isInLoadingScenePanel; }
     //public bool IsInExitGamePanel { get => isInExitGamePanel; }
@@ -24,12 +22,13 @@ public class ScenesManager : MonoBehaviour
 
     void Awake()
     {
-        CreateSingleton();
+        CreateSingleton(true);
     }
 
     void Start()
     {
         SuscribeToSceneLoadedEvent();
+        SuscribeToPhotonNetworkManager();
     }
 
 
@@ -53,25 +52,15 @@ public class ScenesManager : MonoBehaviour
         Application.Quit();
     }
 
-    private void CreateSingleton()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        DontDestroyOnLoad(gameObject);
-    }
 
     private void SuscribeToSceneLoadedEvent()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void SuscribeToPhotonNetworkManager()
+    {
+        PhotonNetworkManager.Instance.OnConnectedToMasterEvent += HandleShowConnectingToOnlineServicesPanel;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -80,6 +69,13 @@ public class ScenesManager : MonoBehaviour
         {
             StartCoroutine(ShowLoadingPanel());
         }
+    }
+
+    private IEnumerator ShowConnectingToOnlineServicesPanel()
+    {
+        yield return new WaitForSecondsRealtime(duringTimeconnectingToOnlineServicesPanel);
+
+        connectingToOnlineServicesPanel.SetActive(false);
     }
 
     private IEnumerator ShowLoadingPanel()
@@ -105,5 +101,10 @@ public class ScenesManager : MonoBehaviour
 
         isInLoadingScenePanel = false;
         loadingScenePanel.SetActive(false);
+    }
+
+    private void HandleShowConnectingToOnlineServicesPanel()
+    {
+        StartCoroutine(ShowConnectingToOnlineServicesPanel());
     }
 }

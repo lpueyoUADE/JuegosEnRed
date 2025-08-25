@@ -4,10 +4,9 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-public class PhotonNetworkManager : MonoBehaviourPunCallbacks
+public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNetworkManager>
 {
-    private static PhotonNetworkManager instance;
-
+    private event Action onConnectedToMasterEvent;
     private event Action onJoinedRoomEvent;
     //private event Action onLeftRoomEvent;
     private event Action onPlayerEnteredRoomEvent;
@@ -15,8 +14,7 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     private event Action<short> onCreateRoomFailedEvent;
     private event Action<short> onJoinRoomFailedEvent;
 
-    public static PhotonNetworkManager Instance { get => instance; }
-
+    public Action OnConnectedToMasterEvent { get => onConnectedToMasterEvent; set => onConnectedToMasterEvent = value; }
     public Action OnJoinedRoomEvent { get => onJoinedRoomEvent; set => onJoinedRoomEvent = value; }
     //public Action OnLeftRoomEvent { get => onLeftRoomEvent; set => onLeftRoomEvent = value; }
     public Action OnPlayerEnteredRoomEvent { get => onPlayerEnteredRoomEvent; set => onPlayerEnteredRoomEvent = value; }
@@ -29,7 +27,7 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        CreateSingleton();
+        CreateSingleton(true);
     }
 
     void Start()
@@ -42,6 +40,8 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("Conectado al servidor de Photon");
+
+        onConnectedToMasterEvent?.Invoke();
 
         PhotonNetwork.AutomaticallySyncScene = true;
     }
@@ -95,6 +95,11 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     }
 
 
+    public void SetNickName(string nickName)
+    {
+        PhotonNetwork.NickName = nickName;
+    }
+
     public void CreateRoom(string roomName, string password)
     {
         RoomOptions roomOptions = new RoomOptions();
@@ -125,22 +130,6 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
         return 0;
     }
 
-
-    private void CreateSingleton()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        DontDestroyOnLoad(gameObject);
-    }
 
     private void InitializePhotonSettings()
     {

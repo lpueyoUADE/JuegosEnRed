@@ -4,6 +4,8 @@ using Photon.Realtime;
 
 public class MainMenuUI : MonoBehaviour
 {
+    [SerializeField] private TMP_InputField nickNameInputField;
+
     [Header("CreateRoomInformation:")]
     [SerializeField] private GameObject createRoomPanel;
     [SerializeField] private TMP_InputField createRoomNameInputField;
@@ -37,17 +39,26 @@ public class MainMenuUI : MonoBehaviour
     public void ButtonShowCreateRoomPanel()
     {
         createRoomPanel.SetActive(true);
+        nickNameInputField.gameObject.SetActive(true);
     }
 
     public void ButtonShowJoinRoomPanel()
     {
         joinRoomPanel.SetActive(true);
+        nickNameInputField.gameObject.SetActive(true);
     }
 
     public void ButtonCreateRoom()
     {
+        string nickName = nickNameInputField.text;
         string roomName = createRoomNameInputField.text;
         string roomPassword = createRoomPasswordInputField.text;
+
+        if (nickName.Length < 3 || nickName.Length > 12)
+        {
+            errorTextCreateRoom.text = "The nick name must be between 3 and 12 characters.";
+            return;
+        }
 
         if (roomName.Length < 3 || roomName.Length > 12)
         {
@@ -64,12 +75,20 @@ public class MainMenuUI : MonoBehaviour
         errorTextCreateRoom.text = string.Empty;
 
         PhotonNetworkManager.Instance.CreateRoom(roomName, roomPassword);
+        PhotonNetworkManager.Instance.SetNickName(nickName);
     }
 
     public void ButtonJoinRoom()
     {
+        string nickName = nickNameInputField.text;
         string roomName = joinRoomNameInputFiel.text;
         string roomPassword = joinRoomPasswordInputField.text;
+
+        if (nickName.Length < 3 || nickName.Length > 12)
+        {
+            errorTextCreateRoom.text = "The nick name must be between 3 and 12 characters.";
+            return;
+        }
 
         if (roomName.Length < 3 || roomName.Length > 12)
         {
@@ -86,6 +105,7 @@ public class MainMenuUI : MonoBehaviour
         errorTextJoinRoom.text = string.Empty;
 
         PhotonNetworkManager.Instance.JoinRoom(roomName, roomPassword);
+        PhotonNetworkManager.Instance.SetNickName(nickName);
     }
 
     public void ButtonSettings()
@@ -146,6 +166,9 @@ public class MainMenuUI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            nickNameInputField.text = string.Empty;
+            nickNameInputField.gameObject.SetActive(false);
+
             createRoomPanel.SetActive(false);
             createRoomNameInputField.text = string.Empty;
             createRoomPasswordInputField.text = string.Empty;

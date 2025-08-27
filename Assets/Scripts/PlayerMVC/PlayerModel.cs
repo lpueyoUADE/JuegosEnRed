@@ -34,7 +34,11 @@ public class PlayerModel : MonoBehaviourPun
 
     private void InitializeSkin()
     {
-        sprite.color = PlayerDataManager.Instance.CurrentSelectedSkin;
+        if (photonView.Owner.CustomProperties.ContainsKey("SkinIndex"))
+        {
+            int skinIndex = (int)photonView.Owner.CustomProperties["SkinIndex"];
+            sprite.color = PlayerSkinManager.Instance.PlayerSkins[skinIndex];
+        }
     }
 
     private void Movement()

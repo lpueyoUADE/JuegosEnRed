@@ -2,7 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using System;
-using System.Collections;
+using ExitGames.Client.Photon;
 
 public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNetworkManager>
 {
@@ -13,6 +13,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     private event Action onPlayerLeftRoomEvent;
     private event Action<short> onCreateRoomFailedEvent;
     private event Action<short> onJoinRoomFailedEvent;
+    private event Action<Player, Hashtable> onPlayerPropertiesUpdateEvent;
 
     public Action OnConnectedToMasterEvent { get => onConnectedToMasterEvent; set => onConnectedToMasterEvent = value; }
     public Action OnJoinedRoomEvent { get => onJoinedRoomEvent; set => onJoinedRoomEvent = value; }
@@ -21,6 +22,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public Action OnPlayerLeftRoomEvent { get => onPlayerLeftRoomEvent; set => onPlayerLeftRoomEvent = value; }
     public Action<short> OnCreateRoomFailedEvent { get => onCreateRoomFailedEvent; set => onCreateRoomFailedEvent = value; }
     public Action<short> OnJoinRoomFailedEvent { get => onJoinRoomFailedEvent; set => onJoinRoomFailedEvent = value; }
+    public Action<Player, Hashtable> OnPlayerPropertiesUpdateEvent { get => onPlayerPropertiesUpdateEvent; set => onPlayerPropertiesUpdateEvent = value; }
 
     public bool IsHost { get => PhotonNetwork.IsMasterClient; }
 
@@ -94,6 +96,13 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
         onJoinRoomFailedEvent?.Invoke(returnCode);
     }
 
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        Debug.Log($"El jugador {targetPlayer.NickName} cambio sus propiedades");
+
+        onPlayerPropertiesUpdateEvent?.Invoke(targetPlayer, changedProps);
+    }
+
 
     public void SetNickName(string nickName)
     {
@@ -136,7 +145,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
         PhotonNetwork.ConnectUsingSettings();
     }
 
-    private IEnumerator ExucuteOnJoinedRoomCallback()
+    private System.Collections.IEnumerator ExucuteOnJoinedRoomCallback()
     {
         ScenesManager.Instance.LoadScene("Room");
 
@@ -145,7 +154,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
         onJoinedRoomEvent?.Invoke();
     }
 
-    private IEnumerator ExecuteOnLeftRoomCallback()
+    private System.Collections.IEnumerator ExecuteOnLeftRoomCallback()
     {
         ScenesManager.Instance.LoadScene("MainMenu");
 

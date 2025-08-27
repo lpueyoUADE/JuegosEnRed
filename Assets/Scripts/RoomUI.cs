@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class RoomUI : MonoBehaviour
 {
@@ -10,14 +11,13 @@ public class RoomUI : MonoBehaviour
     [SerializeField] private GameObject panelBackToMainMenu;
 
     [Header("PlayerInformation:")]
-    [SerializeField] private Image currentSkinPreview;
-    [SerializeField] private TextMeshProUGUI playerNameText;
+    [SerializeField] private RoomPlayerSlot[] roomPlayerSlots;
 
 
     void Awake()
     {
         SuscribeToPhotonNetworkManagerEvents();
-        SetNickName();
+        RefreshSlots();
     }
 
     void Update()
@@ -61,7 +61,7 @@ public class RoomUI : MonoBehaviour
 
     public void ButtonSelectNextSkin(int direction)
     {
-        PlayerDataManager.Instance.ChangeSkinIndex(currentSkinPreview, direction);
+        //PlayerSkinManager.Instance.ChangeSkinIndex(currentSkinPreview, direction);
     }
 
     public void ButtonYes()
@@ -79,16 +79,18 @@ public class RoomUI : MonoBehaviour
     {
         PhotonNetworkManager.Instance.OnJoinedRoomEvent += OnShowButtonStartGameIfIsHost;
         PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += OnChangeButtonStartGameInteraction;
+        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += RefreshSlots;
         PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += OnChangeButtonStartGameInteraction;
-        PhotonNetworkManager.Instance.OnJoinedRoomEvent += OnSetRandomColorSkin; 
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += RefreshSlots;
     }
 
     private void UnsuscribeToPhotonNetworkManagerEvents()
     {
         PhotonNetworkManager.Instance.OnJoinedRoomEvent -= OnShowButtonStartGameIfIsHost;
         PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= OnChangeButtonStartGameInteraction;
+        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= RefreshSlots;
         PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= OnChangeButtonStartGameInteraction;
-        PhotonNetworkManager.Instance.OnJoinedRoomEvent -= OnSetRandomColorSkin;
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= RefreshSlots;
     }
 
     private void OnShowButtonStartGameIfIsHost()
@@ -119,14 +121,19 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    private void OnSetRandomColorSkin()
+    private void RefreshSlots()
     {
-        currentSkinPreview.color = PlayerDataManager.Instance.FirstRandomSkin;
-    }
+        foreach (var slot in roomPlayerSlots)
+        {
+            slot.ClearPlayerInfoFromSlot();
+        }
 
-    private void SetNickName()
-    {
-        playerNameText.text = PhotonNetwork.NickName;
+        // Asignar jugadores actuales
+        Player[] players = PhotonNetwork.PlayerList;
+        for (int i = 0; i < players.Length; i++)
+        {
+            roomPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
+        }
     }
 
     private void ShowPanelToGoBackToMainMenu()

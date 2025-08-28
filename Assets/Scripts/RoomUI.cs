@@ -40,6 +40,7 @@ public class RoomUI : MonoBehaviour
     // Funciones asignada a boton de la UI
     public void ButtonStartGame()
     {
+        PhotonNetworkManager.Instance.CloseRoom();
         ScenesManager.Instance.LoadScene("Game");
     }
 

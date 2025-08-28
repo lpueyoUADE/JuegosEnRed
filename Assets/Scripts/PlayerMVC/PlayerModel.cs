@@ -1,12 +1,17 @@
 using UnityEngine;
 using Photon.Pun;
+using System;
 
 public class PlayerModel : MonoBehaviourPun
 {
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
 
+    private static event Action onInteract;
+
     [SerializeField] private float speed = 10f;
+
+    public static Action OnInteract { get => onInteract; set => onInteract = value; }
 
 
     void Awake()
@@ -20,9 +25,13 @@ public class PlayerModel : MonoBehaviourPun
         Movement();
     }
 
-    void Update()
+
+    public void Interact()
     {
-   
+        if (photonView.IsMine)
+        {
+            onInteract?.Invoke();
+        }
     }
 
 
@@ -46,7 +55,6 @@ public class PlayerModel : MonoBehaviourPun
         if (photonView.IsMine)
         {
             Vector2 move = new Vector2(PlayerInputsManager.Instance.GetMoveAxis().x, PlayerInputsManager.Instance.GetMoveAxis().y);
-
             rb.velocity = new Vector2(move.normalized.x * speed * Time.fixedDeltaTime, move.normalized.y * speed * Time.fixedDeltaTime);
         }
     }

@@ -1987,6 +1987,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputs:
     shoot: 0
+    interact: 101
 --- !u!1 &452928843
 GameObject:
   m_ObjectHideFlags: 0

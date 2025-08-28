@@ -42,7 +42,6 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public override void OnConnectedToMaster()
     {
         Debug.Log("Conectado al servidor de Photon");
-
         onConnectedToMasterEvent?.Invoke();
 
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -52,7 +51,6 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public override void OnJoinedRoom()
     {
         Debug.Log("Entro a una room");
-
         StartCoroutine(ExucuteOnJoinedRoomCallback());
     }
 
@@ -60,7 +58,6 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public override void OnLeftRoom()
     {
         Debug.Log("Abandono la room");
-
         StartCoroutine(ExecuteOnLeftRoomCallback());
     }
 
@@ -68,7 +65,6 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log($"El jugador {newPlayer.NickName} se unió a la room");
-
         onPlayerEnteredRoomEvent?.Invoke();
     }
 
@@ -76,7 +72,6 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log($"El jugador {otherPlayer.NickName} se fue de la room");
-
         onPlayerLeftRoomEvent?.Invoke();
     }
 
@@ -84,7 +79,6 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Debug.Log("No se pudo crear la room");
-
         onCreateRoomFailedEvent?.Invoke(returnCode);
     }
 
@@ -92,14 +86,13 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         Debug.Log("No se pudo unir a la room");
-
         onJoinRoomFailedEvent?.Invoke(returnCode);
     }
 
+    // Se ejecuta en todas las instancias cuando alguien modifica una propiedad personal
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
         Debug.Log($"El jugador {targetPlayer.NickName} cambio sus propiedades");
-
         onPlayerPropertiesUpdateEvent?.Invoke(targetPlayer, changedProps);
     }
 
@@ -122,6 +115,12 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     {
         string roomId = $"{roomName}_{password}";
         PhotonNetwork.JoinRoom(roomId);
+    }
+
+    public void CloseRoom()
+    {
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
     }
 
     public void LeaveRoom()

@@ -9,12 +9,14 @@ public class PlayerSpawnerManager : MonoBehaviour
 
     void Awake()
     {
-        InstantiatePlayerRandomSpawnPosition();
+        SpawnPlayer();
     }
 
-
-    private void InstantiatePlayerRandomSpawnPosition()
+    private void SpawnPlayer()
     {
-        PhotonNetwork.Instantiate("Prefabs/Player/Player", spawnPositions[0].transform.position, Quaternion.identity);
+        int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+        int index = (actorNumber - 1) % spawnPositions.Count;
+
+        PhotonNetwork.Instantiate("Prefabs/Player/Player", spawnPositions[index].position, Quaternion.identity);
     }
 }

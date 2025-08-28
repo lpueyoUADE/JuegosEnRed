@@ -1,19 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Photon.Pun;
 
 public class PlayerController : MonoBehaviourPun
 {
-    // Start is called before the first frame update
-    void Start()
+    private PlayerModel playerModel;
+    private PlayerView playerView;
+
+
+    void Awake()
     {
-        
+        GetComponents();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        CheckInputs();
+    }
+
+
+    private void GetComponents()
+    {
+        playerModel = GetComponent<PlayerModel>();
+        playerView = GetComponent<PlayerView>();
+    }
+
+    private void CheckInputs()
+    {
+        if (PlayerInputsManager.Instance.Interact())
+        {
+            playerModel.Interact();
+        }
     }
 }

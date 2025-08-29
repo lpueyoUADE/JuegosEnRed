@@ -17,14 +17,18 @@ public class PlayerInputsManager : SingletonMonoBehaviour<PlayerInputsManager>
     }
 
     public bool Interact() => Input.GetKeyDown(inputs.Interact);
+    public bool Attack() => Input.GetKeyDown(inputs.Attack);
+    public bool Jump() => Input.GetKeyDown(inputs.Jump);
 }
 
 [System.Serializable]
 public class Inputs
 {
-    [SerializeField] private KeyCode shoot;
     [SerializeField] private KeyCode interact;
+    [SerializeField] private KeyCode attack;
+    [SerializeField] private KeyCode jump;
 
-    public KeyCode Shoot { get => shoot; }
     public KeyCode Interact { get => interact; }
+    public KeyCode Attack { get => attack; }
+    public KeyCode Jump { get => jump; }
 }

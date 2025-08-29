@@ -1986,8 +1986,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputs:
-    shoot: 0
     interact: 101
+    attack: 323
+    jump: 32
 --- !u!1 &452928843
 GameObject:
   m_ObjectHideFlags: 0

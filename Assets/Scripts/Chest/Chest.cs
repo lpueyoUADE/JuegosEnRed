@@ -33,12 +33,12 @@ public class Chest : MonoBehaviourPun
 
     private void SuscribeToPlayerModelEvent()
     {
-        PlayerModel.OnInteract += InteractWithChest;
+        PlayerController.OnInteract += InteractWithChest;
     }
 
     private void UnsuscribeToPlayerModelEvent()
     {
-        PlayerModel.OnInteract -= InteractWithChest;
+        PlayerController.OnInteract -= InteractWithChest;
     }
 
     private void GetComponents()
@@ -48,18 +48,17 @@ public class Chest : MonoBehaviourPun
 
     private void InteractWithChest()
     {
-        photonView.RPC("OpenChestRPC", RpcTarget.All);
+        if (canOpenChest && !isChestOpen)
+        {
+            photonView.RPC("OpenChestRPC", RpcTarget.All);
+        }
     }
 
     [PunRPC]
     private void OpenChestRPC()
     {
-        if (canOpenChest && !isChestOpen)
-        {
-            isChestOpen = true;
-            sprite.color = Color.red;
-            Debug.Log("CofreAbierto");
-        }
+        isChestOpen = true;
+        sprite.color = Color.red;        
     }
 
     private void CheckCollisionEnterWithPlayer(Collision2D collision)

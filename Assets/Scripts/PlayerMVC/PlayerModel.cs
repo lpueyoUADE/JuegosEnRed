@@ -40,12 +40,13 @@ public class PlayerModel : MonoBehaviourPun
 
     public void Attack()
     {
+        Vector2 cursorScreenPos = HybridCursorManager.Instance.GetCursorPosition();
+        Vector3 cursorWorldPos = Camera.main.ScreenToWorldPoint(cursorScreenPos);
+        cursorWorldPos.z = 0f; 
+
         GameObject projGO = PhotonNetwork.Instantiate("Prefabs/Projectiles/Projectile", attackPosition.position, Quaternion.identity);
         ProjectileModel proj = projGO.GetComponent<ProjectileModel>();
-
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mouseWorldPos.z = 0;
-        Vector2 dir = (mouseWorldPos - transform.position).normalized;
+        Vector2 dir = (cursorWorldPos - attackPosition.position).normalized;
         proj.Initialize(dir, photonView.OwnerActorNr);
     }
 

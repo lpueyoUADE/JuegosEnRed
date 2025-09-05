@@ -31,7 +31,6 @@ public class PlayerController : MonoBehaviourPun
     private void CheckInputs()
     {
         if (!photonView.IsMine) return;
-
         
         if (PlayerInputsManager.Instance.Interact())
         {

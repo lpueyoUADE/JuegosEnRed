@@ -1,9 +1,11 @@
 using UnityEngine;
 using TMPro;
 using Photon.Realtime;
+using System.Collections.Generic;
 
 public class MainMenuUI : MonoBehaviour
 {
+    [SerializeField] private List<GameObject> buttonsMainMenu;
     [SerializeField] private TMP_InputField nickNameInputField;
 
     [Header("CreateRoomInformation:")]
@@ -38,12 +40,20 @@ public class MainMenuUI : MonoBehaviour
     // Funciones asignadas a botones de la UI
     public void ButtonShowCreateRoomPanel()
     {
+        foreach (var button in buttonsMainMenu)
+        {
+            button.SetActive(false);
+        }
         createRoomPanel.SetActive(true);
         nickNameInputField.gameObject.SetActive(true);
     }
 
     public void ButtonShowJoinRoomPanel()
     {
+        foreach (var button in buttonsMainMenu)
+        {
+            button.SetActive(false);
+        }
         joinRoomPanel.SetActive(true);
         nickNameInputField.gameObject.SetActive(true);
     }
@@ -164,8 +174,13 @@ public class MainMenuUI : MonoBehaviour
 
     private void CleanAllInformation()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton2))
         {
+            foreach (var button in buttonsMainMenu)
+            {
+                button.SetActive(true);
+            }
+
             nickNameInputField.text = string.Empty;
             nickNameInputField.gameObject.SetActive(false);
 

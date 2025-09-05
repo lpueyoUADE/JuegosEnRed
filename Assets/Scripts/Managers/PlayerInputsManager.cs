@@ -2,12 +2,20 @@ using UnityEngine;
 
 public class PlayerInputsManager : SingletonMonoBehaviour<PlayerInputsManager>
 {
-    [SerializeField] private Inputs inputs;
-    
+    [SerializeField] private Inputs inputsKeyboard;
+    [SerializeField] private Inputs inputsJoystick;
+
+    [SerializeField] private bool testJoystickButtonsInDebbuger;
+
 
     void Awake()
     {
         CreateSingleton(true);
+    }
+
+    void Update()
+    {
+        TesteJoystickButtonsInDebbuger();
     }
 
 
@@ -16,9 +24,24 @@ public class PlayerInputsManager : SingletonMonoBehaviour<PlayerInputsManager>
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
     }
 
-    public bool Interact() => Input.GetKeyDown(inputs.Interact);
-    public bool Attack() => Input.GetKeyDown(inputs.Attack);
-    public bool Jump() => Input.GetKeyDown(inputs.Jump);
+    public bool Interact() => Input.GetKeyDown(inputsKeyboard.Interact) || Input.GetKeyDown(inputsJoystick.Interact);
+    public bool Attack() => Input.GetKeyDown(inputsKeyboard.Attack) || Input.GetKeyDown(inputsJoystick.Attack);
+    public bool Jump() => Input.GetKeyDown(inputsKeyboard.Jump) || Input.GetKeyDown(inputsJoystick.Jump);
+
+    
+    private void TesteJoystickButtonsInDebbuger()
+    {
+        if (testJoystickButtonsInDebbuger)
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                if (Input.GetKeyDown(KeyCode.JoystickButton0 + i))
+                {
+                    Debug.Log("Joystick button " + i + " presionado");
+                }
+            }
+        }
+    }
 }
 
 [System.Serializable]

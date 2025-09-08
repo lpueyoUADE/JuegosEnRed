@@ -28,6 +28,28 @@ public class MainMenuUI : MonoBehaviour
 
     void Update()
     {
+        // Test para crear una room rapida automaticamente
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            string nickName = "Kong777";
+            string roomName = "asd";
+            string roomPassword = "asd";
+
+            PhotonNetworkManager.Instance.CreateRoom(roomName, roomPassword);
+            PhotonNetworkManager.Instance.SetNickName(nickName);
+        }
+
+        // Test para unirse una room rapida automaticamente
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            string nickName = "WUKong1991";
+            string roomName = "asd";
+            string roomPassword = "asd";
+
+            PhotonNetworkManager.Instance.JoinRoom(roomName, roomPassword);
+            PhotonNetworkManager.Instance.SetNickName(nickName);
+        }
+
         CleanAllInformation();
     }
 

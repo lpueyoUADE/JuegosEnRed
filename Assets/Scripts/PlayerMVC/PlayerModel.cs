@@ -3,6 +3,7 @@ using Photon.Pun;
 
 public class PlayerModel : MonoBehaviourPun
 {
+    private ProjectileController projectileController;
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
     private SpriteRenderer sprite;
@@ -18,12 +19,15 @@ public class PlayerModel : MonoBehaviourPun
     
     private bool isGrounded;
 
+    public Transform AttackPosition { get => attackPosition; }
+
 
     void Awake()
     {
         GetComponents();
         InitializeSkin();
         InitializeHealth();
+        InitializeBoomerang();
     }
 
     void Update()
@@ -40,14 +44,27 @@ public class PlayerModel : MonoBehaviourPun
 
     public void Attack()
     {
-        Vector2 cursorScreenPos = HybridCursorManager.Instance.GetCursorPosition();
-        Vector3 cursorWorldPos = Camera.main.ScreenToWorldPoint(cursorScreenPos);
-        cursorWorldPos.z = 0f; 
+        // Si tiene el boomerang en la mano
+        if (projectileController.ProjectileModel.CircleCollider.enabled == false)
+        {
+            Vector2 cursorScreenPos = HybridCursorManager.Instance.GetCursorPosition();
+            Vector3 cursorWorldPos = Camera.main.ScreenToWorldPoint(cursorScreenPos);
+            cursorWorldPos.z = 0f;
 
-        GameObject projGO = PhotonNetwork.Instantiate("Prefabs/Projectiles/Projectile", attackPosition.position, Quaternion.identity);
-        ProjectileModel proj = projGO.GetComponent<ProjectileModel>();
-        Vector2 dir = (cursorWorldPos - attackPosition.position).normalized;
-        proj.Initialize(dir, photonView.OwnerActorNr);
+            projectileController.transform.position = attackPosition.position;
+            projectileController.gameObject.SetActive(true);
+            Vector2 dir = (cursorWorldPos - attackPosition.position).normalized;
+            projectileController.ProjectileModel.Throw(dir);
+            return;
+        }
+
+        // Si el boomerang esta pegado a algun objeto del escenario
+        else if (projectileController.ProjectileModel.Rb.velocity.sqrMagnitude == 0)
+        {
+            Vector2 dir = (transform.position - projectileController.transform.position).normalized;
+            projectileController.ProjectileModel.Return();
+            return;            
+        }
     }
 
     public void Jump()
@@ -91,6 +108,16 @@ public class PlayerModel : MonoBehaviourPun
     private void InitializeHealth()
     {
         health = startingHealth;
+    }
+
+    private void InitializeBoomerang()
+    {
+        if (photonView.IsMine)
+        {
+            GameObject projGO = PhotonNetwork.Instantiate("Prefabs/Projectiles/Projectile", attackPosition.position, Quaternion.identity);
+            projectileController = projGO.GetComponent<ProjectileController>();
+            projectileController.ProjectileModel.Initialize(photonView.OwnerActorNr, this);
+        }
     }
 
     private void Movement()

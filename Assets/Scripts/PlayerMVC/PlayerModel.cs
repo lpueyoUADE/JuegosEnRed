@@ -118,6 +118,22 @@ public class PlayerModel : MonoBehaviourPun
             projectileController = projGO.GetComponent<ProjectileController>();
             projectileController.ProjectileModel.Initialize(photonView.OwnerActorNr, this);
         }
+
+        /*if (photonView.IsMine)
+        {
+            // paso mi actorNumber y mi viewID como datos al instanciar
+            object[] instantiationData = new object[] { photonView.OwnerActorNr, photonView.ViewID };
+
+            GameObject projGO = PhotonNetwork.Instantiate(
+                "Prefabs/Projectiles/Projectile",
+                attackPosition.position,
+                Quaternion.identity,
+                0,
+                instantiationData
+            );
+
+            projectileController = projGO.GetComponent<ProjectileController>();
+        }*/        
     }
 
     private void Movement()

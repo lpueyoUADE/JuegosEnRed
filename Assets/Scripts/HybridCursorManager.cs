@@ -77,7 +77,7 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
         pointerData.position = cursorPos;
 
         // Raycast actual
-        var results = new List<RaycastResult>();
+        List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);
 
         // Manejar Highlighted 
@@ -103,6 +103,11 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
 
         hoveredObjects = newHovered;
 
+        CheckInputs(results);
+    }
+
+    private void CheckInputs(List<RaycastResult> results)
+    {
         // Clic izquierdo del mouse
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {

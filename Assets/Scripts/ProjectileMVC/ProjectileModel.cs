@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 
-public class ProjectileModel : MonoBehaviourPun
+public class ProjectileModel : MonoBehaviourPun//, IPunInstantiateMagicCallback
 {
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
@@ -24,6 +24,26 @@ public class ProjectileModel : MonoBehaviourPun
     public Rigidbody2D Rb { get => rb; }
     public CircleCollider2D CircleCollider { get => circleCollider; }
 
+
+    /*public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        object[] data = info.photonView.InstantiationData;
+        if (data != null && data.Length >= 2)
+        {
+            ownerActorNumber = (int)data[0];
+            int ownerViewID = (int)data[1];
+
+            PhotonView ownerPV = PhotonView.Find(ownerViewID);
+            if (ownerPV != null)
+            {
+                PlayerModel owner = ownerPV.GetComponent<PlayerModel>();
+                if (owner != null)
+                {
+                    Initialize(ownerActorNumber, owner);
+                }
+            }
+        }
+    }*/
 
     void Awake()
     {

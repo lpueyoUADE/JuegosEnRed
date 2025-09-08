@@ -5,8 +5,10 @@ using System.Collections.Generic;
 
 public class MainMenuUI : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> buttonsMainMenu;
     [SerializeField] private TMP_InputField nickNameInputField;
+
+    [Header("Main Menu")]
+    [SerializeField] private GameObject mainMenuPanel;
 
     [Header("CreateRoomInformation:")]
     [SerializeField] private GameObject createRoomPanel;
@@ -20,6 +22,8 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private TMP_InputField joinRoomPasswordInputField;
     [SerializeField] private TMP_Text errorTextJoinRoom;
 
+    [Header("Settings")]
+    [SerializeField] private GameObject settingsPanel;
 
     void Awake()
     {
@@ -62,20 +66,14 @@ public class MainMenuUI : MonoBehaviour
     // Funciones asignadas a botones de la UI
     public void ButtonShowCreateRoomPanel()
     {
-        foreach (var button in buttonsMainMenu)
-        {
-            button.SetActive(false);
-        }
+        mainMenuPanel.SetActive(false);
         createRoomPanel.SetActive(true);
         nickNameInputField.gameObject.SetActive(true);
     }
 
     public void ButtonShowJoinRoomPanel()
     {
-        foreach (var button in buttonsMainMenu)
-        {
-            button.SetActive(false);
-        }
+        mainMenuPanel.SetActive(false);
         joinRoomPanel.SetActive(true);
         nickNameInputField.gameObject.SetActive(true);
     }
@@ -142,7 +140,8 @@ public class MainMenuUI : MonoBehaviour
 
     public void ButtonSettings()
     {
-
+        mainMenuPanel.SetActive(false);
+        settingsPanel.SetActive(true);
     }
 
     public void ButtonExitGame()
@@ -198,10 +197,7 @@ public class MainMenuUI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton2))
         {
-            foreach (var button in buttonsMainMenu)
-            {
-                button.SetActive(true);
-            }
+            mainMenuPanel.SetActive(true);
 
             nickNameInputField.text = string.Empty;
             nickNameInputField.gameObject.SetActive(false);
@@ -215,6 +211,8 @@ public class MainMenuUI : MonoBehaviour
             joinRoomNameInputFiel.text = string.Empty;
             joinRoomPasswordInputField.text = string.Empty;
             errorTextJoinRoom.text = string.Empty;
+
+            settingsPanel.SetActive(false);
         }
     }
 }

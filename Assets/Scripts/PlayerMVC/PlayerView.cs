@@ -1,19 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Photon.Pun;
+using TMPro;
 
 public class PlayerView : MonoBehaviourPun
 {
-    // Start is called before the first frame update
-    void Start()
+    private TextMeshPro nickNameText;
+
+
+    void Awake()
     {
-        
+        InitializeNickNameText();
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void InitializeNickNameText()
     {
-        
+        nickNameText =  GetComponentInChildren<TextMeshPro>();
+        nickNameText.text = photonView.Owner.NickName;
     }
 }

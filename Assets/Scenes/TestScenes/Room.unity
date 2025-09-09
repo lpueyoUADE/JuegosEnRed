@@ -645,19 +645,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 454292934}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 86219570}
-        m_TargetAssemblyTypeName: RoomUI, Assembly-CSharp
-        m_MethodName: ButtonSelectNextSkin
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &454292934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -778,19 +766,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 595185929}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 86219570}
-        m_TargetAssemblyTypeName: RoomUI, Assembly-CSharp
-        m_MethodName: ButtonSelectNextSkin
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &595185929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1247,19 +1223,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 851501647}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 86219570}
-        m_TargetAssemblyTypeName: RoomUI, Assembly-CSharp
-        m_MethodName: ButtonSelectNextSkin
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &851501647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1676,19 +1640,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1160108510}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 86219570}
-        m_TargetAssemblyTypeName: RoomUI, Assembly-CSharp
-        m_MethodName: ButtonSelectNextSkin
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: -1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1160108510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2212,19 +2164,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1338385705}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 86219570}
-        m_TargetAssemblyTypeName: RoomUI, Assembly-CSharp
-        m_MethodName: ButtonSelectNextSkin
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1338385705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2851,19 +2791,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1593885582}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 86219570}
-        m_TargetAssemblyTypeName: RoomUI, Assembly-CSharp
-        m_MethodName: ButtonSelectNextSkin
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1593885582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3194,19 +3122,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1862808804}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 86219570}
-        m_TargetAssemblyTypeName: RoomUI, Assembly-CSharp
-        m_MethodName: ButtonSelectNextSkin
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1862808804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4198,19 +4114,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2135900653}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 86219570}
-        m_TargetAssemblyTypeName: RoomUI, Assembly-CSharp
-        m_MethodName: ButtonSelectNextSkin
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2135900653
 MonoBehaviour:
   m_ObjectHideFlags: 0

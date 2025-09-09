@@ -51,10 +51,10 @@ public class PlayerModel : MonoBehaviourPun
             Vector3 cursorWorldPos = Camera.main.ScreenToWorldPoint(cursorScreenPos);
             cursorWorldPos.z = 0f;
 
-            projectileController.transform.position = attackPosition.position;
             projectileController.gameObject.SetActive(true);
+            projectileController.transform.position = attackPosition.position;
             Vector2 dir = (cursorWorldPos - attackPosition.position).normalized;
-            projectileController.ProjectileModel.Throw(dir);
+            projectileController.ProjectileModel.photonView.RPC("ThrowBoomerang", RpcTarget.AllBuffered, dir);
             return;
         }
 
@@ -62,7 +62,7 @@ public class PlayerModel : MonoBehaviourPun
         else if (projectileController.ProjectileModel.Rb.velocity.sqrMagnitude == 0)
         {
             Vector2 dir = (transform.position - projectileController.transform.position).normalized;
-            projectileController.ProjectileModel.Return();
+            projectileController.ProjectileModel.photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
             return;            
         }
     }
@@ -116,24 +116,8 @@ public class PlayerModel : MonoBehaviourPun
         {
             GameObject projGO = PhotonNetwork.Instantiate("Prefabs/Projectiles/Projectile", attackPosition.position, Quaternion.identity);
             projectileController = projGO.GetComponent<ProjectileController>();
-            projectileController.ProjectileModel.Initialize(photonView.OwnerActorNr, this);
+            projectileController.ProjectileModel.photonView.RPC("Initialize", RpcTarget.AllBuffered, photonView.OwnerActorNr);
         }
-
-        /*if (photonView.IsMine)
-        {
-            // paso mi actorNumber y mi viewID como datos al instanciar
-            object[] instantiationData = new object[] { photonView.OwnerActorNr, photonView.ViewID };
-
-            GameObject projGO = PhotonNetwork.Instantiate(
-                "Prefabs/Projectiles/Projectile",
-                attackPosition.position,
-                Quaternion.identity,
-                0,
-                instantiationData
-            );
-
-            projectileController = projGO.GetComponent<ProjectileController>();
-        }*/        
     }
 
     private void Movement()
@@ -164,12 +148,14 @@ public class PlayerModel : MonoBehaviourPun
         {
             if (rb.velocity.x > 0.1f)
             {
-                transform.localScale = new Vector3(1, 1, 1);
+                sprite.flipX = false;
+                //transform.localScale = new Vector3(1, 1, 1);
             }
 
             else if (rb.velocity.x < -0.1)
             {
-                transform.localScale = new Vector3(-1, 1, 1);
+                sprite.flipX = true;
+                //transform.localScale = new Vector3(-1, 1, 1);
             }
         }
     }

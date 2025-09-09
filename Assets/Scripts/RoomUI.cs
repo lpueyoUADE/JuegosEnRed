@@ -60,11 +60,6 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    public void ButtonSelectNextSkin(int direction)
-    {
-        //PlayerSkinManager.Instance.ChangeSkinIndex(currentSkinPreview, direction);
-    }
-
     public void ButtonYes()
     {
         PhotonNetworkManager.Instance.LeaveRoom();

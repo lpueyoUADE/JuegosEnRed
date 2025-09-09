@@ -13,6 +13,7 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
 
     [SerializeField] private float joystickSpeed;
 
+
     private List<GameObject> hoveredObjects = new List<GameObject>();
 
 
@@ -49,8 +50,8 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
             cursorPos = Input.mousePosition;
         }
 
-        float moveX = Input.GetAxis("RightStickHorizontal");
-        float moveY = Input.GetAxis("RightStickVertical");
+        float moveX = Input.GetAxisRaw("RightStickHorizontal");
+        float moveY = Input.GetAxisRaw("RightStickVertical");
 
         if (Mathf.Abs(moveX) > 0.1f || Mathf.Abs(moveY) > 0.1f)
         {
@@ -80,7 +81,7 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);
 
-        // Manejar Highlighted 
+        // PointerEnterExit
         List<GameObject> newHovered = new List<GameObject>();
         foreach (var result in results)
         {
@@ -92,7 +93,7 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
             }
         }
 
-        // Salida de hover de objetos que ya no están bajo el cursor
+        // PointerEnter
         foreach (var obj in hoveredObjects)
         {
             if (!newHovered.Contains(obj))
@@ -103,26 +104,12 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
 
         hoveredObjects = newHovered;
 
-        CheckInputs(results);
-    }
-
-    private void CheckInputs(List<RaycastResult> results)
-    {
-        // Clic izquierdo del mouse
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.JoystickButton1))
         {
             foreach (var result in results)
             {
                 ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerClickHandler);
-            }
-        }
-
-        // Boton de interaccion del joystick
-        if (Input.GetKeyDown(KeyCode.JoystickButton1))
-        {
-            foreach (var result in results)
-            {
-                ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerClickHandler);
+                return;
             }
         }
     }

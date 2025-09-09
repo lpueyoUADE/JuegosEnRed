@@ -5,22 +5,14 @@ using System.Collections.Generic;
 
 public class MainMenuUI : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField nickNameInputField;
-
     [Header("Main Menu")]
     [SerializeField] private GameObject mainMenuPanel;
 
-    [Header("CreateRoomInformation:")]
-    [SerializeField] private GameObject createRoomPanel;
-    [SerializeField] private TMP_InputField createRoomNameInputField;
-    [SerializeField] private TMP_InputField createRoomPasswordInputField;
-    [SerializeField] private TMP_Text errorTextCreateRoom;
+    [Header("Create Room")]
+    [SerializeField] private ConnectionToRoomPanel createRoomPanel;
 
-    [Header("JoinRoomInformation:")]
-    [SerializeField] private GameObject joinRoomPanel;
-    [SerializeField] private TMP_InputField joinRoomNameInputFiel;
-    [SerializeField] private TMP_InputField joinRoomPasswordInputField;
-    [SerializeField] private TMP_Text errorTextJoinRoom;
+    [Header("Join Room")]
+    [SerializeField] private ConnectionToRoomPanel joinRoomPanel;
 
     [Header("Settings")]
     [SerializeField] private GameObject settingsPanel;
@@ -30,6 +22,13 @@ public class MainMenuUI : MonoBehaviour
         SuscribeToPhotonNetworkManagerEvents();
     }
 
+    private void Start()
+    {
+        mainMenuPanel.SetActive(true);
+        settingsPanel.SetActive(false);
+        createRoomPanel.gameObject.SetActive(false);
+        joinRoomPanel.gameObject.SetActive(false);
+    }
     void Update()
     {
         // Test para crear una room rapida automaticamente
@@ -62,86 +61,55 @@ public class MainMenuUI : MonoBehaviour
         UnsuscribeToPhotonNetworkManagerEvents();
     }
 
-
     // Funciones asignadas a botones de la UI
     public void ButtonShowCreateRoomPanel()
     {
         mainMenuPanel.SetActive(false);
-        createRoomPanel.SetActive(true);
-        nickNameInputField.gameObject.SetActive(true);
+        settingsPanel.SetActive(false);
+        createRoomPanel.gameObject.SetActive(true);
+        joinRoomPanel.gameObject.SetActive(false);
     }
 
     public void ButtonShowJoinRoomPanel()
     {
         mainMenuPanel.SetActive(false);
-        joinRoomPanel.SetActive(true);
-        nickNameInputField.gameObject.SetActive(true);
+        settingsPanel.SetActive(false);
+        createRoomPanel.gameObject.SetActive(false);
+        joinRoomPanel.gameObject.SetActive(true);
     }
 
     public void ButtonCreateRoom()
     {
-        string nickName = nickNameInputField.text;
-        string roomName = createRoomNameInputField.text;
-        string roomPassword = createRoomPasswordInputField.text;
+        bool result = createRoomPanel.ValidateConnectionRoom();
 
-        if (nickName.Length < 3 || nickName.Length > 12)
+        if (!result)
         {
-            errorTextCreateRoom.text = "The nick name must be between 3 and 12 characters.";
             return;
         }
 
-        if (roomName.Length < 3 || roomName.Length > 12)
-        {
-            errorTextCreateRoom.text = "The room name must be between 3 and 12 characters.";
-            return;
-        }
-
-        if (roomPassword.Length < 3 || roomPassword.Length > 12)
-        {
-            errorTextCreateRoom.text = "The password must be between 3 and 12 characters.";
-            return;
-        }
-
-        errorTextCreateRoom.text = string.Empty;
-
-        PhotonNetworkManager.Instance.CreateRoom(roomName, roomPassword);
-        PhotonNetworkManager.Instance.SetNickName(nickName);
+        PhotonNetworkManager.Instance.CreateRoom(createRoomPanel.roomName.text, createRoomPanel.password.text);
+        PhotonNetworkManager.Instance.SetNickName(createRoomPanel.nickname.text);
     }
 
     public void ButtonJoinRoom()
     {
-        string nickName = nickNameInputField.text;
-        string roomName = joinRoomNameInputFiel.text;
-        string roomPassword = joinRoomPasswordInputField.text;
+        bool result = joinRoomPanel.ValidateConnectionRoom();
 
-        if (nickName.Length < 3 || nickName.Length > 12)
+        if (!result)
         {
-            errorTextCreateRoom.text = "The nick name must be between 3 and 12 characters.";
             return;
         }
 
-        if (roomName.Length < 3 || roomName.Length > 12)
-        {
-            errorTextJoinRoom.text = "The room name must be between 3 and 12 characters.";
-            return;
-        }
-
-        if (roomPassword.Length < 3 || roomPassword.Length > 12)
-        {
-            errorTextJoinRoom.text = "The password must be between 3 and 12 characters.";
-            return;
-        }
-
-        errorTextJoinRoom.text = string.Empty;
-
-        PhotonNetworkManager.Instance.JoinRoom(roomName, roomPassword);
-        PhotonNetworkManager.Instance.SetNickName(nickName);
+        PhotonNetworkManager.Instance.JoinRoom(joinRoomPanel.roomName.text, joinRoomPanel.password.text);
+        PhotonNetworkManager.Instance.SetNickName(joinRoomPanel.nickname.text);
     }
 
     public void ButtonSettings()
     {
         mainMenuPanel.SetActive(false);
         settingsPanel.SetActive(true);
+        createRoomPanel.gameObject.SetActive(false);
+        joinRoomPanel.gameObject.SetActive(false);
     }
 
     public void ButtonExitGame()
@@ -166,7 +134,7 @@ public class MainMenuUI : MonoBehaviour
     {
         if (returnCode == ErrorCode.GameIdAlreadyExists)
         {
-            errorTextCreateRoom.text = "There is already a room with that name.";
+            createRoomPanel.errorMessage.text = "There is already a room with that name.";
         }
     }
 
@@ -175,22 +143,13 @@ public class MainMenuUI : MonoBehaviour
         switch (returnCode)
         {
             case ErrorCode.GameDoesNotExist:
-                errorTextJoinRoom.text = "The room name or password are incorrect";
+                joinRoomPanel.errorMessage.text = "The room name or password are incorrect";
                     break;
 
             case ErrorCode.GameFull:
-                errorTextJoinRoom.text = "The room is full";
+                joinRoomPanel.errorMessage.text = "The room is full";
                 break;
         }
-    }
-
-    private void InitializeInputFieldsCharactersLimits()
-    {
-        createRoomNameInputField.characterLimit = 12;
-        createRoomPasswordInputField.characterLimit = 12;
-
-        joinRoomNameInputFiel.characterLimit = 12;
-        joinRoomPasswordInputField.characterLimit = 12;
     }
 
     private void CleanAllInformation()
@@ -198,21 +157,12 @@ public class MainMenuUI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton2))
         {
             mainMenuPanel.SetActive(true);
-
-            nickNameInputField.text = string.Empty;
-            nickNameInputField.gameObject.SetActive(false);
-
-            createRoomPanel.SetActive(false);
-            createRoomNameInputField.text = string.Empty;
-            createRoomPasswordInputField.text = string.Empty;
-            errorTextCreateRoom.text = string.Empty;
-
-            joinRoomPanel.SetActive(false);
-            joinRoomNameInputFiel.text = string.Empty;
-            joinRoomPasswordInputField.text = string.Empty;
-            errorTextJoinRoom.text = string.Empty;
-
             settingsPanel.SetActive(false);
+            createRoomPanel.gameObject.SetActive(false);
+            joinRoomPanel.gameObject.SetActive(false);
+
+            createRoomPanel.CleanData();
+            joinRoomPanel.CleanData();
         }
     }
 }

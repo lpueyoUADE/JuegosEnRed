@@ -31,7 +31,6 @@ public class AudioManager : MonoBehaviour
     private AudioSource musicSource;
     private AudioSource sfxSource;
 
-    // Volúmenes
     [Range(0f, 1f)] public float masterVolume = 1f;
     [Range(0f, 1f)] public float musicVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
@@ -71,10 +70,6 @@ public class AudioManager : MonoBehaviour
         ApplyVolumes();
     }
 
-    // -------------------------
-    // MÉTODOS PÚBLICOS
-    // -------------------------
-
     public void PlaySound(SoundEffect sound)
     {
         if (soundDict.ContainsKey(sound))
@@ -101,10 +96,6 @@ public class AudioManager : MonoBehaviour
     {
         musicSource.Stop();
     }
-
-    // -------------------------
-    // CONTROL DE VOLUMEN
-    // -------------------------
 
     public void SetMasterVolume(float value)
     {

@@ -10,7 +10,7 @@ public class SliderUI : MonoBehaviour
 
     private Slider slider;
 
-    void Awake()
+    void Start()
     {
         slider = GetComponent<Slider>();
 

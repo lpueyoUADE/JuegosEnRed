@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 
-public class ProjectileModel : MonoBehaviourPun
+public class BoomerangModel : MonoBehaviourPun
 {
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
@@ -36,7 +36,7 @@ public class ProjectileModel : MonoBehaviourPun
     void Update()
     {
         Rotation();
-        photonView.RPC("ReturnBoomerangAutomaticalyAfterSeconds", RpcTarget.AllBuffered);
+        //photonView.RPC("ReturnBoomerangAutomaticalyAfterSeconds", RpcTarget.AllBuffered);
     }
 
     void FixedUpdate()
@@ -74,7 +74,7 @@ public class ProjectileModel : MonoBehaviourPun
         rb.simulated = false;
         circleCollider.enabled = false;
         transform.SetParent(ownerPlayerModel.transform);
-        transform.position = ownerPlayerModel.AttackPosition.position;
+        transform.position = ownerPlayerModel.BoomerangHandPosition.position;
         ownerPlayerCollider = ownerPlayerModel.GetComponent<BoxCollider2D>();
     }
 
@@ -134,7 +134,7 @@ public class ProjectileModel : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
+    /*[PunRPC]
     private void ReturnBoomerangAutomaticalyAfterSeconds()
     {
         if (auxiliarPlayerHitActorNumber != null) 
@@ -147,7 +147,7 @@ public class ProjectileModel : MonoBehaviourPun
                 counterBoomerangComeBackAutomatically = 0f;
             }
         }
-    }
+    }*/
 
     [PunRPC]
     private void OnBoomerangCollisionEnterWithScenary()
@@ -184,7 +184,7 @@ public class ProjectileModel : MonoBehaviourPun
     {
         auxiliarPlayerHitActorNumber = null;
         transform.SetParent(ownerPlayerModel.transform);
-        transform.position = ownerPlayerModel.AttackPosition.position;
+        transform.position = ownerPlayerModel.BoomerangHandPosition.position;
         circleCollider.isTrigger = false;
         canRotate = false;
         isReturning = false;

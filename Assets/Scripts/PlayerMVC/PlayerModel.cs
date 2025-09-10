@@ -3,11 +3,11 @@ using Photon.Pun;
 
 public class PlayerModel : MonoBehaviourPun
 {
-    private ProjectileController projectileController;
+    private BoomerangController boomerangController;
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
     private SpriteRenderer sprite;
-    private Transform attackPosition;
+    private Transform boomerangHandPosition;
 
     [SerializeField] private int startingHealth;
 
@@ -19,7 +19,7 @@ public class PlayerModel : MonoBehaviourPun
     
     private bool isGrounded;
 
-    public Transform AttackPosition { get => attackPosition; }
+    public Transform BoomerangHandPosition { get => boomerangHandPosition; }
 
 
     void Awake()
@@ -45,24 +45,22 @@ public class PlayerModel : MonoBehaviourPun
     public void Attack()
     {
         // Si tiene el boomerang en la mano
-        if (projectileController.ProjectileModel.CircleCollider.enabled == false)
+        if (boomerangController.BoomerangModel.CircleCollider.enabled == false)
         {
             Vector2 cursorScreenPos = HybridCursorManager.Instance.GetCursorPosition();
             Vector3 cursorWorldPos = Camera.main.ScreenToWorldPoint(cursorScreenPos);
             cursorWorldPos.z = 0f;
 
-            projectileController.gameObject.SetActive(true);
-            projectileController.transform.position = attackPosition.position;
-            Vector2 dir = (cursorWorldPos - attackPosition.position).normalized;
-            projectileController.ProjectileModel.photonView.RPC("ThrowBoomerang", RpcTarget.AllBuffered, dir);
+            Vector2 dir = (cursorWorldPos - boomerangHandPosition.position).normalized;
+            boomerangController.BoomerangModel.photonView.RPC("ThrowBoomerang", RpcTarget.AllBuffered, dir);
             return;
         }
 
         // Si el boomerang esta pegado a algun objeto del escenario
-        else if (projectileController.ProjectileModel.Rb.velocity.sqrMagnitude == 0)
+        else if (boomerangController.BoomerangModel.Rb.velocity.sqrMagnitude == 0)
         {
-            Vector2 dir = (transform.position - projectileController.transform.position).normalized;
-            projectileController.ProjectileModel.photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
+            Vector2 dir = (transform.position - boomerangController.transform.position).normalized;
+            boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
             return;            
         }
     }
@@ -93,7 +91,7 @@ public class PlayerModel : MonoBehaviourPun
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         sprite = GetComponent<SpriteRenderer>();
-        attackPosition = transform.Find("AttackPosition");
+        boomerangHandPosition = transform.Find("BoomerangHandPosition");
     }
 
     private void InitializeSkin()
@@ -114,9 +112,9 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            GameObject projGO = PhotonNetwork.Instantiate("Prefabs/Projectiles/Projectile", attackPosition.position, Quaternion.identity);
-            projectileController = projGO.GetComponent<ProjectileController>();
-            projectileController.ProjectileModel.photonView.RPC("Initialize", RpcTarget.AllBuffered, photonView.OwnerActorNr);
+            GameObject projGO = PhotonNetwork.Instantiate("Prefabs/Boomerangs/Boomerang", boomerangHandPosition.position, Quaternion.identity);
+            boomerangController = projGO.GetComponent<BoomerangController>();
+            boomerangController.BoomerangModel.photonView.RPC("Initialize", RpcTarget.AllBuffered, photonView.OwnerActorNr);
         }
     }
 
@@ -148,14 +146,14 @@ public class PlayerModel : MonoBehaviourPun
         {
             if (rb.velocity.x > 0.1f)
             {
-                sprite.flipX = false;
-                //transform.localScale = new Vector3(1, 1, 1);
+                //sprite.flipX = false;
+                transform.localScale = new Vector3(1, 1, 1);
             }
 
             else if (rb.velocity.x < -0.1)
             {
-                sprite.flipX = true;
-                //transform.localScale = new Vector3(-1, 1, 1);
+                //sprite.flipX = true;
+                transform.localScale = new Vector3(-1, 1, 1);
             }
         }
     }

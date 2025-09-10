@@ -1,0 +1,101 @@
+{
+    "name": "New Controls",
+    "maps": [
+        {
+            "name": "Point",
+            "id": "679aea81-750b-4348-938f-52b758d42443",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Value",
+                    "id": "256361a3-b471-407d-8551-fb859e85f844",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8000b1db-90ff-4143-b9d9-7717d013b056",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Move",
+            "id": "6abef3bd-cb8a-474c-bbcb-85f688e43f64",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Value",
+                    "id": "ae7af23a-6a54-438d-8195-610790a25d1b",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "cca91067-164e-494e-ab72-fe3e9bd22545",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Click",
+            "id": "42239606-96e7-4b15-ac7b-01441f782a35",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "b50ab2a0-98a4-48c0-883a-93315010c685",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7788ee7a-9ed8-46fc-9f62-db22404308b5",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "535503b2-446e-400d-8a29-5bd05250e600",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

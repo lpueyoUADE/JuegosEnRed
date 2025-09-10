@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1863592074239952411}
   - component: {fileID: 4085331745331835139}
   m_Layer: 0
-  m_Name: AttackPosition
+  m_Name: BoomerangHandPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

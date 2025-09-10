@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f94f8fa77089ef747b4c2d6ba57f696b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minPlayerCount: 1
   buttonStartGame: {fileID: 1934687871}
   buttonStartGameText: {fileID: 665549991}
   panelBackToMainMenu: {fileID: 2087623864}
@@ -3314,7 +3315,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1934687872}
   m_OnClick:
     m_PersistentCalls:

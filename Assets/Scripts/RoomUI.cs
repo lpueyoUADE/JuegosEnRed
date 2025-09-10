@@ -6,6 +6,7 @@ using Photon.Realtime;
 
 public class RoomUI : MonoBehaviour
 {
+    [SerializeField] private int minPlayerCount = 1;
     [SerializeField] private Button buttonStartGame;
     [SerializeField] private TMP_Text buttonStartGameText;
     [SerializeField] private GameObject panelBackToMainMenu;
@@ -19,7 +20,13 @@ public class RoomUI : MonoBehaviour
         SuscribeToPhotonNetworkManagerEvents();
         RefreshSlots();
     }
+    private void Start()
+    {
+        // Checkeo estado del botón al entrar a la room.
+        OnChangeButtonStartGameInteraction();
 
+        print("Jugadores minimos para empezar la partida: " + minPlayerCount.ToString());
+    }
     void Update()
     {
         // Test para empezar a jugar sin que haya otro jugador en la room
@@ -46,7 +53,7 @@ public class RoomUI : MonoBehaviour
 
     public void ButtonStartGameOnPointerEnter()
     {
-        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < 2)
+        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < minPlayerCount)
         {
             buttonStartGameText.gameObject.SetActive(true);
         }
@@ -91,17 +98,12 @@ public class RoomUI : MonoBehaviour
 
     private void OnShowButtonStartGameIfIsHost()
     {
-        buttonStartGame.gameObject.SetActive(false);
-
-        if (PhotonNetworkManager.Instance.IsHost)
-        {
-            buttonStartGame.gameObject.SetActive(true);
-        }
+        buttonStartGame.gameObject.SetActive(PhotonNetworkManager.Instance.IsHost);
     }
 
     private void OnChangeButtonStartGameInteraction()
     {
-        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() > 1)
+        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() >= minPlayerCount)
         {
             buttonStartGame.interactable = true;
 

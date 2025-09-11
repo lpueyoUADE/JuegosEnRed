@@ -6,7 +6,6 @@ using Photon.Realtime;
 
 public class RoomUI : MonoBehaviour
 {
-    [SerializeField] private int minPlayerCount = 1;
     [SerializeField] private Button buttonStartGame;
     [SerializeField] private TMP_Text buttonStartGameText;
     [SerializeField] private GameObject panelBackToMainMenu;
@@ -20,13 +19,7 @@ public class RoomUI : MonoBehaviour
         SuscribeToPhotonNetworkManagerEvents();
         RefreshSlots();
     }
-    private void Start()
-    {
-        // Checkeo estado del botón al entrar a la room.
-        OnChangeButtonStartGameInteraction();
 
-        print("Jugadores minimos para empezar la partida: " + minPlayerCount.ToString());
-    }
     void Update()
     {
         // Test para empezar a jugar sin que haya otro jugador en la room
@@ -35,7 +28,7 @@ public class RoomUI : MonoBehaviour
             ScenesManager.Instance.LoadScene("Game");
         }
 
-        ShowPanelToGoBackToMainMenu();
+        ShowOrHidePanelToGoBackToMainMenu();
     }
 
     void OnDestroy()
@@ -53,7 +46,7 @@ public class RoomUI : MonoBehaviour
 
     public void ButtonStartGameOnPointerEnter()
     {
-        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < minPlayerCount)
+        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() == 1)
         {
             buttonStartGameText.gameObject.SetActive(true);
         }
@@ -103,7 +96,7 @@ public class RoomUI : MonoBehaviour
 
     private void OnChangeButtonStartGameInteraction()
     {
-        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() >= minPlayerCount)
+        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() > 1)
         {
             buttonStartGame.interactable = true;
 
@@ -130,26 +123,22 @@ public class RoomUI : MonoBehaviour
         Player[] players = PhotonNetwork.PlayerList;
         for (int i = 0; i < 4; i++)
         {
-            if(i < players.Length)
+            if (i < players.Length)
             {
                 roomPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
-            }
-            else
-            {
-                roomPlayerSlots[i].SetEmptySlot();
             }
         }
     }
 
-    private void ShowPanelToGoBackToMainMenu()
+    private void ShowOrHidePanelToGoBackToMainMenu()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && panelBackToMainMenu.activeSelf)
+        if (PlayerInputsManager.Instance.BackUI() && panelBackToMainMenu.activeSelf)
         {
             panelBackToMainMenu.SetActive(false);
             return;
         }
 
-        else if (Input.GetKeyDown(KeyCode.Escape) && !panelBackToMainMenu.activeSelf)
+        else if (PlayerInputsManager.Instance.BackUI() && !panelBackToMainMenu.activeSelf)
         {
             panelBackToMainMenu.SetActive(true);
             return;

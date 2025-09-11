@@ -148,7 +148,7 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
             {
                 // Esto dispara el onClick automáticamente
                 ExecuteEvents.Execute(selectable.gameObject, pointerData, ExecuteEvents.submitHandler);
-                return;
+                AudioManager.Instance.PlaySound(SoundEffect.ButtonClick);
             }
         }
     }

@@ -15,11 +15,12 @@ public class BoomerangModel : MonoBehaviourPun
 
     [SerializeField] private float movementSpeed;
     [SerializeField] private float rotationSpeed;
+    [SerializeField] private float timeToGetBoomerangBackIfIsCollidingWithSomePlayer;
 
     private int ownerActorNumber;
     private int? auxiliarPlayerHitActorNumber;
 
-    //private float counterBoomerangComeBackAutomatically = 0f;
+    private float counterBoomerangComeBackAutomatically = 0f; // Averiguar que pasa si traigo el boomerang mientras lo tiene pegado
 
     private bool canRotate = false;
     private bool isReturning = false;
@@ -36,7 +37,7 @@ public class BoomerangModel : MonoBehaviourPun
     void Update()
     {
         Rotation();
-        //photonView.RPC("ReturnBoomerangAutomaticalyAfterSeconds", RpcTarget.AllBuffered);
+        ReturnBoomerangAutomaticalyAfterSeconds();
     }
 
     void FixedUpdate()
@@ -134,20 +135,20 @@ public class BoomerangModel : MonoBehaviourPun
         }
     }
 
-    /*[PunRPC]
     private void ReturnBoomerangAutomaticalyAfterSeconds()
     {
         if (auxiliarPlayerHitActorNumber != null) 
         {
             counterBoomerangComeBackAutomatically += Time.deltaTime;
 
-            if (counterBoomerangComeBackAutomatically >= 3f)
+            if (counterBoomerangComeBackAutomatically >= timeToGetBoomerangBackIfIsCollidingWithSomePlayer)
             {
                 photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
                 counterBoomerangComeBackAutomatically = 0f;
+                auxiliarPlayerHitActorNumber = null;
             }
         }
-    }*/
+    }
 
     [PunRPC]
     private void OnBoomerangCollisionEnterWithScenary()
@@ -157,12 +158,11 @@ public class BoomerangModel : MonoBehaviourPun
         circleCollider.isTrigger = true;
     }
 
-    /// <summary>
-    /// Testear aca que el boomerang se quede pegado al player cuando choca
-    /// </summary>
     [PunRPC]
     private void OnBoomerangCollisionEnterWithOtherPlayers(int hitPlayerActorNr)
     {
+        currentDir = Vector2.zero;
+        rb.velocity = Vector2.zero;
         rb.simulated = false;
         rb.bodyType = RigidbodyType2D.Static;
         canRotate = false;
@@ -182,6 +182,9 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     private void OnBoomerangTriggerEnterWithOwnPlayer()
     {
+        Vector3 rot = transform.eulerAngles;
+        rot.z = 0f;
+        transform.rotation = Quaternion.Euler(rot); 
         auxiliarPlayerHitActorNumber = null;
         transform.SetParent(ownerPlayerModel.transform);
         transform.position = ownerPlayerModel.BoomerangHandPosition.position;

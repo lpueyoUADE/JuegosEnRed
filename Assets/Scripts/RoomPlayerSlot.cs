@@ -25,22 +25,9 @@ public class RoomPlayerSlot : MonoBehaviour
         UnsuscribeToPhotonNetworkManagerEvent();
     }
 
-    private void SetActiveInnerComponents(bool active)
-    {
-        playerNameText.gameObject.SetActive(active);
-        skinPreview.gameObject.SetActive(active);
-        prevButton.gameObject.SetActive(active);
-        nextButton.gameObject.SetActive(active);
-    }
-    public void SetEmptySlot()
-    {
-        SetActiveInnerComponents(false);
-    }
 
     public void AssignPlayerInfoToSlot(Player player)
     {
-        SetActiveInnerComponents(true);
-
         assignedPlayer = player;
         playerNameText.text = player.NickName;
 

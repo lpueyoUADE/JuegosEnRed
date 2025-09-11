@@ -128,9 +128,16 @@ public class RoomUI : MonoBehaviour
 
         // Asignar jugadores actuales
         Player[] players = PhotonNetwork.PlayerList;
-        for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < 4; i++)
         {
-            roomPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
+            if(i < players.Length)
+            {
+                roomPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
+            }
+            else
+            {
+                roomPlayerSlots[i].SetEmptySlot();
+            }
         }
     }
 

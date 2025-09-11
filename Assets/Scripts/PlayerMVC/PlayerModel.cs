@@ -6,8 +6,10 @@ public class PlayerModel : MonoBehaviourPun
     private BoomerangController boomerangController;
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
-    private SpriteRenderer sprite;
     private Transform boomerangHandPosition;
+
+    [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private Animator animator;
 
     [SerializeField] private int startingHealth;
 
@@ -90,7 +92,6 @@ public class PlayerModel : MonoBehaviourPun
     {
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
-        sprite = GetComponent<SpriteRenderer>();
         boomerangHandPosition = transform.Find("BoomerangHandPosition");
     }
 
@@ -125,6 +126,8 @@ public class PlayerModel : MonoBehaviourPun
             Vector2 move = PlayerInputsManager.Instance.GetMoveAxis();
             rb.velocity = new Vector2(move.normalized.x * speed, rb.velocity.y);
         }
+        float vel = new Vector3(rb.velocity.x, 0).magnitude;
+        animator.SetFloat("velocity", vel);
     }
 
     private void CheckIsOnFloor()

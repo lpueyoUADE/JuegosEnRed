@@ -19,7 +19,7 @@ public class BoomerangModel : MonoBehaviourPun
     private int ownerActorNumber;
     private int? auxiliarPlayerHitActorNumber;
 
-    private float counterBoomerangComeBackAutomatically = 0f;
+    //private float counterBoomerangComeBackAutomatically = 0f;
 
     private bool canRotate = false;
     private bool isReturning = false;

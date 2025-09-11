@@ -154,7 +154,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void CleanAllInformation()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton2))
+        if (PlayerInputsManager.Instance.BackUI())
         {
             mainMenuPanel.SetActive(true);
             settingsPanel.SetActive(false);

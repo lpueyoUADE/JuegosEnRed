@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInputsManager : SingletonMonoBehaviour<PlayerInputsManager>
 {
-    [SerializeField] private Inputs inputsKeyboard;
-    [SerializeField] private Inputs inputsJoystick;
-
-    [SerializeField] private bool testJoystickButtonsInDebbuger;
+    [SerializeField] private InputActionReference interactInput;
+    [SerializeField] private InputActionReference attackInput;
+    [SerializeField] private InputActionReference jumpInput;
+    [SerializeField] private InputActionReference backUI;
 
 
     void Awake()
@@ -13,9 +14,9 @@ public class PlayerInputsManager : SingletonMonoBehaviour<PlayerInputsManager>
         CreateSingleton(true);
     }
 
-    void Update()
+    void OnEnable()
     {
-        TesteJoystickButtonsInDebbuger();
+        InitializeInput();
     }
 
 
@@ -24,34 +25,17 @@ public class PlayerInputsManager : SingletonMonoBehaviour<PlayerInputsManager>
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
     }
 
-    public bool Interact() => Input.GetKeyDown(inputsKeyboard.Interact) || Input.GetKeyDown(inputsJoystick.Interact);
-    public bool Attack() => Input.GetKeyDown(inputsKeyboard.Attack) || Input.GetKeyDown(inputsJoystick.Attack);
-    public bool Jump() => Input.GetKeyDown(inputsKeyboard.Jump) || Input.GetKeyDown(inputsJoystick.Jump);
+    public bool Interact() => interactInput.action.WasPressedThisFrame();
+    public bool Attack() => attackInput.action.WasPressedThisFrame();
+    public bool Jump() => jumpInput.action.WasPressedThisFrame();
+    public bool BackUI() => backUI.action.WasPressedThisFrame();
 
-    
-    private void TesteJoystickButtonsInDebbuger()
+
+    private void InitializeInput()
     {
-        if (testJoystickButtonsInDebbuger)
-        {
-            for (int i = 0; i < 20; i++)
-            {
-                if (Input.GetKeyDown(KeyCode.JoystickButton0 + i))
-                {
-                    Debug.Log("Joystick button " + i + " presionado");
-                }
-            }
-        }
+        jumpInput?.action.Enable();
+        attackInput?.action.Enable();
+        interactInput?.action.Enable();
+        backUI?.action.Enable();
     }
-}
-
-[System.Serializable]
-public class Inputs
-{
-    [SerializeField] private KeyCode interact;
-    [SerializeField] private KeyCode attack;
-    [SerializeField] private KeyCode jump;
-
-    public KeyCode Interact { get => interact; }
-    public KeyCode Attack { get => attack; }
-    public KeyCode Jump { get => jump; }
 }

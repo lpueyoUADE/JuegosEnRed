@@ -6,8 +6,7 @@ using UnityEngine.InputSystem;
 
 public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
 {
-    [SerializeField] private InputActionReference pointAction; // Pointer position (mouse)
-    [SerializeField] private InputActionReference moveAction;  // Right stick
+    [SerializeField] private InputActionReference moveAction; 
     [SerializeField] private InputActionReference clickAction;
 
     [SerializeField] private RectTransform cursor;
@@ -30,23 +29,12 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
 
     void OnEnable()
     {
-        pointAction?.action.Enable();
         moveAction?.action.Enable();
         if (clickAction != null)
         {
             clickAction.action.Enable();
             clickAction.action.performed += OnClickPerformed;
         }
-    }
-
-    void OnDisable()
-    {
-        if (clickAction != null)
-            clickAction.action.performed -= OnClickPerformed;
-
-        pointAction?.action.Disable();
-        moveAction?.action.Disable();
-        clickAction?.action.Disable();
     }
 
     void Update()

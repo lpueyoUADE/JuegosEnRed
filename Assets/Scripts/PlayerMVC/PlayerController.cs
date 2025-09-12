@@ -13,14 +13,31 @@ public class PlayerController : MonoBehaviourPun
 
     void Awake()
     {
+        SuscribeToUpdateManagerEvent();
         GetComponents();
     }
 
-    void Update()
+    // Simulacion de Update
+    void UpdatePlayerController()
     {
         CheckInputs();
     }
 
+    void OnDestroy()
+    {
+        UnsuscribeToUpdateManagerEvent();
+    }
+
+
+    private void SuscribeToUpdateManagerEvent()
+    {
+        UpdateManager.OnUpdate += UpdatePlayerController;
+    }
+
+    private void UnsuscribeToUpdateManagerEvent()
+    {
+        UpdateManager.OnUpdate -= UpdatePlayerController;
+    }
 
     private void GetComponents()
     {

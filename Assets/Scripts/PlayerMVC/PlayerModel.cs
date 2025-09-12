@@ -26,21 +26,29 @@ public class PlayerModel : MonoBehaviourPun
 
     void Awake()
     {
+        SuscribeToUpdateManagerEvents();
         GetComponents();
         InitializeSkin();
         InitializeHealth();
         InitializeBoomerang();
     }
 
-    void Update()
+    // Simulacion de Update
+    void UpdatePlayerModel()
     {
         RotatePlayer();
     }
 
-    void FixedUpdate()
+    // Simulacion de FixedUpdate
+    void FixedUpdatePlayerModel()
     {
         Movement();
         CheckIsOnFloor();
+    }
+
+    void OnDestroy()
+    {
+        UnsuscribeToUpdateManagerEvents();
     }
 
 
@@ -83,10 +91,23 @@ public class PlayerModel : MonoBehaviourPun
 
         if (health < minHealth)
         {
-            PhotonNetwork.Destroy(gameObject);  
+            PhotonNetwork.Destroy(boomerangController.gameObject);
+            PhotonNetwork.Destroy(gameObject);
         }
     }
 
+
+    private void SuscribeToUpdateManagerEvents()
+    {
+        UpdateManager.OnUpdate += UpdatePlayerModel;
+        UpdateManager.OnFixedUpdate += FixedUpdatePlayerModel;
+    }
+
+    private void UnsuscribeToUpdateManagerEvents()
+    {
+        UpdateManager.OnUpdate -= UpdatePlayerModel;
+        UpdateManager.OnFixedUpdate -= FixedUpdatePlayerModel;
+    }
 
     private void GetComponents()
     {
@@ -126,8 +147,8 @@ public class PlayerModel : MonoBehaviourPun
             Vector2 move = PlayerInputsManager.Instance.GetMoveAxis();
             rb.velocity = new Vector2(move.normalized.x * speed, rb.velocity.y);
         }
-        float vel = new Vector3(rb.velocity.x, 0).magnitude;
-        animator.SetFloat("velocity", vel);
+
+        animator.SetFloat("velocity", Mathf.Abs(rb.velocity.x));
     }
 
     private void CheckIsOnFloor()
@@ -149,13 +170,11 @@ public class PlayerModel : MonoBehaviourPun
         {
             if (rb.velocity.x > 0.1f)
             {
-                //sprite.flipX = false;
                 transform.localScale = new Vector3(1, 1, 1);
             }
 
             else if (rb.velocity.x < -0.1)
             {
-                //sprite.flipX = true;
                 transform.localScale = new Vector3(-1, 1, 1);
             }
         }

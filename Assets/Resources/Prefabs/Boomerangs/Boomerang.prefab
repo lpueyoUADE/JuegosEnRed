@@ -8,7 +8,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9182680524284778688}
+  - component: {fileID: 8277744657580333445}
   - component: {fileID: 9182680524284778689}
   - component: {fileID: -444115625267270659}
   - component: {fileID: 2219791728490830541}
@@ -25,7 +25,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9182680524284778688
+--- !u!4 &8277744657580333445
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,7 +104,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.0001
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -122,7 +122,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 9182680524284778750}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 5fbf1e38328901e4ab7da53e0b06c584, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -141,6 +141,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ea1c0768a99043920a64c88a673dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myOutlineView: {fileID: 2100000, guid: 626483ba292ec184897dca6a436686c9, type: 2}
+  otherOutlineView: {fileID: 2100000, guid: d4143dcf9295a6849b34cb5cea42ad1e, type: 2}
   damage: 1
   movementSpeed: 10
   rotationSpeed: 500

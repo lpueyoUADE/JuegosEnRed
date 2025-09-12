@@ -2,9 +2,12 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using System;
 
 public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
 {
+    private event Action onSceneGameLoaded;
+
     [SerializeField] private GameObject connectingToOnlineServicesPanel;
     [SerializeField] private GameObject loadingScenePanel;
     [SerializeField] private GameObject exitGamePanel;
@@ -14,9 +17,11 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
     [SerializeField] private float duringTimeExitGamePanel;
 
     private bool isInLoadingScenePanel = false;
-    private bool isInExitGamePanel = false;
+    //private bool isInExitGamePanel = false;
 
-    //public bool IsInLoadingScenePanel { get => isInLoadingScenePanel; }
+    public Action OnSceneGameLoaded { get => onSceneGameLoaded; set => onSceneGameLoaded = value; }
+
+    public bool IsInLoadingScenePanel { get => isInLoadingScenePanel; }
     //public bool IsInExitGamePanel { get => isInExitGamePanel; }
 
 
@@ -42,7 +47,7 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
     public IEnumerator ExitGame()
     {
         exitGamePanel.SetActive(true);
-        isInExitGamePanel = true;
+        //isInExitGamePanel = true;
 
         yield return new WaitForSecondsRealtime(duringTimeExitGamePanel);
 
@@ -101,6 +106,11 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
 
         isInLoadingScenePanel = false;
         loadingScenePanel.SetActive(false);
+
+        if (SceneManager.GetActiveScene().name == "Game")
+        {
+            onSceneGameLoaded?.Invoke();
+        }
     }
 
     private void HandleShowConnectingToOnlineServicesPanel()

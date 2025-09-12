@@ -5,6 +5,9 @@ public class BoomerangModel : MonoBehaviourPun
 {
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
+    private SpriteRenderer sprite;
+    [SerializeField] private Material myOutlineView;
+    [SerializeField] private Material otherOutlineView;
 
     private PlayerModel ownerPlayerModel;
     private BoxCollider2D ownerPlayerCollider;
@@ -31,18 +34,27 @@ public class BoomerangModel : MonoBehaviourPun
 
     void Awake()
     {
+        SuscribeToUpdateManagerEvents();
         GetComponents();
+        InitializeSpriteOutline();
     }
 
-    void Update()
+    // Simulacion de Update
+    void UpdateBoomerangModel()
     {
         Rotation();
         ReturnBoomerangAutomaticalyAfterSeconds();
     }
 
-    void FixedUpdate()
+    // Simulacion de FixedUpdate
+    void FixedUpdateBoomerangModel()
     {
         Movement();
+    }
+
+    void OnDestroy()
+    {
+        UnsuscribeToUpdateManagerEvents();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -95,6 +107,7 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     public void ReturnBoomerang()
     {
+        transform.SetParent(null);
         canRotate = true;
         isReturning = true;
         rb.simulated = true;
@@ -104,17 +117,43 @@ public class BoomerangModel : MonoBehaviourPun
     }
 
 
+    private void SuscribeToUpdateManagerEvents()
+    {
+        UpdateManager.OnUpdate += UpdateBoomerangModel;
+        UpdateManager.OnFixedUpdate += FixedUpdateBoomerangModel;
+    }
+
+    private void UnsuscribeToUpdateManagerEvents()
+    {
+        UpdateManager.OnUpdate -= UpdateBoomerangModel;
+        UpdateManager.OnFixedUpdate -= FixedUpdateBoomerangModel;
+    }
+
     private void GetComponents()
     {
         rb = GetComponent<Rigidbody2D>();
         circleCollider = GetComponent<CircleCollider2D>();
+        sprite = GetComponent<SpriteRenderer>();
+    }
+
+    private void InitializeSpriteOutline()
+    {
+        if (photonView.IsMine)
+        {
+            sprite.material = myOutlineView;
+        }
+
+        else
+        {
+            sprite.material = otherOutlineView;
+        }
     }
 
     private void Movement()
     {
         if (!photonView.IsMine) return;
 
-        if (isReturning && ownerPlayerModel != null)
+        if (isReturning)
         {
             currentDir = ((Vector2)ownerPlayerModel.transform.position - (Vector2)transform.position).normalized;
         }
@@ -135,8 +174,13 @@ public class BoomerangModel : MonoBehaviourPun
         }
     }
 
+    /// <summary>
+    /// Resolver el null int
+    /// </summary>
     private void ReturnBoomerangAutomaticalyAfterSeconds()
     {
+        if (!photonView.IsMine) return;
+
         if (auxiliarPlayerHitActorNumber != null) 
         {
             counterBoomerangComeBackAutomatically += Time.deltaTime;
@@ -145,7 +189,7 @@ public class BoomerangModel : MonoBehaviourPun
             {
                 photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
                 counterBoomerangComeBackAutomatically = 0f;
-                auxiliarPlayerHitActorNumber = null;
+                //auxiliarPlayerHitActorNumber = null;
             }
         }
     }
@@ -161,13 +205,6 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     private void OnBoomerangCollisionEnterWithOtherPlayers(int hitPlayerActorNr)
     {
-        currentDir = Vector2.zero;
-        rb.velocity = Vector2.zero;
-        rb.simulated = false;
-        rb.bodyType = RigidbodyType2D.Static;
-        canRotate = false;
-        circleCollider.isTrigger = true;
-
         foreach (PlayerModel playerModel in FindObjectsOfType<PlayerModel>())
         {
             if (playerModel.photonView.OwnerActorNr == hitPlayerActorNr)
@@ -177,6 +214,13 @@ public class BoomerangModel : MonoBehaviourPun
                 break;
             }
         }
+        currentDir = Vector2.zero;
+        rb.velocity = Vector2.zero;
+        rb.simulated = false;
+        rb.bodyType = RigidbodyType2D.Static;
+        canRotate = false;
+        circleCollider.isTrigger = true;
+
     }
 
     [PunRPC]

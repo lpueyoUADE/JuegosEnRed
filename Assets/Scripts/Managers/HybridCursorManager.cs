@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
 {
@@ -17,19 +18,22 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
     [SerializeField] private Sprite battleCursor;
     [SerializeField] private Sprite uICursor;
 
+    private List<GameObject> hoveredObjects = new List<GameObject>();
+    
     private PointerEventData pointerData;
     private Vector2 cursorPos;
 
     [SerializeField] private float joystickSpeed;
 
 
-    private List<GameObject> hoveredObjects = new List<GameObject>();
-
-
     void Awake()
     {
         CreateSingleton(true);
-        Initialize();
+    }
+
+    void Start()
+    {
+        InitializeCursor();
     }
 
     void OnEnable()
@@ -45,7 +49,7 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
     void Update()
     {
         HandleMovement();
-        HandleUIInteraction();
+        HandleUIInteraction();   
     }
 
     public void SetUIPointer()
@@ -66,7 +70,7 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
     }
 
 
-    private void Initialize()
+    private void InitializeCursor()
     {
         Cursor.visible = false;
         pointerData = new PointerEventData(EventSystem.current);
@@ -75,8 +79,10 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
 
     private void HandleMovement()
     {
-        // 1) Preferimos mouse absoluto si movieron el mouse
-        bool mousePresent = Mouse.current != null;
+        if (ScenesManager.Instance.IsInLoadingScenePanel) return;
+
+            // 1) Preferimos mouse absoluto si movieron el mouse
+            bool mousePresent = Mouse.current != null;
         bool mouseMoved = mousePresent && Mouse.current.delta.ReadValue() != Vector2.zero;
 
         if (mouseMoved)
@@ -96,6 +102,12 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
                 cursorPos += stick * joystickSpeed * Time.deltaTime;
                 cursorPos.x = Mathf.Clamp(cursorPos.x, 0f, Screen.width);
                 cursorPos.y = Mathf.Clamp(cursorPos.y, 0f, Screen.height);
+
+                if (Mouse.current != null)
+                {
+                    Mouse.current.WarpCursorPosition(cursorPos);
+                    InputState.Change(Mouse.current.position, cursorPos);
+                }
             }
             else
             {
@@ -118,6 +130,8 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
 
     private void HandleUIInteraction()
     {
+        if (ScenesManager.Instance.IsInLoadingScenePanel) return;
+
         pointerData.position = cursorPos;
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);

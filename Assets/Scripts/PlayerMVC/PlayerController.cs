@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviourPun
 
     void Awake()
     {
+        SuscribeToUpdateManagerEvent();
         GetComponents();
         acceptingInput = true;
         GameUI.OnSetMainMenuState += SetInputState;
@@ -30,11 +31,27 @@ public class PlayerController : MonoBehaviourPun
         GameUI.OnSetMainMenuState -= SetInputState;
     }
 
-    void Update()
+    // Simulacion de Update
+    void UpdatePlayerController()
     {
         CheckInputs();
     }
 
+    void OnDestroy()
+    {
+        UnsuscribeToUpdateManagerEvent();
+    }
+
+
+    private void SuscribeToUpdateManagerEvent()
+    {
+        UpdateManager.OnUpdate += UpdatePlayerController;
+    }
+
+    private void UnsuscribeToUpdateManagerEvent()
+    {
+        UpdateManager.OnUpdate -= UpdatePlayerController;
+    }
 
     private void GetComponents()
     {

@@ -28,6 +28,10 @@ public class MainMenuUI : MonoBehaviour
         settingsPanel.SetActive(false);
         createRoomPanel.gameObject.SetActive(false);
         joinRoomPanel.gameObject.SetActive(false);
+
+        AudioManager.Instance.PlayMusic(MusicTrack.MainMenu);
+
+        HybridCursorManager.Instance.SetUIPointer();
     }
     void Update()
     {

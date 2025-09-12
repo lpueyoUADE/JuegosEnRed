@@ -12,6 +12,11 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
     [SerializeField] private RectTransform cursor;
     [SerializeField] private Canvas canvas;
 
+    [Header("Cursor Sprites")]
+    [SerializeField] private Image CursorImage;
+    [SerializeField] private Sprite battleCursor;
+    [SerializeField] private Sprite uICursor;
+
     private PointerEventData pointerData;
     private Vector2 cursorPos;
 
@@ -43,6 +48,17 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
         HandleUIInteraction();
     }
 
+    public void SetUIPointer()
+    {
+        CursorImage.sprite = uICursor;
+        CursorImage.rectTransform.pivot = new Vector2(0, 1);
+    }
+
+    public void SetBattlePointer()
+    {
+        CursorImage.sprite = battleCursor;
+        CursorImage.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+    }
 
     public Vector2 GetCursorPosition()
     {

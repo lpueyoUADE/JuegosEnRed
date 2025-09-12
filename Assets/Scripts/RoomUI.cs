@@ -13,7 +13,10 @@ public class RoomUI : MonoBehaviour
     [Header("PlayerInformation:")]
     [SerializeField] private RoomPlayerSlot[] roomPlayerSlots;
 
-
+    private void Start()
+    {
+        HybridCursorManager.Instance.SetUIPointer();
+    }
     void Awake()
     {
         SuscribeToPhotonNetworkManagerEvents();

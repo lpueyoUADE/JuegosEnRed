@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
@@ -28,30 +30,33 @@ public class AudioManager : MonoBehaviour
     public Music[] musics;
     private Dictionary<MusicTrack, AudioClip> musicDict;
 
-    private AudioSource musicSource;
-    private AudioSource sfxSource;
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioMixer audioMixer;
 
     [Range(0f, 1f)] public float masterVolume = 1f;
     [Range(0f, 1f)] public float musicVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
+
+    private const string MASTER_VOLUME = "MasterVolume"; 
+    private const string MUSIC_VOLUME = "MusicVolume"; 
+    private const string SFX_VOLUME = "SFXVolume";
+
+    public static event Action InitCompleted;
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
             return;
         }
-
-        musicSource = gameObject.AddComponent<AudioSource>();
-        musicSource.loop = true;
-
-        sfxSource = gameObject.AddComponent<AudioSource>();
 
         soundDict = new Dictionary<SoundEffect, AudioClip>();
         foreach (Sound s in sounds)
@@ -66,14 +71,12 @@ public class AudioManager : MonoBehaviour
             if (!musicDict.ContainsKey(m.id))
                 musicDict.Add(m.id, m.clip);
         }
-
-        ApplyVolumes();
     }
 
     public void PlaySound(SoundEffect sound)
     {
         if (soundDict.ContainsKey(sound))
-            sfxSource.PlayOneShot(soundDict[sound], masterVolume * sfxVolume);
+            sfxSource.PlayOneShot(soundDict[sound]);
         else
             Debug.LogWarning("Sonido no encontrado: " + sound);
     }
@@ -84,7 +87,6 @@ public class AudioManager : MonoBehaviour
         {
             musicSource.clip = musicDict[track];
             musicSource.Play();
-            ApplyVolumes();
         }
         else
         {
@@ -100,29 +102,36 @@ public class AudioManager : MonoBehaviour
     public void SetMasterVolume(float value)
     {
         masterVolume = Mathf.Clamp01(value);
-        ApplyVolumes();
+        audioMixer.SetFloat(MASTER_VOLUME, ToDecibels(masterVolume));
+        PlayerPrefs.SetFloat(MASTER_VOLUME, masterVolume);
     }
 
     public void SetMusicVolume(float value)
     {
         musicVolume = Mathf.Clamp01(value);
-        ApplyVolumes();
+        audioMixer.SetFloat(MUSIC_VOLUME, ToDecibels(musicVolume));
+        PlayerPrefs.SetFloat(MUSIC_VOLUME, musicVolume);
     }
 
     public void SetSFXVolume(float value)
     {
         sfxVolume = Mathf.Clamp01(value);
-        ApplyVolumes();
+        audioMixer.SetFloat(SFX_VOLUME, ToDecibels(sfxVolume));
+        PlayerPrefs.SetFloat(SFX_VOLUME, sfxVolume);
     }
 
-    private void ApplyVolumes()
+    private float ToDecibels(float value)
     {
-        musicSource.volume = masterVolume * musicVolume;
-        sfxSource.volume = masterVolume * sfxVolume;
+        return value > 0 ? Mathf.Log10(value) * 20f : -80f; // -80 dB = silencio
     }
 
     private void Start()
     {
+        SetMasterVolume(PlayerPrefs.GetFloat(MASTER_VOLUME));
+        SetMusicVolume(PlayerPrefs.GetFloat(MUSIC_VOLUME));
+        SetSFXVolume(PlayerPrefs.GetFloat(SFX_VOLUME));
+
+        InitCompleted?.Invoke();
         PlayMusic(MusicTrack.MainMenu);
     }
 }

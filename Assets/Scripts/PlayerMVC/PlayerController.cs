@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviourPun
     private void OnDestroy()
     {
         GameUI.OnSetMainMenuState -= SetInputState;
+        UnsuscribeToUpdateManagerEvent();
     }
 
     // Simulacion de Update
@@ -36,12 +37,6 @@ public class PlayerController : MonoBehaviourPun
     {
         CheckInputs();
     }
-
-    void OnDestroy()
-    {
-        UnsuscribeToUpdateManagerEvent();
-    }
-
 
     private void SuscribeToUpdateManagerEvent()
     {

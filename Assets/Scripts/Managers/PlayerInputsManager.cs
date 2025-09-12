@@ -22,7 +22,7 @@ public class PlayerInputsManager : SingletonMonoBehaviour<PlayerInputsManager>
 
     public Vector2 GetMoveAxis()
     {
-        return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        return new Vector2(Input.GetAxisRaw("Horizontal"), 0);
     }
 
     public bool Interact() => interactInput.action.WasPressedThisFrame();

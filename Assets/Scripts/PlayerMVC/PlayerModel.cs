@@ -63,6 +63,8 @@ public class PlayerModel : MonoBehaviourPun
 
             Vector2 dir = (cursorWorldPos - boomerangHandPosition.position).normalized;
             boomerangController.BoomerangModel.photonView.RPC("ThrowBoomerang", RpcTarget.AllBuffered, dir);
+
+            AudioManager.Instance.PlaySoundChoice(SoundEffect.Throw1, SoundEffect.Throw2, SoundEffect.Throw3);
             return;
         }
 
@@ -71,6 +73,7 @@ public class PlayerModel : MonoBehaviourPun
         {
             Vector2 dir = (transform.position - boomerangController.transform.position).normalized;
             boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
+            AudioManager.Instance.PlaySound(SoundEffect.ThrowBack);
             return;            
         }
     }
@@ -81,6 +84,7 @@ public class PlayerModel : MonoBehaviourPun
         {
             rb.velocity = new Vector2(rb.velocity.x, 0f);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            AudioManager.Instance.PlaySound(SoundEffect.Jump);
         }
     }
 

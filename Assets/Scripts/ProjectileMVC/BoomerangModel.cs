@@ -260,6 +260,7 @@ public class BoomerangModel : MonoBehaviourPun
         if (!collision.gameObject.CompareTag("Player"))
         {
             photonView.RPC("OnBoomerangCollisionEnterWithScenary", RpcTarget.AllBuffered);
+            AudioManager.Instance.PlaySound(SoundEffect.BananaStick);
         }
     }
 
@@ -288,6 +289,7 @@ public class BoomerangModel : MonoBehaviourPun
             if (targetPV.OwnerActorNr != ownerActorNumber && targetPV.OwnerActorNr != auxiliarPlayerHitActorNumber)
             {
                 targetPV.RPC("GetDamage", targetPV.Owner, damage);
+                AudioManager.Instance.PlaySound(SoundEffect.Hit);
             }
         }
     }

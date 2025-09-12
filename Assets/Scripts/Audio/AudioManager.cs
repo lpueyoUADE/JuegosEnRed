@@ -45,6 +45,7 @@ public class AudioManager : MonoBehaviour
 
     public static event Action InitCompleted;
 
+    private System.Random rng = new System.Random();
     void Awake()
     {
         if (Instance == null)
@@ -71,6 +72,15 @@ public class AudioManager : MonoBehaviour
             if (!musicDict.ContainsKey(m.id))
                 musicDict.Add(m.id, m.clip);
         }
+    }
+
+    public void PlaySoundChoice(params SoundEffect[] soundsToChoose)
+    {
+        // Elegir un índice aleatorio
+        int index = rng.Next(soundsToChoose.Length);
+        SoundEffect chosen = soundsToChoose[index];
+
+        PlaySound(chosen);
     }
 
     public void PlaySound(SoundEffect sound)

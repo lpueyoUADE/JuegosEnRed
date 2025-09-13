@@ -1,15 +1,20 @@
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class PlayerModel : MonoBehaviourPun
 {
     private BoomerangController boomerangController;
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
+    private SpriteRenderer sprite;
+    private Animator animator;
+    private Slider healthBar;
+    private Image fillImage;
     private Transform boomerangHandPosition;
 
-    [SerializeField] private SpriteRenderer sprite;
-    [SerializeField] private Animator animator;
+    [SerializeField] private Color mySliderColorView;
+    [SerializeField] private Color othrsSliderColorView;
 
     [SerializeField] private int startingHealth;
 
@@ -20,8 +25,11 @@ public class PlayerModel : MonoBehaviourPun
     private int minHealth = 1;
     
     private bool isGrounded;
+    private bool acceptingInput;
 
     public Transform BoomerangHandPosition { get => boomerangHandPosition; }
+
+    public bool AcceptingInput { get => acceptingInput; set => acceptingInput = value; }
 
 
     void Awake()
@@ -29,7 +37,7 @@ public class PlayerModel : MonoBehaviourPun
         SuscribeToUpdateManagerEvents();
         GetComponents();
         InitializeSkin();
-        InitializeHealth();
+        InitializeHealthAndHealthBar();
         InitializeBoomerang();
     }
 
@@ -63,8 +71,6 @@ public class PlayerModel : MonoBehaviourPun
 
             Vector2 dir = (cursorWorldPos - boomerangHandPosition.position).normalized;
             boomerangController.BoomerangModel.photonView.RPC("ThrowBoomerang", RpcTarget.AllBuffered, dir);
-
-            AudioManager.Instance.PlaySoundChoice(SoundEffect.Throw1, SoundEffect.Throw2, SoundEffect.Throw3);
             return;
         }
 
@@ -73,7 +79,6 @@ public class PlayerModel : MonoBehaviourPun
         {
             Vector2 dir = (transform.position - boomerangController.transform.position).normalized;
             boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
-            AudioManager.Instance.PlaySound(SoundEffect.ThrowBack);
             return;            
         }
     }
@@ -82,22 +87,35 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (isGrounded)
         {
+            AudioManager.Instance.PlaySound(SoundEffect.Jump);
             rb.velocity = new Vector2(rb.velocity.x, 0f);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            AudioManager.Instance.PlaySound(SoundEffect.Jump);
         }
     }
 
     [PunRPC]
     public void GetDamage(int damage)
     {
+        if (!photonView.IsMine) return;
+
         health -= damage;
 
         if (health < minHealth)
         {
+            AudioManager.Instance.PlaySound(SoundEffect.Death);
+            fillImage.gameObject.SetActive(false);
             PhotonNetwork.Destroy(boomerangController.gameObject);
             PhotonNetwork.Destroy(gameObject);
         }
+
+        photonView.RPC("UpdateHealthBar", RpcTarget.All, health);
+    }
+
+    [PunRPC]
+    public void UpdateHealthBar(int newHealth)
+    {
+        health = newHealth;
+        healthBar.value = health;
     }
 
 
@@ -117,6 +135,10 @@ public class PlayerModel : MonoBehaviourPun
     {
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        sprite = GetComponentInChildren<SpriteRenderer>();
+        animator = GetComponentInChildren<Animator>();
+        healthBar = GetComponentInChildren<Slider>();
+        fillImage = healthBar.fillRect.GetComponent<Image>();
         boomerangHandPosition = transform.Find("BoomerangHandPosition");
     }
 
@@ -129,9 +151,21 @@ public class PlayerModel : MonoBehaviourPun
         }
     }
 
-    private void InitializeHealth()
+    private void InitializeHealthAndHealthBar()
     {
         health = startingHealth;
+        healthBar.maxValue = startingHealth;
+        healthBar.value = startingHealth;
+
+        if (photonView.IsMine)
+        {
+            fillImage.color = mySliderColorView;
+        }
+
+        else
+        {
+            fillImage.color = othrsSliderColorView;
+        }
     }
 
     private void InitializeBoomerang()
@@ -148,6 +182,8 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
+            if (!acceptingInput) return;
+
             Vector2 move = PlayerInputsManager.Instance.GetMoveAxis();
             rb.velocity = new Vector2(move.normalized.x * speed, rb.velocity.y);
         }

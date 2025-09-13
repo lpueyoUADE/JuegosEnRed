@@ -5,9 +5,6 @@ public class BoomerangModel : MonoBehaviourPun
 {
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
-    private SpriteRenderer sprite;
-    [SerializeField] private Material myOutlineView;
-    [SerializeField] private Material otherOutlineView;
 
     private PlayerModel ownerPlayerModel;
     private BoxCollider2D ownerPlayerCollider;
@@ -36,7 +33,6 @@ public class BoomerangModel : MonoBehaviourPun
     {
         SuscribeToUpdateManagerEvents();
         GetComponents();
-        InitializeSpriteOutline();
     }
 
     // Simulacion de Update
@@ -94,6 +90,7 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     public void ThrowBoomerang(Vector2 dir)
     {
+        AudioManager.Instance.PlaySoundChoice(SoundEffect.Throw1, SoundEffect.Throw2, SoundEffect.Throw3);
         transform.SetParent(null);
         currentDir = dir;
         canRotate = true;
@@ -107,6 +104,7 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     public void ReturnBoomerang()
     {
+        AudioManager.Instance.PlaySound(SoundEffect.ThrowBack);
         transform.SetParent(null);
         canRotate = true;
         isReturning = true;
@@ -133,20 +131,6 @@ public class BoomerangModel : MonoBehaviourPun
     {
         rb = GetComponent<Rigidbody2D>();
         circleCollider = GetComponent<CircleCollider2D>();
-        sprite = GetComponent<SpriteRenderer>();
-    }
-
-    private void InitializeSpriteOutline()
-    {
-        if (photonView.IsMine)
-        {
-            sprite.material = myOutlineView;
-        }
-
-        else
-        {
-            sprite.material = otherOutlineView;
-        }
     }
 
     private void Movement()
@@ -197,6 +181,7 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     private void OnBoomerangCollisionEnterWithScenary()
     {
+        AudioManager.Instance.PlaySound(SoundEffect.BananaStick);
         rb.bodyType = RigidbodyType2D.Static;
         canRotate = false;
         circleCollider.isTrigger = true;
@@ -214,13 +199,14 @@ public class BoomerangModel : MonoBehaviourPun
                 break;
             }
         }
+
+        AudioManager.Instance.PlaySound(SoundEffect.HitOtherPlayers);
         currentDir = Vector2.zero;
         rb.velocity = Vector2.zero;
         rb.simulated = false;
         rb.bodyType = RigidbodyType2D.Static;
         canRotate = false;
         circleCollider.isTrigger = true;
-
     }
 
     [PunRPC]
@@ -251,30 +237,34 @@ public class BoomerangModel : MonoBehaviourPun
             {
                 targetPV.RPC("GetDamage", targetPV.Owner, damage);
                 photonView.RPC("OnBoomerangCollisionEnterWithOtherPlayers", RpcTarget.AllBuffered, targetPV.OwnerActorNr);
-                AudioManager.Instance.PlaySound(SoundEffect.Hit);
+                //AudioManager.Instance.PlaySound(SoundEffect.Hit);
             }
         }
     }
 
     private void OnCollisionEnterWithScenary(Collision2D collision)
     {
+        if (!photonView.IsMine) return;
+
         if (!collision.gameObject.CompareTag("Player"))
         {
             photonView.RPC("OnBoomerangCollisionEnterWithScenary", RpcTarget.AllBuffered);
-            AudioManager.Instance.PlaySound(SoundEffect.BananaStick);
         }
     }
 
     private void OnTriggerEnterWithOwnPlayer(Collider2D collider)
     {
+        if (!photonView.IsMine) return;
+
         if (collider.gameObject.CompareTag("Player"))
         {
             PhotonView targetPV = collider.gameObject.GetComponent<PhotonView>();
 
             if (targetPV.OwnerActorNr == ownerActorNumber)
             {
+                AudioManager.Instance.PlaySound(SoundEffect.HitOwnPlayer);
                 photonView.RPC("OnBoomerangTriggerEnterWithOwnPlayer", RpcTarget.AllBuffered);
-                AudioManager.Instance.PlaySound(SoundEffect.Catch);
+                //AudioManager.Instance.PlaySound(SoundEffect.Catch);
             }
         }
     }

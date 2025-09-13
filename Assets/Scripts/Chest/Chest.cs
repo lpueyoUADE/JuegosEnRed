@@ -4,6 +4,7 @@ using Photon.Pun;
 public class Chest : MonoBehaviourPun
 {
     private SpriteRenderer sprite;
+    [SerializeField] private Animator animator;
 
     private bool canOpenChest = false;
     private bool isChestOpen = false;
@@ -43,6 +44,7 @@ public class Chest : MonoBehaviourPun
 
     private void GetComponents()
     {
+        animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
     }
 
@@ -58,7 +60,8 @@ public class Chest : MonoBehaviourPun
     private void OpenChestRPC()
     {
         isChestOpen = true;
-        sprite.color = Color.red;        
+        sprite.color = Color.red;       
+        animator.SetTrigger("Open");
     }
 
     private void CheckCollisionEnterWithPlayer(Collision2D collision)

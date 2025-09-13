@@ -17,6 +17,8 @@ public class MainMenuUI : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private GameObject settingsPanel;
 
+    [Header("Credits")]
+    [SerializeField] private GameObject creditsPanel;
     void Awake()
     {
         SuscribeToPhotonNetworkManagerEvents();
@@ -28,6 +30,7 @@ public class MainMenuUI : MonoBehaviour
         settingsPanel.SetActive(false);
         createRoomPanel.gameObject.SetActive(false);
         joinRoomPanel.gameObject.SetActive(false);
+        creditsPanel.SetActive(false);
 
         AudioManager.Instance.PlayMusic(MusicTrack.MainMenu);
 
@@ -72,6 +75,7 @@ public class MainMenuUI : MonoBehaviour
         settingsPanel.SetActive(false);
         createRoomPanel.gameObject.SetActive(true);
         joinRoomPanel.gameObject.SetActive(false);
+        creditsPanel.SetActive(false);
     }
 
     public void ButtonShowJoinRoomPanel()
@@ -80,6 +84,7 @@ public class MainMenuUI : MonoBehaviour
         settingsPanel.SetActive(false);
         createRoomPanel.gameObject.SetActive(false);
         joinRoomPanel.gameObject.SetActive(true);
+        creditsPanel.SetActive(false);
     }
 
     public void ButtonCreateRoom()
@@ -114,6 +119,16 @@ public class MainMenuUI : MonoBehaviour
         settingsPanel.SetActive(true);
         createRoomPanel.gameObject.SetActive(false);
         joinRoomPanel.gameObject.SetActive(false);
+        creditsPanel.SetActive(false);
+    }
+
+    public void ButtonCredits()
+    {
+        mainMenuPanel.SetActive(false);
+        settingsPanel.SetActive(false);
+        createRoomPanel.gameObject.SetActive(false);
+        joinRoomPanel.gameObject.SetActive(false);
+        creditsPanel.SetActive(true);
     }
 
     public void ButtonExitGame()
@@ -164,6 +179,7 @@ public class MainMenuUI : MonoBehaviour
             settingsPanel.SetActive(false);
             createRoomPanel.gameObject.SetActive(false);
             joinRoomPanel.gameObject.SetActive(false);
+            creditsPanel.SetActive(false);
 
             createRoomPanel.CleanData();
             joinRoomPanel.CleanData();

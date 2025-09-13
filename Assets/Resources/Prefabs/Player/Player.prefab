@@ -179,7 +179,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1.738}
+  m_AnchoredPosition: {x: 0, y: -1.77}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &7322511873491558592
@@ -244,7 +244,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Text
+  m_text: nickname
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}
   m_sharedMaterial: {fileID: 564356611108812108, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}
@@ -701,7 +701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mySliderColorView: {r: 0.19607843, g: 1, b: 0, a: 1}
-  othrsSliderColorView: {r: 1, g: 0, b: 0.1882353, a: 1}
+  othersSliderColorView: {r: 1, g: 0, b: 0, a: 1}
   startingHealth: 3
   speed: 5
   jumpForce: 8
@@ -935,8 +935,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 20}
+  m_AnchoredPosition: {x: -5.15, y: 0}
+  m_SizeDelta: {x: 120.87, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &877535407455646360
 MonoBehaviour:

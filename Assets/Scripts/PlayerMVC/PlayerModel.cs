@@ -1,6 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using System.Collections;
 
 public class PlayerModel : MonoBehaviourPun
 {
@@ -13,15 +14,17 @@ public class PlayerModel : MonoBehaviourPun
     private Image fillImage;
     private Transform boomerangHandPosition;
 
+    private Coroutine damageFlashCoroutine;
+
     [SerializeField] private Color mySliderColorView;
-    [SerializeField] private Color othrsSliderColorView;
+    [SerializeField] private Color othersSliderColorView;
 
     [SerializeField] private int startingHealth;
 
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
 
-    private int health;
+    private int currentHealth;
     private int minHealth = 1;
     
     private bool isGrounded;
@@ -98,9 +101,11 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        health -= damage;
+        AudioManager.Instance.PlaySound(SoundEffect.HitOtherPlayers);
+        currentHealth -= damage;
+        photonView.RPC("DamageEffect", RpcTarget.All);
 
-        if (health < minHealth)
+        if (currentHealth < minHealth)
         {
             AudioManager.Instance.PlaySound(SoundEffect.Death);
             fillImage.gameObject.SetActive(false);
@@ -108,16 +113,27 @@ public class PlayerModel : MonoBehaviourPun
             PhotonNetwork.Destroy(gameObject);
         }
 
-        photonView.RPC("UpdateHealthBar", RpcTarget.All, health);
+        photonView.RPC("UpdateHealthBar", RpcTarget.All, currentHealth);
+    }
+
+
+    [PunRPC]
+    private void UpdateHealthBar(int newHealth)
+    {
+        currentHealth = newHealth;
+        healthBar.value = currentHealth;
     }
 
     [PunRPC]
-    public void UpdateHealthBar(int newHealth)
+    private void DamageBlinkEffect()
     {
-        health = newHealth;
-        healthBar.value = health;
-    }
+        if (damageFlashCoroutine != null)
+        {
+            StopCoroutine(damageFlashCoroutine);
+        }
 
+        damageFlashCoroutine = StartCoroutine(BlinkEffect());
+    }
 
     private void SuscribeToUpdateManagerEvents()
     {
@@ -153,7 +169,7 @@ public class PlayerModel : MonoBehaviourPun
 
     private void InitializeHealthAndHealthBar()
     {
-        health = startingHealth;
+        currentHealth = startingHealth;
         healthBar.maxValue = startingHealth;
         healthBar.value = startingHealth;
 
@@ -164,7 +180,7 @@ public class PlayerModel : MonoBehaviourPun
 
         else
         {
-            fillImage.color = othrsSliderColorView;
+            fillImage.color = othersSliderColorView;
         }
     }
 
@@ -217,6 +233,19 @@ public class PlayerModel : MonoBehaviourPun
             {
                 transform.localScale = new Vector3(-1, 1, 1);
             }
+        }
+    }
+
+    private IEnumerator BlinkEffect()
+    {
+        int executeTimesBlinkEffect = 4;
+
+        for (int i = 0; i < executeTimesBlinkEffect; i++)
+        {
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0f); // invisible
+            yield return new WaitForSeconds(0.1f);
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f); // visible
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

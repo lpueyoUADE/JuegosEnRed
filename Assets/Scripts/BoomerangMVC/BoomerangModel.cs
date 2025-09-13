@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using System.Collections.Generic;
 
 public class BoomerangModel : MonoBehaviourPun
 {
@@ -9,6 +10,8 @@ public class BoomerangModel : MonoBehaviourPun
     private PlayerModel ownerPlayerModel;
     private BoxCollider2D ownerPlayerCollider;
 
+    private Dictionary<int, float> hitCooldowns = new Dictionary<int, float>();
+
     private Vector2 currentDir;
 
     [SerializeField] private int damage;
@@ -16,11 +19,13 @@ public class BoomerangModel : MonoBehaviourPun
     [SerializeField] private float movementSpeed;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float timeToGetBoomerangBackIfIsCollidingWithSomePlayer;
+    [SerializeField] private float damageCooldown;
 
     private int ownerActorNumber;
+    private int rotationDirection;
     private int? auxiliarPlayerHitActorNumber;
 
-    private float counterBoomerangComeBackAutomatically = 0f; // Averiguar que pasa si traigo el boomerang mientras lo tiene pegado
+    private float counterBoomerangComeBackAutomatically = 0f;
 
     private bool canRotate = false;
     private bool isReturning = false;
@@ -62,7 +67,12 @@ public class BoomerangModel : MonoBehaviourPun
     void OnTriggerEnter2D(Collider2D collider)
     {
         OnTriggerEnterWithOwnPlayer(collider);
-        OnTriggerEnterWithOtherPlayers(collider);
+        //OnTriggerEnterWithOtherPlayers(collider);
+    }
+
+    private void OnTriggerStay2D(Collider2D collider)
+    {
+        OnTriggerStayWithOtherPlayers(collider);
     }
 
 
@@ -93,6 +103,7 @@ public class BoomerangModel : MonoBehaviourPun
         AudioManager.Instance.PlaySoundChoice(SoundEffect.Throw1, SoundEffect.Throw2, SoundEffect.Throw3);
         transform.SetParent(null);
         currentDir = dir;
+        rotationDirection = Random.value < 0.5f ? 1 : -1;
         canRotate = true;
         isReturning = false;
         rb.simulated = true;
@@ -106,6 +117,8 @@ public class BoomerangModel : MonoBehaviourPun
     {
         AudioManager.Instance.PlaySound(SoundEffect.ThrowBack);
         transform.SetParent(null);
+        auxiliarPlayerHitActorNumber = null;
+        rotationDirection = Random.value < 0.5f ? 1 : -1;
         canRotate = true;
         isReturning = true;
         rb.simulated = true;
@@ -154,13 +167,10 @@ public class BoomerangModel : MonoBehaviourPun
 
         if (canRotate)
         {
-            transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
+            transform.Rotate(0f, 0f, rotationSpeed * rotationDirection * Time.deltaTime);
         }
     }
 
-    /// <summary>
-    /// Resolver el null int
-    /// </summary>
     private void ReturnBoomerangAutomaticalyAfterSeconds()
     {
         if (!photonView.IsMine) return;
@@ -173,8 +183,12 @@ public class BoomerangModel : MonoBehaviourPun
             {
                 photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
                 counterBoomerangComeBackAutomatically = 0f;
-                //auxiliarPlayerHitActorNumber = null;
             }
+        }
+
+        else
+        {
+            counterBoomerangComeBackAutomatically = 0f;
         }
     }
 
@@ -200,7 +214,6 @@ public class BoomerangModel : MonoBehaviourPun
             }
         }
 
-        AudioManager.Instance.PlaySound(SoundEffect.HitOtherPlayers);
         currentDir = Vector2.zero;
         rb.velocity = Vector2.zero;
         rb.simulated = false;
@@ -215,7 +228,6 @@ public class BoomerangModel : MonoBehaviourPun
         Vector3 rot = transform.eulerAngles;
         rot.z = 0f;
         transform.rotation = Quaternion.Euler(rot); 
-        auxiliarPlayerHitActorNumber = null;
         transform.SetParent(ownerPlayerModel.transform);
         transform.position = ownerPlayerModel.BoomerangHandPosition.position;
         circleCollider.isTrigger = false;
@@ -263,12 +275,11 @@ public class BoomerangModel : MonoBehaviourPun
             {
                 AudioManager.Instance.PlaySound(SoundEffect.HitOwnPlayer);
                 photonView.RPC("OnBoomerangTriggerEnterWithOwnPlayer", RpcTarget.AllBuffered);
-                AudioManager.Instance.PlaySound(SoundEffect.HitOwnPlayer);
             }
         }
     }
 
-    private void OnTriggerEnterWithOtherPlayers(Collider2D collider)
+    /*private void OnTriggerEnterWithOtherPlayers(Collider2D collider)
     {
         if (!photonView.IsMine) return;
 
@@ -280,6 +291,35 @@ public class BoomerangModel : MonoBehaviourPun
             if (targetPV.OwnerActorNr != ownerActorNumber && targetPV.OwnerActorNr != auxiliarPlayerHitActorNumber)
             {
                 targetPV.RPC("GetDamage", targetPV.Owner, damage);
+            }
+        }
+    }*/
+
+    private void OnTriggerStayWithOtherPlayers(Collider2D collider)
+    {
+        if (!photonView.IsMine) return;
+
+        if (collider.CompareTag("Player"))
+        {
+            PhotonView targetPV = collider.GetComponent<PhotonView>();
+            int targetActorNr = targetPV.OwnerActorNr;
+
+            // Si no soy yo y no soy el que tiene el boomerang pegado
+            if (targetActorNr != ownerActorNumber && targetActorNr != auxiliarPlayerHitActorNumber)
+            {
+                // Si no existe en el diccionario, lo inicializamos en 0
+                if (!hitCooldowns.ContainsKey(targetActorNr))
+                {
+                    hitCooldowns[targetActorNr] = 0f;
+                }
+
+                // Chequeamos si ya pasó suficiente tiempo desde el último daño
+                if (Time.time >= hitCooldowns[targetActorNr])
+                {
+                    targetPV.RPC("GetDamage", targetPV.Owner, damage);
+
+                    hitCooldowns[targetActorNr] = Time.time + damageCooldown;
+                }
             }
         }
     }

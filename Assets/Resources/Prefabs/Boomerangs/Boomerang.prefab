@@ -145,6 +145,7 @@ MonoBehaviour:
   movementSpeed: 10
   rotationSpeed: 500
   timeToGetBoomerangBackIfIsCollidingWithSomePlayer: 3
+  damageCooldown: 1.15
 --- !u!114 &-851643655356561750
 MonoBehaviour:
   m_ObjectHideFlags: 0

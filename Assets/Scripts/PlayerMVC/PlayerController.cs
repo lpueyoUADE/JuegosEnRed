@@ -6,8 +6,6 @@ public class PlayerController : MonoBehaviourPun
     private PlayerModel playerModel;
     private PlayerView playerView;
 
-    private bool acceptingInput;
-
     private static event Action onInteract;
 
     public static Action OnInteract { get => onInteract; set => onInteract = value; }
@@ -17,13 +15,13 @@ public class PlayerController : MonoBehaviourPun
     {
         SuscribeToUpdateManagerEvent();
         GetComponents();
-        acceptingInput = true;
+        playerModel.AcceptingInput = true;
         GameUI.OnSetMainMenuState += SetInputState;
     }
 
     private void SetInputState(bool isAcceptingInput)
     {
-        acceptingInput = isAcceptingInput;
+        playerModel.AcceptingInput = isAcceptingInput;
     }
 
     private void OnDestroy()
@@ -57,7 +55,7 @@ public class PlayerController : MonoBehaviourPun
     private void CheckInputs()
     {
         if (!photonView.IsMine) return;
-        if (!acceptingInput) return;
+        if (!playerModel.AcceptingInput) return;
 
         if (PlayerInputsManager.Instance.Interact())
         {

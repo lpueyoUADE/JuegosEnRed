@@ -7,12 +7,17 @@ public enum SoundEffect
 
     // Player
     Jump,
+    Death,
 
-    // Projectile
+    // Boomerang
     BananaStick,
     Throw1,
     Throw2,
     Throw3,
     ThrowBack,
-    Hit,
+    HitOtherPlayers,
+    HitOwnPlayer,
+
+    // Countdown
+    Countdown,
 }

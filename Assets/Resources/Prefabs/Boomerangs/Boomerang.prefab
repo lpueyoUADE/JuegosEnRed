@@ -141,8 +141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ea1c0768a99043920a64c88a673dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myOutlineView: {fileID: 2100000, guid: 626483ba292ec184897dca6a436686c9, type: 2}
-  otherOutlineView: {fileID: 2100000, guid: d4143dcf9295a6849b34cb5cea42ad1e, type: 2}
   damage: 1
   movementSpeed: 10
   rotationSpeed: 500
@@ -159,6 +157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b29b1c0518093b74294f20b025ff9010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myOutlineView: {fileID: 2100000, guid: 626483ba292ec184897dca6a436686c9, type: 2}
+  otherOutlineView: {fileID: 2100000, guid: d4143dcf9295a6849b34cb5cea42ad1e, type: 2}
 --- !u!114 &8736338082022428417
 MonoBehaviour:
   m_ObjectHideFlags: 0

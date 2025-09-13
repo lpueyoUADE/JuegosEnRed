@@ -38,6 +38,7 @@ public class TimeManager : SingletonMonoBehaviour<TimeManager>
 
     private IEnumerator StartCountdown()
     {
+        AudioManager.Instance.PlaySoundChoice(SoundEffect.Countdown);
         float timer = countdownTime;
         while (timer > 0)
         {

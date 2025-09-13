@@ -251,6 +251,7 @@ public class BoomerangModel : MonoBehaviourPun
             {
                 targetPV.RPC("GetDamage", targetPV.Owner, damage);
                 photonView.RPC("OnBoomerangCollisionEnterWithOtherPlayers", RpcTarget.AllBuffered, targetPV.OwnerActorNr);
+                AudioManager.Instance.PlaySound(SoundEffect.Hit);
             }
         }
     }
@@ -273,6 +274,7 @@ public class BoomerangModel : MonoBehaviourPun
             if (targetPV.OwnerActorNr == ownerActorNumber)
             {
                 photonView.RPC("OnBoomerangTriggerEnterWithOwnPlayer", RpcTarget.AllBuffered);
+                AudioManager.Instance.PlaySound(SoundEffect.Catch);
             }
         }
     }
@@ -289,7 +291,6 @@ public class BoomerangModel : MonoBehaviourPun
             if (targetPV.OwnerActorNr != ownerActorNumber && targetPV.OwnerActorNr != auxiliarPlayerHitActorNumber)
             {
                 targetPV.RPC("GetDamage", targetPV.Owner, damage);
-                AudioManager.Instance.PlaySound(SoundEffect.Hit);
             }
         }
     }

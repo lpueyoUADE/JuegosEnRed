@@ -15,4 +15,5 @@ public enum SoundEffect
     Throw3,
     ThrowBack,
     Hit,
+    Catch,
 }

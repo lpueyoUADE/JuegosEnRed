@@ -3,7 +3,7 @@ using Photon.Pun;
 
 public class Teleport2D : MonoBehaviour
 {
-    [SerializeField] private Transform teleportPosition;
+    [SerializeField] private Transform teleportToThisPosition;
 
 
     void OnTriggerEnter2D(Collider2D collider)
@@ -20,7 +20,7 @@ public class Teleport2D : MonoBehaviour
 
             if (pv != null && pv.IsMine)
             {
-                pv.RPC("Teleport", RpcTarget.AllBuffered, teleportPosition.position);
+                pv.RPC("Teleport", RpcTarget.AllBuffered, teleportToThisPosition.position);
             }
         }
     }

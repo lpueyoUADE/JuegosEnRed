@@ -1773,11 +1773,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playersSkins:
-  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0.19952321, g: 1, b: 0, a: 1}
-  - {r: 0.80872536, g: 0, b: 1, a: 1}
-  - {r: 0.048704147, g: 0, b: 1, a: 1}
+  - {r: 1, g: 0.2971698, b: 0.9671433, a: 1}
+  - {r: 0.23135422, g: 0.19339621, b: 1, a: 1}
+  - {r: 0, g: 0.6829066, b: 1, a: 1}
+  - {r: 0.9463476, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0.42438906, b: 0, a: 1}
 --- !u!1001 &902373931
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2014,7 +2017,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6876471039273520718, guid: 6625569db6e1be44b90b856df92a629e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6876471039273520718, guid: 6625569db6e1be44b90b856df92a629e, type: 3}
       propertyPath: m_StaticEditorFlags

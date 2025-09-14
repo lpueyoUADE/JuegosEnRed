@@ -209,22 +209,29 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     private void OnBoomerangCollisionEnterWithOtherPlayers(int hitPlayerActorNr)
     {
-        foreach (PlayerModel playerModel in FindObjectsOfType<PlayerModel>())
-        {
-            if (playerModel.photonView.OwnerActorNr == hitPlayerActorNr)
-            {
-                auxiliarPlayerHitActorNumber = hitPlayerActorNr;
-                transform.SetParent(playerModel.transform); 
-                break;
-            }
-        }
-
         currentDir = Vector2.zero;
         rb.velocity = Vector2.zero;
         rb.simulated = false;
         rb.bodyType = RigidbodyType2D.Static;
         canRotate = false;
         circleCollider.isTrigger = true;
+
+        /// Resolver el error de que no vuelve el boomerang cuando muere el jugador que se le pego
+        foreach (PlayerModel playerModel in FindObjectsOfType<PlayerModel>())
+        {
+            if (playerModel.photonView.OwnerActorNr == hitPlayerActorNr)
+            {
+                if (playerModel.CurrentHealth < playerModel.MinHealth)
+                {
+                    photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
+                    return;
+                }
+
+                auxiliarPlayerHitActorNumber = hitPlayerActorNr;
+                transform.SetParent(playerModel.transform); 
+                break;
+            }
+        }
     }
 
     [PunRPC]
@@ -288,7 +295,7 @@ public class BoomerangModel : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        if (collider.CompareTag("Player"))
+        if (collider.gameObject.CompareTag("Player"))
         {
             PhotonView targetPV = collider.GetComponent<PhotonView>();
             int targetActorNr = targetPV.OwnerActorNr;

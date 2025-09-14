@@ -26,6 +26,7 @@ public class GameUI : MonoBehaviour
     {
         panelBackToMainMenu.SetActive(false);
         OnSetMainMenuState?.Invoke(true);
+        HybridCursorManager.Instance.SetBattlePointer();
     }
 
     private void ShowOrHidePanelToGoBackToMainMenu()

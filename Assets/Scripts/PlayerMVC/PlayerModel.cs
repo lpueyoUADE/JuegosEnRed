@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class PlayerModel : MonoBehaviourPun
 {
@@ -15,6 +16,9 @@ public class PlayerModel : MonoBehaviourPun
     private Transform boomerangHandPosition;
 
     private Coroutine damageFlashCoroutine;
+
+    private static event Action onPlayerDeath;
+    private static event Action onPlayerWin;
 
     [SerializeField] private Color mySliderColorView;
     [SerializeField] private Color othersSliderColorView;
@@ -31,6 +35,12 @@ public class PlayerModel : MonoBehaviourPun
     private bool acceptingInput;
 
     public Transform BoomerangHandPosition { get => boomerangHandPosition; }
+
+    public static Action OnPlayerDeath { get => onPlayerDeath; set => onPlayerDeath = value; }
+    public static Action OnPlayerWin { get => onPlayerWin; set => onPlayerWin = value; }
+
+    public int CurrentHealth { get => currentHealth; }
+    public int MinHealth { get => minHealth; }
 
     public bool AcceptingInput { get => acceptingInput; set => acceptingInput = value; }
 
@@ -101,19 +111,20 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        AudioManager.Instance.PlaySound(SoundEffect.HitOtherPlayers); // Solucionar el tema de que no se esucha en todas las instancias el sonido
         currentHealth -= damage;
+        photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.HitOtherPlayers);
         photonView.RPC("DamageBlinkEffect", RpcTarget.All);
+        photonView.RPC("UpdateHealthBar", RpcTarget.All, currentHealth);
 
         if (currentHealth < minHealth)
         {
-            AudioManager.Instance.PlaySound(SoundEffect.Death);
+            photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.Death);
             fillImage.gameObject.SetActive(false);
             PhotonNetwork.Destroy(boomerangController.gameObject);
             PhotonNetwork.Destroy(gameObject);
+            onPlayerDeath?.Invoke();
+            CheckHowManyPlayersAreAlive(); // Resolver error aca que se esta llamando esto solamente en el player que muere
         }
-
-        photonView.RPC("UpdateHealthBar", RpcTarget.All, currentHealth);
     }
 
     [PunRPC]
@@ -139,6 +150,12 @@ public class PlayerModel : MonoBehaviourPun
         }
 
         damageFlashCoroutine = StartCoroutine(BlinkEffect());
+    }
+
+    [PunRPC]
+    private void PlaySound(SoundEffect soundType)
+    {
+        AudioManager.Instance.PlaySound(soundType);
     }
 
     private void SuscribeToUpdateManagerEvents()
@@ -204,7 +221,11 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            if (!acceptingInput) return;
+            if (!acceptingInput)
+            {
+                rb.velocity = Vector2.zero;
+                return;
+            }
 
             Vector2 move = PlayerInputsManager.Instance.GetMoveAxis();
             rb.velocity = new Vector2(move.normalized.x * speed, rb.velocity.y);
@@ -217,10 +238,8 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            Vector2 origin = (Vector2)transform.position + boxCollider.offset;
-            float extraHeight = 0.05f;
-
-            RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, (boxCollider.size.y / 2f) + extraHeight, LayerMask.GetMask("Floor"));
+            float extraHeight = 0.1f;
+            RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size * new Vector2(0.9f, 1f), 0f, Vector2.down, extraHeight, LayerMask.GetMask("Floor"));
 
             isGrounded = hit.collider != null;
         }
@@ -252,6 +271,18 @@ public class PlayerModel : MonoBehaviourPun
             yield return new WaitForSeconds(0.1f);
             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f); // visible
             yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private void CheckHowManyPlayersAreAlive()
+    {
+        PlayerModel[] playerModels = FindObjectsOfType<PlayerModel>();
+
+        Debug.Log(playerModels.Length);
+
+        if (playerModels.Length == 0)
+        {
+            onPlayerWin?.Invoke();
         }
     }
 }

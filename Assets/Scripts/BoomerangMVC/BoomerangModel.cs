@@ -67,7 +67,6 @@ public class BoomerangModel : MonoBehaviourPun
     void OnTriggerEnter2D(Collider2D collider)
     {
         OnTriggerEnterWithOwnPlayer(collider);
-        //OnTriggerEnterWithOtherPlayers(collider);
     }
 
     private void OnTriggerStay2D(Collider2D collider)
@@ -125,6 +124,12 @@ public class BoomerangModel : MonoBehaviourPun
         circleCollider.enabled = true;
         rb.bodyType = RigidbodyType2D.Dynamic;
         Physics2D.IgnoreCollision(circleCollider, ownerPlayerCollider, false);
+    }
+
+    [PunRPC]
+    public void Teleport(Vector3 newPosition)
+    {
+        transform.position = newPosition;
     }
 
 
@@ -278,22 +283,6 @@ public class BoomerangModel : MonoBehaviourPun
             }
         }
     }
-
-    /*private void OnTriggerEnterWithOtherPlayers(Collider2D collider)
-    {
-        if (!photonView.IsMine) return;
-
-        if (collider.gameObject.CompareTag("Player"))
-        {
-            PhotonView targetPV = collider.gameObject.GetComponent<PhotonView>();
-
-            // Si no soy yo y no soy el que tiene el boomerang pegado no hacer daño
-            if (targetPV.OwnerActorNr != ownerActorNumber && targetPV.OwnerActorNr != auxiliarPlayerHitActorNumber)
-            {
-                targetPV.RPC("GetDamage", targetPV.Owner, damage);
-            }
-        }
-    }*/
 
     private void OnTriggerStayWithOtherPlayers(Collider2D collider)
     {

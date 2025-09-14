@@ -101,9 +101,9 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        AudioManager.Instance.PlaySound(SoundEffect.HitOtherPlayers);
+        AudioManager.Instance.PlaySound(SoundEffect.HitOtherPlayers); // Solucionar el tema de que no se esucha en todas las instancias el sonido
         currentHealth -= damage;
-        photonView.RPC("DamageEffect", RpcTarget.All);
+        photonView.RPC("DamageBlinkEffect", RpcTarget.All);
 
         if (currentHealth < minHealth)
         {
@@ -114,6 +114,12 @@ public class PlayerModel : MonoBehaviourPun
         }
 
         photonView.RPC("UpdateHealthBar", RpcTarget.All, currentHealth);
+    }
+
+    [PunRPC]
+    public void Teleport(Vector3 newPosition)
+    {
+        transform.position = newPosition;
     }
 
 

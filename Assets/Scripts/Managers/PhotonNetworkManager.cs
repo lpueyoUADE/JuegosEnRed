@@ -142,6 +142,8 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     private void InitializePhotonSettings()
     {
         PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.SendRate = 60;
+        PhotonNetwork.SerializationRate = 30;
     }
 
     private System.Collections.IEnumerator ExucuteOnJoinedRoomCallback()

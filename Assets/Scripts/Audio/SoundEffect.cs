@@ -7,7 +7,9 @@ public enum SoundEffect
 
     // Player
     Jump,
-    Death,
+    Death1,
+    Death2,
+    Death3,
 
     // Boomerang
     BananaStick,

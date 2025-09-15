@@ -3,6 +3,7 @@ using Photon.Pun;
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class PlayerModel : MonoBehaviourPun
 {
@@ -127,7 +128,7 @@ public class PlayerModel : MonoBehaviourPun
 
         if (currentHealth < minHealth)
         {
-            photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.Death);
+            photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.Death1);
             photonView.RPC("DisablePlayer", RpcTarget.All);
             boomerangController.BoomerangModel.photonView.RPC("DisableBoomerang", RpcTarget.All);
             StartCoroutine(DestroyPlayerAndHisBoomerang());
@@ -157,6 +158,12 @@ public class PlayerModel : MonoBehaviourPun
     private void PlaySound(SoundEffect soundType)
     {
         AudioManager.Instance.PlaySound(soundType);
+    }
+
+    [PunRPC]
+    private void PlaySoundChoice(SoundEffect[] soundsToChoose)
+    {
+        AudioManager.Instance.PlaySoundChoice(soundsToChoose);
     }
 
     [PunRPC]

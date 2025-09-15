@@ -67,6 +67,7 @@ MonoBehaviour:
   - DisableBoomerang
   - DestroyPlayerAndHisBoomerang
   - RestartIsCountdownFinished
+  - PlaySoundChoice
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

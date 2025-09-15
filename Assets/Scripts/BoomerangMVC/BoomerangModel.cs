@@ -1,8 +1,9 @@
-using UnityEngine;
 using Photon.Pun;
-using System.Collections.Generic;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 public class BoomerangModel : MonoBehaviourPun
 {
@@ -43,6 +44,7 @@ public class BoomerangModel : MonoBehaviourPun
 
     public static Action<int> OnDisableSprite { get => onDisableSprite; set => onDisableSprite = value; }
 
+    public event Action<bool> IsBoomerangFlying;
 
     void Awake()
     {
@@ -123,6 +125,7 @@ public class BoomerangModel : MonoBehaviourPun
         rb.simulated = true;
         circleCollider.enabled = true;
         rb.bodyType = RigidbodyType2D.Dynamic;
+        IsBoomerangFlying?.Invoke(true);
         transform.SetParent(null, true);
         Physics2D.IgnoreCollision(circleCollider, ownerPlayerCollider, true);
     }
@@ -137,6 +140,7 @@ public class BoomerangModel : MonoBehaviourPun
         rb.simulated = true;
         circleCollider.enabled = true;
         rb.bodyType = RigidbodyType2D.Dynamic;
+        IsBoomerangFlying?.Invoke(true);
         transform.SetParent(null, true);
         Physics2D.IgnoreCollision(circleCollider, ownerPlayerCollider, false);
     }
@@ -146,6 +150,7 @@ public class BoomerangModel : MonoBehaviourPun
     {
         onDisableSprite?.Invoke(photonView.ViewID);
         rb.bodyType = RigidbodyType2D.Kinematic;
+        IsBoomerangFlying?.Invoke(false);
         rb.simulated = false;
         circleCollider.enabled = false;
     }
@@ -222,6 +227,7 @@ public class BoomerangModel : MonoBehaviourPun
         rb.velocity = Vector2.zero;
         rb.simulated = false;
         rb.bodyType = RigidbodyType2D.Static;
+        IsBoomerangFlying?.Invoke(false);
         canRotate = false;
         circleCollider.isTrigger = true;
 
@@ -257,6 +263,7 @@ public class BoomerangModel : MonoBehaviourPun
     {
         AudioManager.Instance.PlaySound(SoundEffect.BananaStick);
         rb.bodyType = RigidbodyType2D.Static;
+        IsBoomerangFlying?.Invoke(false);
         canRotate = false;
         circleCollider.isTrigger = true;
         Physics2D.IgnoreCollision(circleCollider, ownerPlayerCollider, false);
@@ -315,6 +322,7 @@ public class BoomerangModel : MonoBehaviourPun
             if (targetPV.OwnerActorNr == ownerActorNumber)
             {
                 AudioManager.Instance.PlaySound(SoundEffect.HitOwnPlayer);
+                IsBoomerangFlying?.Invoke(false);
                 photonView.RPC("OnBoomerangTriggerEnterWithOwnPlayer", RpcTarget.All);
             }
         }

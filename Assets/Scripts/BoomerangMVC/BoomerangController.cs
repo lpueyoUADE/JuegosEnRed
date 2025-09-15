@@ -19,5 +19,6 @@ public class BoomerangController : MonoBehaviourPun
     {
         boomerangModel = GetComponent<BoomerangModel>();
         boomerangView = GetComponent<BoomerangView>();
+        boomerangView.Controller = this;
     }
 }

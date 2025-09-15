@@ -5,13 +5,22 @@ public class BoomerangView : MonoBehaviourPun
 {
     private SpriteRenderer sprite;
     [SerializeField] private Material myOutlineView;
-    
-    
+    [SerializeField] TrailRenderer trailRenderer;
+
+    private BoomerangController controller;
+
+    public BoomerangController Controller { get => controller; set => controller = value; }
+
     void Awake()
     {
         SuscribeToBoomerangModelEvent();
         GetComponents();
         InitializeSpriteOutline();
+    }
+
+    private void Start()
+    {
+        controller.BoomerangModel.IsBoomerangFlying += SetActiveTrail;
     }
 
     void OnDestroy()
@@ -27,6 +36,7 @@ public class BoomerangView : MonoBehaviourPun
     private void UnsuscribeToBoomerangModelEvent()
     {
         BoomerangModel.OnDisableSprite -= OnDisableSprite;
+        controller.BoomerangModel.IsBoomerangFlying -= SetActiveTrail;
     }
 
     private void GetComponents()
@@ -53,5 +63,10 @@ public class BoomerangView : MonoBehaviourPun
             int skinIndex = (int)photonView.Owner.CustomProperties["SkinIndex"];
             sprite.material.SetColor("_SolidOutline", PlayerSkinManager.Instance.PlayerSkins[skinIndex]);
         }
+    }
+
+    public void SetActiveTrail(bool status)
+    {
+        trailRenderer.emitting = status;
     }
 }

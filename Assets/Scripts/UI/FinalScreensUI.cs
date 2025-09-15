@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class FinalScreensUI : MonoBehaviour
 {
+    [SerializeField] private GameObject panel;
     [SerializeField] private GameObject winText;
     [SerializeField] private GameObject looseText;
 
@@ -10,6 +11,7 @@ public class FinalScreensUI : MonoBehaviour
     void Awake()
     {
         SuscribeToPlayerModelEvents();
+        panel.SetActive(false);
     }
 
     void Update()
@@ -48,12 +50,14 @@ public class FinalScreensUI : MonoBehaviour
 
         if (playerModels.Length == 1)
         {
+            panel.SetActive(true);
             winText.SetActive(true);
         }
     }
 
     private void ShowLoosePanel()
     {
+        panel.SetActive(true);
         looseText.SetActive(true);
     }
 }

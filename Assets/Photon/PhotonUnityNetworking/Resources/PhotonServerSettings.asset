@@ -28,7 +28,7 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: 
+  DevRegion: sa
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
@@ -39,6 +39,35 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
+  - RpcShowLoadingPanel
+  - OpenChestRPC
+  - GetDamage
+  - AttachToOwner
+  - DeactivateProjectile
+  - Initialize
+  - InitPlayer
+  - Throw
+  - Return
+  - OnBoomerangTriggerEnterWithOwnPlayer
+  - ReturnBoomerang
+  - ThrowBoomerang
+  - OnBoomerangCollisionEnterWithScenary
+  - OnBoomerangCollisionEnterWithOtherPlayers
+  - OnBoomerangTriggerEnterWithOtherPlayers
+  - ReturnBoomerangAutomaticalyAfterSeconds
+  - UpdateHealthBar
+  - DamageEffect
+  - DamageBlinkEffect
+  - Teleport
+  - PlayHitSound
+  - PlaySound
+  - DestroyPlayerWithDelay
+  - DestroyBoomerangWithDelay
+  - DisablePlayer
+  - DisableBoomerang
+  - DestroyPlayerAndHisBoomerang
+  - RestartIsCountdownFinished
+  - PlaySoundChoice
   DisableAutoOpenWizard: 1
   ShowSettings: 0
-  DevRegionSetOnce: 0
+  DevRegionSetOnce: 1

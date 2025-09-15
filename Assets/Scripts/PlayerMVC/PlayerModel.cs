@@ -17,11 +17,9 @@ public class PlayerModel : MonoBehaviourPun
 
     private Coroutine damageFlashCoroutine;
 
+    private static event Action<int> onDisableNicknameText;
     private static event Action onPlayerDeath;
     private static event Action onPlayerWin;
-
-    [SerializeField] private Color mySliderColorView;
-    [SerializeField] private Color othersSliderColorView;
 
     [SerializeField] private int startingHealth;
 
@@ -36,6 +34,7 @@ public class PlayerModel : MonoBehaviourPun
 
     public Transform BoomerangHandPosition { get => boomerangHandPosition; }
 
+    public static Action<int> OnDisableNicknameText { get => onDisableNicknameText; set => onDisableNicknameText = value; }
     public static Action OnPlayerDeath { get => onPlayerDeath; set => onPlayerDeath = value; }
     public static Action OnPlayerWin { get => onPlayerWin; set => onPlayerWin = value; }
 
@@ -83,7 +82,7 @@ public class PlayerModel : MonoBehaviourPun
             cursorWorldPos.z = 0f;
 
             Vector2 dir = (cursorWorldPos - boomerangHandPosition.position).normalized;
-            boomerangController.BoomerangModel.photonView.RPC("ThrowBoomerang", RpcTarget.AllBuffered, dir);
+            boomerangController.BoomerangModel.photonView.RPC("ThrowBoomerang", RpcTarget.All, dir);
             return;
         }
 
@@ -91,7 +90,7 @@ public class PlayerModel : MonoBehaviourPun
         else if (boomerangController.BoomerangModel.Rb.velocity.sqrMagnitude == 0)
         {
             Vector2 dir = (transform.position - boomerangController.transform.position).normalized;
-            boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
+            boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.All);
             return;            
         }
     }
@@ -107,30 +106,32 @@ public class PlayerModel : MonoBehaviourPun
     }
 
     [PunRPC]
+    public void Teleport(Vector3 newPosition)
+    {
+        transform.position = newPosition;
+    }
+
+    [PunRPC]
     public void GetDamage(int damage)
     {
         if (!photonView.IsMine) return;
 
         currentHealth -= damage;
         photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.HitOtherPlayers);
-        photonView.RPC("DamageBlinkEffect", RpcTarget.All);
         photonView.RPC("UpdateHealthBar", RpcTarget.All, currentHealth);
+
+        if (currentHealth > minHealth - 1)
+        {
+            photonView.RPC("DamageBlinkEffect", RpcTarget.All);
+        }
 
         if (currentHealth < minHealth)
         {
             photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.Death);
-            fillImage.gameObject.SetActive(false);
-            PhotonNetwork.Destroy(boomerangController.gameObject);
-            PhotonNetwork.Destroy(gameObject);
-            onPlayerDeath?.Invoke();
-            CheckHowManyPlayersAreAlive(); // Resolver error aca que se esta llamando esto solamente en el player que muere
+            photonView.RPC("DisablePlayer", RpcTarget.All);
+            boomerangController.BoomerangModel.photonView.RPC("DisableBoomerang", RpcTarget.All);
+            StartCoroutine(DestroyPlayerAndHisBoomerang());
         }
-    }
-
-    [PunRPC]
-    public void Teleport(Vector3 newPosition)
-    {
-        transform.position = newPosition;
     }
 
 
@@ -156,6 +157,28 @@ public class PlayerModel : MonoBehaviourPun
     private void PlaySound(SoundEffect soundType)
     {
         AudioManager.Instance.PlaySound(soundType);
+    }
+
+    [PunRPC]
+    private void DisablePlayer()
+    {
+        acceptingInput = false;
+        onDisableNicknameText?.Invoke(photonView.ViewID); 
+        fillImage?.gameObject.SetActive(false);
+        healthBar?.gameObject.SetActive(false);
+        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0f); // invisible
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.simulated = false;
+        boxCollider.enabled = false;
+    }
+
+    private IEnumerator DestroyPlayerAndHisBoomerang()
+    {
+        yield return null;
+
+        PhotonNetwork.Destroy(boomerangController.gameObject);
+        PhotonNetwork.Destroy(gameObject);
+        onPlayerDeath?.Invoke();
     }
 
     private void SuscribeToUpdateManagerEvents()
@@ -196,14 +219,10 @@ public class PlayerModel : MonoBehaviourPun
         healthBar.maxValue = startingHealth;
         healthBar.value = startingHealth;
 
-        if (photonView.IsMine)
+        if (photonView.Owner.CustomProperties.ContainsKey("SkinIndex"))
         {
-            fillImage.color = mySliderColorView;
-        }
-
-        else
-        {
-            fillImage.color = othersSliderColorView;
+            int skinIndex = (int)photonView.Owner.CustomProperties["SkinIndex"];
+            fillImage.color = PlayerSkinManager.Instance.PlayerSkins[skinIndex];
         }
     }
 
@@ -213,7 +232,7 @@ public class PlayerModel : MonoBehaviourPun
         {
             GameObject projGO = PhotonNetwork.Instantiate("Prefabs/Boomerangs/Boomerang", boomerangHandPosition.position, Quaternion.identity);
             boomerangController = projGO.GetComponent<BoomerangController>();
-            boomerangController.BoomerangModel.photonView.RPC("Initialize", RpcTarget.AllBuffered, photonView.OwnerActorNr);
+            boomerangController.BoomerangModel.photonView.RPC("Initialize", RpcTarget.All, photonView.OwnerActorNr);
         }
     }
 
@@ -271,18 +290,6 @@ public class PlayerModel : MonoBehaviourPun
             yield return new WaitForSeconds(0.1f);
             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f); // visible
             yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    private void CheckHowManyPlayersAreAlive()
-    {
-        PlayerModel[] playerModels = FindObjectsOfType<PlayerModel>();
-
-        Debug.Log(playerModels.Length);
-
-        if (playerModels.Length == 0)
-        {
-            onPlayerWin?.Invoke();
         }
     }
 }

@@ -1,9 +1,15 @@
 using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
+using System;
+using System.Collections;
 
 public class BoomerangModel : MonoBehaviourPun
 {
+    /// <summary>
+    /// Agregar en un futuro que si alguien tiene un boomerang pegado y le tiran otro y lo mata, que el que estaba pegado vuelva a su dueño
+    /// </summary>
+
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
 
@@ -11,6 +17,8 @@ public class BoomerangModel : MonoBehaviourPun
     private BoxCollider2D ownerPlayerCollider;
 
     private Dictionary<int, float> hitCooldowns = new Dictionary<int, float>();
+
+    private static event Action<int> onDisableSprite;
 
     private Vector2 currentDir;
 
@@ -32,6 +40,8 @@ public class BoomerangModel : MonoBehaviourPun
 
     public Rigidbody2D Rb { get => rb; }
     public CircleCollider2D CircleCollider { get => circleCollider; }
+
+    public static Action<int> OnDisableSprite { get => onDisableSprite; set => onDisableSprite = value; }
 
 
     void Awake()
@@ -91,23 +101,29 @@ public class BoomerangModel : MonoBehaviourPun
 
         rb.simulated = false;
         circleCollider.enabled = false;
-        transform.SetParent(ownerPlayerModel.transform);
+        transform.SetParent(ownerPlayerModel.transform, true);
         transform.position = ownerPlayerModel.BoomerangHandPosition.position;
         ownerPlayerCollider = ownerPlayerModel.GetComponent<BoxCollider2D>();
+    }
+
+    [PunRPC]
+    public void Teleport(Vector3 newPosition)
+    {
+        transform.position = newPosition;
     }
 
     [PunRPC]
     public void ThrowBoomerang(Vector2 dir)
     {
         AudioManager.Instance.PlaySoundChoice(SoundEffect.Throw1, SoundEffect.Throw2, SoundEffect.Throw3);
-        transform.SetParent(null);
         currentDir = dir;
-        rotationDirection = Random.value < 0.5f ? 1 : -1;
+        rotationDirection = UnityEngine.Random.value < 0.5f ? 1 : -1;
         canRotate = true;
         isReturning = false;
         rb.simulated = true;
         circleCollider.enabled = true;
         rb.bodyType = RigidbodyType2D.Dynamic;
+        transform.SetParent(null, true);
         Physics2D.IgnoreCollision(circleCollider, ownerPlayerCollider, true);
     }
 
@@ -115,21 +131,23 @@ public class BoomerangModel : MonoBehaviourPun
     public void ReturnBoomerang()
     {
         AudioManager.Instance.PlaySound(SoundEffect.ThrowBack);
-        transform.SetParent(null);
-        auxiliarPlayerHitActorNumber = null;
-        rotationDirection = Random.value < 0.5f ? 1 : -1;
+        rotationDirection = UnityEngine.Random.value < 0.5f ? 1 : -1;
         canRotate = true;
         isReturning = true;
         rb.simulated = true;
         circleCollider.enabled = true;
         rb.bodyType = RigidbodyType2D.Dynamic;
+        transform.SetParent(null, true);
         Physics2D.IgnoreCollision(circleCollider, ownerPlayerCollider, false);
     }
 
     [PunRPC]
-    public void Teleport(Vector3 newPosition)
+    public void DisableBoomerang()
     {
-        transform.position = newPosition;
+        onDisableSprite?.Invoke(photonView.ViewID);
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.simulated = false;
+        circleCollider.enabled = false;
     }
 
 
@@ -186,7 +204,7 @@ public class BoomerangModel : MonoBehaviourPun
 
             if (counterBoomerangComeBackAutomatically >= timeToGetBoomerangBackIfIsCollidingWithSomePlayer)
             {
-                photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
+                photonView.RPC("ReturnBoomerang", RpcTarget.All);
                 counterBoomerangComeBackAutomatically = 0f;
             }
         }
@@ -198,16 +216,7 @@ public class BoomerangModel : MonoBehaviourPun
     }
 
     [PunRPC]
-    private void OnBoomerangCollisionEnterWithScenary()
-    {
-        AudioManager.Instance.PlaySound(SoundEffect.BananaStick);
-        rb.bodyType = RigidbodyType2D.Static;
-        canRotate = false;
-        circleCollider.isTrigger = true;
-    }
-
-    [PunRPC]
-    private void OnBoomerangCollisionEnterWithOtherPlayers(int hitPlayerActorNr)
+    private void OnBoomerangCollisionEnterWithOtherPlayers(int hitPlayerActorNr, int playerModelViewID)
     {
         currentDir = Vector2.zero;
         rb.velocity = Vector2.zero;
@@ -216,22 +225,41 @@ public class BoomerangModel : MonoBehaviourPun
         canRotate = false;
         circleCollider.isTrigger = true;
 
-        /// Resolver el error de que no vuelve el boomerang cuando muere el jugador que se le pego
-        foreach (PlayerModel playerModel in FindObjectsOfType<PlayerModel>())
-        {
-            if (playerModel.photonView.OwnerActorNr == hitPlayerActorNr)
-            {
-                if (playerModel.CurrentHealth < playerModel.MinHealth)
-                {
-                    photonView.RPC("ReturnBoomerang", RpcTarget.AllBuffered);
-                    return;
-                }
+        PhotonView playerModelPV = PhotonView.Find(playerModelViewID);
+        PlayerModel playerModel = playerModelPV.GetComponent<PlayerModel>();
 
-                auxiliarPlayerHitActorNumber = hitPlayerActorNr;
-                transform.SetParent(playerModel.transform); 
-                break;
+        if (playerModel.photonView.OwnerActorNr == hitPlayerActorNr)
+        {
+            if (playerModel.CurrentHealth < playerModel.MinHealth)
+            {
+                photonView.RPC("ReturnBoomerang", RpcTarget.All); 
+                return;
             }
+
+            StartCoroutine(SetParentWithPlayerCollision(playerModel, hitPlayerActorNr));
         }
+    }
+
+    private IEnumerator SetParentWithPlayerCollision(PlayerModel playerModel, int hitPlayerActorNr)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            yield return null;  
+        }
+
+        auxiliarPlayerHitActorNumber = hitPlayerActorNr;
+        if (playerModel  != null)
+        transform.SetParent(playerModel.transform, true);
+    }
+
+    [PunRPC]
+    private void OnBoomerangCollisionEnterWithScenary()
+    {
+        AudioManager.Instance.PlaySound(SoundEffect.BananaStick);
+        rb.bodyType = RigidbodyType2D.Static;
+        canRotate = false;
+        circleCollider.isTrigger = true;
+        Physics2D.IgnoreCollision(circleCollider, ownerPlayerCollider, false);
     }
 
     [PunRPC]
@@ -240,13 +268,14 @@ public class BoomerangModel : MonoBehaviourPun
         Vector3 rot = transform.eulerAngles;
         rot.z = 0f;
         transform.rotation = Quaternion.Euler(rot); 
-        transform.SetParent(ownerPlayerModel.transform);
         transform.position = ownerPlayerModel.BoomerangHandPosition.position;
+        auxiliarPlayerHitActorNumber = null;
         circleCollider.isTrigger = false;
         canRotate = false;
         isReturning = false;
         rb.simulated = false;
         circleCollider.enabled = false;
+        transform.SetParent(ownerPlayerModel.transform, true);
     }
 
     private void OnCollisionEnterWithOtherPlayers(Collision2D collision)
@@ -260,7 +289,7 @@ public class BoomerangModel : MonoBehaviourPun
             if (targetPV.OwnerActorNr != ownerActorNumber)
             {
                 targetPV.RPC("GetDamage", targetPV.Owner, damage);
-                photonView.RPC("OnBoomerangCollisionEnterWithOtherPlayers", RpcTarget.AllBuffered, targetPV.OwnerActorNr);
+                photonView.RPC("OnBoomerangCollisionEnterWithOtherPlayers", RpcTarget.All, targetPV.OwnerActorNr, targetPV.ViewID);
             }
         }
     }
@@ -271,7 +300,7 @@ public class BoomerangModel : MonoBehaviourPun
 
         if (!collision.gameObject.CompareTag("Player"))
         {
-            photonView.RPC("OnBoomerangCollisionEnterWithScenary", RpcTarget.AllBuffered);
+            photonView.RPC("OnBoomerangCollisionEnterWithScenary", RpcTarget.All);
         }
     }
 
@@ -286,7 +315,7 @@ public class BoomerangModel : MonoBehaviourPun
             if (targetPV.OwnerActorNr == ownerActorNumber)
             {
                 AudioManager.Instance.PlaySound(SoundEffect.HitOwnPlayer);
-                photonView.RPC("OnBoomerangTriggerEnterWithOwnPlayer", RpcTarget.AllBuffered);
+                photonView.RPC("OnBoomerangTriggerEnterWithOwnPlayer", RpcTarget.All);
             }
         }
     }
@@ -300,22 +329,21 @@ public class BoomerangModel : MonoBehaviourPun
             PhotonView targetPV = collider.GetComponent<PhotonView>();
             int targetActorNr = targetPV.OwnerActorNr;
 
-            // Si no soy yo y no soy el que tiene el boomerang pegado
-            if (targetActorNr != ownerActorNumber && targetActorNr != auxiliarPlayerHitActorNumber)
+            if (targetActorNr == ownerActorNumber) return; // Si soy yo el que choca con el boomerang terminar
+            if (isReturning && targetActorNr == auxiliarPlayerHitActorNumber) return; // Si esta volviendo y choca con el que lo tenia pegado terminar
+
+            // Si no existe en el diccionario, lo inicializamos en 0
+            if (!hitCooldowns.ContainsKey(targetActorNr))
             {
-                // Si no existe en el diccionario, lo inicializamos en 0
-                if (!hitCooldowns.ContainsKey(targetActorNr))
-                {
-                    hitCooldowns[targetActorNr] = 0f;
-                }
+                hitCooldowns[targetActorNr] = 0f;
+            }
 
-                // Chequeamos si ya pasó suficiente tiempo desde el último daño
-                if (Time.time >= hitCooldowns[targetActorNr])
-                {
-                    targetPV.RPC("GetDamage", targetPV.Owner, damage);
+            // Chequeamos si ya pasó suficiente tiempo desde el último daño
+            if (Time.time >= hitCooldowns[targetActorNr])
+            {
+                targetPV.RPC("GetDamage", targetPV.Owner, damage);
 
-                    hitCooldowns[targetActorNr] = Time.time + damageCooldown;
-                }
+                hitCooldowns[targetActorNr] = Time.time + damageCooldown;
             }
         }
     }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerView : MonoBehaviourPun
 {
-    private TextMeshPro nickNameText;
+    private TextMeshPro nicknameText;
     private Slider healthBar;
 
     private Vector3 textInitialScale;
@@ -14,7 +14,9 @@ public class PlayerView : MonoBehaviourPun
 
     void Awake()
     {
+        SuscribeToPlayerModelEvent();
         GetComponents();
+        InitializeRotationLookAt();
         InitializeNickNameText();
         InitializeHealthBarSlider();
     }
@@ -25,17 +27,54 @@ public class PlayerView : MonoBehaviourPun
         UpdateScaleRotationSlider();
     }
 
+    void OnDestroy()
+    {
+        UnscribeToPlayerModelEvent();
+    }
+
+
+    private void SuscribeToPlayerModelEvent()
+    {
+        PlayerModel.OnDisableNicknameText += OnDisbaleNicknameText;
+    }
+
+    private void UnscribeToPlayerModelEvent()
+    {
+        PlayerModel.OnDisableNicknameText -= OnDisbaleNicknameText;
+    }
+
 
     private void GetComponents()
     {
-        nickNameText =  GetComponentInChildren<TextMeshPro>();
+        nicknameText =  GetComponentInChildren<TextMeshPro>();
         healthBar = GetComponentInChildren<Slider>();
+    }
+
+    private void OnDisbaleNicknameText(int viewID)
+    {
+        if (photonView.ViewID != viewID) return;
+
+        nicknameText.enabled = false;
+    }
+
+    private void InitializeRotationLookAt()
+    {
+        switch (photonView.OwnerActorNr)
+        {
+            case 1: case 2:
+                transform.localScale = new Vector3(1, 1, 1);
+                break;
+
+            case 3: case 4:
+                transform.localScale = new Vector3(-1, 1, 1);
+                break;
+        }
     }
 
     private void InitializeNickNameText()
     {
-        nickNameText.text = photonView.Owner.NickName;
-        textInitialScale = nickNameText.transform.localScale;
+        nicknameText.text = photonView.Owner.NickName;
+        textInitialScale = nicknameText.transform.localScale;
     }
 
     private void InitializeHealthBarSlider()
@@ -47,12 +86,12 @@ public class PlayerView : MonoBehaviourPun
     {
         if (transform.localScale.x < 0)
         {
-            nickNameText.transform.localScale = new Vector3(-textInitialScale.x, textInitialScale.y, textInitialScale.z);
+            nicknameText.transform.localScale = new Vector3(-textInitialScale.x, textInitialScale.y, textInitialScale.z);
         }
 
         else
         {
-            nickNameText.transform.localScale = textInitialScale;
+            nicknameText.transform.localScale = textInitialScale;
         }
     }
 
@@ -62,6 +101,7 @@ public class PlayerView : MonoBehaviourPun
         {
             healthBar.transform.localScale = new Vector3(-sliderInitialScale.x, sliderInitialScale.y, sliderInitialScale.z);
         }
+
         else
         {
             healthBar.transform.localScale = sliderInitialScale;

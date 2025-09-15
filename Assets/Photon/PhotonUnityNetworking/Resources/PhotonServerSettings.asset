@@ -61,6 +61,12 @@ MonoBehaviour:
   - Teleport
   - PlayHitSound
   - PlaySound
+  - DestroyPlayerWithDelay
+  - DestroyBoomerangWithDelay
+  - DisablePlayer
+  - DisableBoomerang
+  - DestroyPlayerAndHisBoomerang
+  - RestartIsCountdownFinished
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

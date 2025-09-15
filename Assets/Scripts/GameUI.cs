@@ -20,6 +20,7 @@ public class GameUI : MonoBehaviour
     public void ButtonYes()
     {
         PhotonNetworkManager.Instance.LeaveRoom();
+        //TimeManager.Instance.RestartIsCountdownFinished();
     }
 
     public void ButtonNo()

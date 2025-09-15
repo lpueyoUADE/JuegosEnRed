@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 public class FinalScreensUI : MonoBehaviour
@@ -9,6 +10,16 @@ public class FinalScreensUI : MonoBehaviour
     void Awake()
     {
         SuscribeToPlayerModelEvents();
+    }
+
+    void Update()
+    {
+        // Test
+        /*if (Input.GetKeyDown(KeyCode.R))
+        {
+            ScenesManager.Instance.LoadScene("Game");
+            TimeManager.Instance.photonView.RPC("RestartIsCountdownFinished", RpcTarget.All);
+        }*/
     }
 
     void OnDestroy()
@@ -31,7 +42,14 @@ public class FinalScreensUI : MonoBehaviour
 
     private void ShowWinPanel()
     {
-        winText.SetActive(true);
+        PlayerModel[] playerModels = FindObjectsOfType<PlayerModel>();
+
+        Debug.Log(playerModels.Length);
+
+        if (playerModels.Length == 1)
+        {
+            winText.SetActive(true);
+        }
     }
 
     private void ShowLoosePanel()

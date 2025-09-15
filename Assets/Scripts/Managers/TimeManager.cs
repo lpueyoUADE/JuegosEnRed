@@ -1,12 +1,9 @@
 using System.Collections;
 using UnityEngine;
+using Photon.Pun;
 
 public class TimeManager : SingletonMonoBehaviour<TimeManager>
 {
-    /// <summary>
-    /// Agregar que cuando se reinicia la escena se ponga el booleano en false
-    /// </summary>
-
     [SerializeField] private TMPro.TextMeshProUGUI countdownText;
     [SerializeField] private float countdownTime;
 
@@ -23,6 +20,12 @@ public class TimeManager : SingletonMonoBehaviour<TimeManager>
     void Start()
     {
         SuscribeToScenesManagerEvent();
+    }
+
+
+    public void RestartIsCountdownFinished()
+    {
+        isCountDownFinished = false;
     }
 
 

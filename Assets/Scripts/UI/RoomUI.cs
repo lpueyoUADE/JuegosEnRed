@@ -26,7 +26,7 @@ public class RoomUI : MonoBehaviour
     void Update()
     {
         // Test para empezar a jugar sin que haya otro jugador en la room
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T) && PhotonNetworkManager.Instance.IsHost)
         {
             ScenesManager.Instance.LoadScene("Game");
         }

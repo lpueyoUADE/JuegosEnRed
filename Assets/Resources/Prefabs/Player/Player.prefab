@@ -700,10 +700,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e67eab4710717d4c89fe51c17bac05a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mySliderColorView: {r: 0.19607843, g: 1, b: 0, a: 1}
-  othersSliderColorView: {r: 1, g: 0, b: 0, a: 1}
   startingHealth: 5
-  speed: 5
+  speed: 6
   jumpForce: 10
 --- !u!114 &7830868013348611928
 MonoBehaviour:

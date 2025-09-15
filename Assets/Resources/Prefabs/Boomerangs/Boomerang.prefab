@@ -144,7 +144,7 @@ MonoBehaviour:
   damage: 1
   movementSpeed: 10
   rotationSpeed: 500
-  timeToGetBoomerangBackIfIsCollidingWithSomePlayer: 3
+  timeToGetBoomerangBackIfIsCollidingWithSomePlayer: 5
   damageCooldown: 1.15
 --- !u!114 &-851643655356561750
 MonoBehaviour:
@@ -159,7 +159,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myOutlineView: {fileID: 2100000, guid: 626483ba292ec184897dca6a436686c9, type: 2}
-  otherOutlineView: {fileID: 2100000, guid: d4143dcf9295a6849b34cb5cea42ad1e, type: 2}
 --- !u!114 &8736338082022428417
 MonoBehaviour:
   m_ObjectHideFlags: 0

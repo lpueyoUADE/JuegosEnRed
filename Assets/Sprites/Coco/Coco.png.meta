@@ -105,7 +105,154 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Static
+      name: Coco_static
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 185
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 199472b29f1df6a4d8c8c1b2e955b51a
+      internalID: 1505415323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_Idle1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 148
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1871795c193e85142b533b1191d08bfc
+      internalID: -1925941025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_Idle2
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 148
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 179ca099763108942adf85e7c5d1b62a
+      internalID: 1881711660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_Idle3
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 148
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8fefed9f949e59547b761fa4877cc8f0
+      internalID: -851238694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_Idle4
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 148
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b819e16ad52618441960eafa1be9deea
+      internalID: 736568014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_Idle5
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 148
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e032328ca90120b4391fd80cb4a8eb87
+      internalID: 2020058664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_Idle6
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 148
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e420ec5f1f4aad54fb2fc1e0b2ee6c4c
+      internalID: 762209087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_walk1
       rect:
         serializedVersion: 2
         x: 0
@@ -119,14 +266,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dd17eed4021fd9943826b16969fa5a6d
-      internalID: 590273432
+      spriteID: ed2025a482f3cd040904af898aa2daa5
+      internalID: 435546854
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Coco_labeled_1
+      name: Coco_walk2
       rect:
         serializedVersion: 2
         x: 45
@@ -140,14 +287,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c8f12619eef136b479ed3ecbc9ea3cfa
-      internalID: -444659675
+      spriteID: 6a6a4dfc9ac54ec4d804bed55b38e515
+      internalID: -174017877
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Coco_labeled_2
+      name: Coco_walk3
       rect:
         serializedVersion: 2
         x: 90
@@ -161,14 +308,98 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 65b94f18f185aa34b89d8b599e197830
-      internalID: 372936807
+      spriteID: 2a4397f460397624e85b9702779c81ac
+      internalID: 1326214381
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle0
+      name: Coco_walk4
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 111
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5618738029c32e49b87da3ad1d950b6
+      internalID: -1524262730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_walk5
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 111
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6173610d186237e4bad224aa69c8c366
+      internalID: -439348658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_walk6
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 111
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c91b409146e462499fb7c9460bd7a92
+      internalID: -666727410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_walk7
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 111
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c91fcfbfea375d64eb732080e29259b0
+      internalID: -47562566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coco_jump1
       rect:
         serializedVersion: 2
         x: 0
@@ -182,14 +413,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 095ef4b43ae991040ae1f5332d892161
-      internalID: -391249831
+      spriteID: ae1e4bc8d35a87d4a9647a3a9639d7fb
+      internalID: -294583972
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle1
+      name: Coco_jump2
       rect:
         serializedVersion: 2
         x: 45
@@ -203,14 +434,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 06cffa559c2711248924a05090a9033b
-      internalID: 7575840
+      spriteID: 7db245b9d488e534298f33c9c6d6fe45
+      internalID: -284687584
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle2
+      name: Coco_jump3
       rect:
         serializedVersion: 2
         x: 90
@@ -224,14 +455,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 40583d4fa0589f34aba5d0fdd4921fad
-      internalID: -1324812127
+      spriteID: 69c811f02c4ba6047a6263684b19cac8
+      internalID: 293083323
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle3
+      name: Coco_jump4
       rect:
         serializedVersion: 2
         x: 135
@@ -245,77 +476,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 17030716497c9f540bb0a6f01897893a
-      internalID: -574912160
+      spriteID: 86d13c421f6a8414397f130f76d0d15c
+      internalID: -1169464679
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle4
-      rect:
-        serializedVersion: 2
-        x: 180
-        y: 74
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 56b137c1336d0d94aaabd2abc5181a35
-      internalID: 1520207772
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Idle5
-      rect:
-        serializedVersion: 2
-        x: 225
-        y: 74
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cb9e092f7adee444eba13ae603d7831b
-      internalID: -369020307
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Coco_labeled_9
-      rect:
-        serializedVersion: 2
-        x: 270
-        y: 74
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 29b0440f2a1a62b4fa35785d6bb4f3dd
-      internalID: 632760813
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Walk0
+      name: Coco_attack1
       rect:
         serializedVersion: 2
         x: 0
@@ -329,14 +497,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f2d91e1d4af7e844fb995e7a6947ad5a
-      internalID: 579457986
+      spriteID: d4c20195a58b2864a866693992168981
+      internalID: 925149776
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Walk1
+      name: Coco_attack2
       rect:
         serializedVersion: 2
         x: 45
@@ -350,14 +518,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b6297a6d885494e4bac0b6d939a9b379
-      internalID: -1683899581
+      spriteID: 332a660676c5b2f41b7455d38bcbf1ad
+      internalID: 1476680245
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Walk2
+      name: Coco_attack3
       rect:
         serializedVersion: 2
         x: 90
@@ -371,14 +539,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 766168f7e6a565f488e91326e075e5bf
-      internalID: -303990645
+      spriteID: c5cde90a77735204e8641768b293c3b7
+      internalID: -458443402
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Walk3
+      name: Coco_attack4
       rect:
         serializedVersion: 2
         x: 135
@@ -392,77 +560,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: af705c0818f10044c8dcd95e47f2aa95
-      internalID: 597041707
+      spriteID: e1ff7fc66e82f294a82b6a0d264639c9
+      internalID: -1340225792
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Walk4
-      rect:
-        serializedVersion: 2
-        x: 180
-        y: 37
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: aca47be99068d424d92dced7d99de152
-      internalID: -1208614601
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Walk5
-      rect:
-        serializedVersion: 2
-        x: 225
-        y: 37
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 730df09057cd0934ab5d5891a0360e99
-      internalID: 1937089254
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Walk6
-      rect:
-        serializedVersion: 2
-        x: 270
-        y: 37
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 63f153083b8e56644b2ac28477d1ba36
-      internalID: -1495292402
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Jump0
+      name: Coco_skull
       rect:
         serializedVersion: 2
         x: 0
@@ -476,134 +581,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 15c4b9de6ca60124d9640d1dc29dd1ca
-      internalID: -1035822410
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Jump1
-      rect:
-        serializedVersion: 2
-        x: 45
-        y: 0
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2ddd8aea997fb2148a9d1e933f5c8cfd
-      internalID: -1977391936
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Jump2
-      rect:
-        serializedVersion: 2
-        x: 90
-        y: 0
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: abd37413b17de094e94487736bec7efa
-      internalID: 724307705
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Jump3
-      rect:
-        serializedVersion: 2
-        x: 135
-        y: 0
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5b99f0234fcff7649806dc8e6e2696de
-      internalID: 1832552462
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Coco_labeled_21
-      rect:
-        serializedVersion: 2
-        x: 180
-        y: 0
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4255e9f198ebe81489a24d20628a1302
-      internalID: 906306955
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Coco_labeled_22
-      rect:
-        serializedVersion: 2
-        x: 225
-        y: 0
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e52d2a8a5bef6d44a87244b50a04c546
-      internalID: 632822297
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Coco_labeled_23
-      rect:
-        serializedVersion: 2
-        x: 270
-        y: 0
-        width: 45
-        height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 148caffc2e8a0c640af104a979e998a3
-      internalID: 1737265264
+      spriteID: f83329604cae27642a6f2327691e78c5
+      internalID: 1596327987
       vertices: []
       indices: 
       edges: []
@@ -619,30 +598,29 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Coco_labeled_2: 372936807
-      Coco_labeled_1: -444659675
-      Jump2: 724307705
-      Walk3: 597041707
-      Idle5: -369020307
-      Coco_labeled_23: 1737265264
-      Idle0: -391249831
-      Coco_labeled_9: 632760813
-      Static: 590273432
-      Walk0: 579457986
-      Walk6: -1495292402
-      Idle3: -574912160
-      Walk4: -1208614601
-      Jump3: 1832552462
-      Jump1: -1977391936
-      Walk2: -303990645
-      Coco_labeled_22: 632822297
-      Jump0: -1035822410
-      Coco_labeled_21: 906306955
-      Idle1: 7575840
-      Idle4: 1520207772
-      Idle2: -1324812127
-      Walk1: -1683899581
-      Walk5: 1937089254
+      Coco_skull: 1596327987
+      Coco_jump2: -284687584
+      Coco_jump3: 293083323
+      Coco_walk1: 435546854
+      Coco_walk3: 1326214381
+      Coco_attack4: -1340225792
+      Coco_walk4: -1524262730
+      Coco_walk7: -47562566
+      Coco_Idle4: 736568014
+      Coco_Idle2: 1881711660
+      Coco_static: 1505415323
+      Coco_Idle6: 762209087
+      Coco_walk6: -666727410
+      Coco_attack1: 925149776
+      Coco_Idle3: -851238694
+      Coco_walk5: -439348658
+      Coco_Idle5: 2020058664
+      Coco_jump4: -1169464679
+      Coco_walk2: -174017877
+      Coco_jump1: -294583972
+      Coco_attack2: 1476680245
+      Coco_attack3: -458443402
+      Coco_Idle1: -1925941025
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

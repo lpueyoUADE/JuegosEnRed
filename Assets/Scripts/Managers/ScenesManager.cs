@@ -34,6 +34,8 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
     {
         SuscribeToSceneLoadedEvent();
         SuscribeToPhotonNetworkManager();
+
+        connectingToOnlineServicesPanel.SetActive(true);
     }
 
 

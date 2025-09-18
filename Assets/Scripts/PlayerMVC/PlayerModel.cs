@@ -1,8 +1,9 @@
-using UnityEngine;
 using Photon.Pun;
-using UnityEngine.UI;
-using System.Collections;
 using System;
+using System.Collections;
+using System.Reflection;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerModel : MonoBehaviourPun
 {
@@ -83,6 +84,7 @@ public class PlayerModel : MonoBehaviourPun
 
             Vector2 dir = (cursorWorldPos - boomerangHandPosition.position).normalized;
             boomerangController.BoomerangModel.photonView.RPC("ThrowBoomerang", RpcTarget.All, dir);
+            animator.SetTrigger("attack");
             return;
         }
 
@@ -101,6 +103,7 @@ public class PlayerModel : MonoBehaviourPun
             AudioManager.Instance.PlaySound(SoundEffect.Jump);
             rb.velocity = new Vector2(rb.velocity.x, 0f);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            animator.SetTrigger("jump");
         }
     }
 
@@ -130,6 +133,7 @@ public class PlayerModel : MonoBehaviourPun
             photonView.RPC("DisablePlayer", RpcTarget.All);
             boomerangController.BoomerangModel.photonView.RPC("DisableBoomerang", RpcTarget.All);
             StartCoroutine(DestroyPlayerAndHisBoomerang());
+            PhotonNetwork.Instantiate("Prefabs/Skull/Skull",transform.position, Quaternion.identity);
         }
     }
 

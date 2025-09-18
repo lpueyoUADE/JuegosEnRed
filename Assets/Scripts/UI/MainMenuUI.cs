@@ -24,13 +24,52 @@ public class MainMenuUI : MonoBehaviour
         SuscribeToPhotonNetworkManagerEvents();
     }
 
-    private void Start()
+    public enum UIPanel {
+        None,
+        Main,
+        CreateRoom,
+        JoinRoom,
+        Settings,
+        Credits
+    }
+
+
+
+    private void SetPanels(UIPanel panelToActivate)
     {
-        mainMenuPanel.SetActive(true);
-        settingsPanel.SetActive(false);
+        mainMenuPanel.SetActive(false);
         createRoomPanel.gameObject.SetActive(false);
         joinRoomPanel.gameObject.SetActive(false);
+        settingsPanel.SetActive(false);
         creditsPanel.SetActive(false);
+
+        switch (panelToActivate)
+        {
+            case UIPanel.Main:
+                mainMenuPanel.SetActive(true);
+                break;
+
+            case UIPanel.CreateRoom:
+                createRoomPanel.gameObject.SetActive(true);
+                break;
+
+            case UIPanel.JoinRoom:
+                joinRoomPanel.gameObject.SetActive(true);
+                break;
+
+            case UIPanel.Settings:
+                settingsPanel.SetActive(true);
+                break;
+
+            case UIPanel.Credits:
+                creditsPanel.SetActive(true);
+                break;
+        }
+    }
+
+    private void Start()
+    {
+        SetPanels(UIPanel.None);
 
         AudioManager.Instance.PlayMusic(MusicTrack.MainMenu);
 
@@ -71,20 +110,12 @@ public class MainMenuUI : MonoBehaviour
     // Funciones asignadas a botones de la UI
     public void ButtonShowCreateRoomPanel()
     {
-        mainMenuPanel.SetActive(false);
-        settingsPanel.SetActive(false);
-        createRoomPanel.gameObject.SetActive(true);
-        joinRoomPanel.gameObject.SetActive(false);
-        creditsPanel.SetActive(false);
+        SetPanels(UIPanel.CreateRoom);
     }
 
     public void ButtonShowJoinRoomPanel()
     {
-        mainMenuPanel.SetActive(false);
-        settingsPanel.SetActive(false);
-        createRoomPanel.gameObject.SetActive(false);
-        joinRoomPanel.gameObject.SetActive(true);
-        creditsPanel.SetActive(false);
+        SetPanels(UIPanel.JoinRoom);
     }
 
     public void ButtonCreateRoom()
@@ -115,20 +146,12 @@ public class MainMenuUI : MonoBehaviour
 
     public void ButtonSettings()
     {
-        mainMenuPanel.SetActive(false);
-        settingsPanel.SetActive(true);
-        createRoomPanel.gameObject.SetActive(false);
-        joinRoomPanel.gameObject.SetActive(false);
-        creditsPanel.SetActive(false);
+        SetPanels(UIPanel.Settings);
     }
 
     public void ButtonCredits()
     {
-        mainMenuPanel.SetActive(false);
-        settingsPanel.SetActive(false);
-        createRoomPanel.gameObject.SetActive(false);
-        joinRoomPanel.gameObject.SetActive(false);
-        creditsPanel.SetActive(true);
+        SetPanels(UIPanel.Credits);
     }
 
     public void ButtonExitGame()
@@ -139,14 +162,21 @@ public class MainMenuUI : MonoBehaviour
 
     private void SuscribeToPhotonNetworkManagerEvents()
     {
+        PhotonNetworkManager.Instance.OnConnectedToMasterEvent += OnConnectedToMasterEvent;
         PhotonNetworkManager.Instance.OnCreateRoomFailedEvent += OnShowErrorWhileCreatingRoom;
         PhotonNetworkManager.Instance.OnJoinRoomFailedEvent += OnShowErrorWhileJoiningRoom;
     }
 
     private void UnsuscribeToPhotonNetworkManagerEvents()
     {
+        PhotonNetworkManager.Instance.OnConnectedToMasterEvent -= OnConnectedToMasterEvent;
         PhotonNetworkManager.Instance.OnCreateRoomFailedEvent -= OnShowErrorWhileCreatingRoom;
         PhotonNetworkManager.Instance.OnJoinRoomFailedEvent -= OnShowErrorWhileJoiningRoom;
+    }
+
+    private void OnConnectedToMasterEvent()
+    {
+        SetPanels(UIPanel.Main);
     }
 
     private void OnShowErrorWhileCreatingRoom(short returnCode)
@@ -175,11 +205,7 @@ public class MainMenuUI : MonoBehaviour
     {
         if (PlayerInputsManager.Instance.BackUI())
         {
-            mainMenuPanel.SetActive(true);
-            settingsPanel.SetActive(false);
-            createRoomPanel.gameObject.SetActive(false);
-            joinRoomPanel.gameObject.SetActive(false);
-            creditsPanel.SetActive(false);
+            SetPanels(UIPanel.Main);
 
             createRoomPanel.CleanData();
             joinRoomPanel.CleanData();

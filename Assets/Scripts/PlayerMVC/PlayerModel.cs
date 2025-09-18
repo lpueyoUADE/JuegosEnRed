@@ -3,7 +3,6 @@ using Photon.Pun;
 using UnityEngine.UI;
 using System.Collections;
 using System;
-using System.Collections.Generic;
 
 public class PlayerModel : MonoBehaviourPun
 {
@@ -90,7 +89,6 @@ public class PlayerModel : MonoBehaviourPun
         // Si el boomerang esta pegado a algun objeto del escenario
         else if (boomerangController.BoomerangModel.Rb.velocity.sqrMagnitude == 0)
         {
-            Vector2 dir = (transform.position - boomerangController.transform.position).normalized;
             boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.All);
             return;            
         }

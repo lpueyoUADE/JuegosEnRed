@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 3988968977579914130}
   - component: {fileID: 7587192442436889908}
   - component: {fileID: -5026562740232816254}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Boomerang
   m_TagString: Boomerang
   m_Icon: {fileID: 0}
@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ea1c0768a99043920a64c88a673dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  auxiliarPlayerModel: {fileID: 0}
   damage: 1
   movementSpeed: 10
   rotationSpeed: 500
@@ -160,7 +161,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myOutlineView: {fileID: 2100000, guid: 626483ba292ec184897dca6a436686c9, type: 2}
-  trailRenderer: {fileID: 7276716689820852155}
 --- !u!114 &8736338082022428417
 MonoBehaviour:
   m_ObjectHideFlags: 0

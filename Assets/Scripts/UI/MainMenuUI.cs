@@ -39,7 +39,7 @@ public class MainMenuUI : MonoBehaviour
     void Update()
     {
         // Test para crear una room rapida automaticamente
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T) && !createRoomPanel.gameObject.activeSelf)
         {
             string nickName = "Kong777";
             string roomName = "asd";

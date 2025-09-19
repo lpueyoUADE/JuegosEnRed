@@ -1,7 +1,6 @@
 using Photon.Pun;
 using System;
 using System.Collections;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -84,7 +83,7 @@ public class PlayerModel : MonoBehaviourPun
 
             Vector2 dir = (cursorWorldPos - boomerangHandPosition.position).normalized;
             boomerangController.BoomerangModel.photonView.RPC("ThrowBoomerang", RpcTarget.All, dir);
-            animator.SetTrigger("attack");
+            photonView.RPC("SetAnimation", RpcTarget.All, "attack");
             return;
         }
 
@@ -103,7 +102,7 @@ public class PlayerModel : MonoBehaviourPun
             AudioManager.Instance.PlaySound(SoundEffect.Jump);
             rb.velocity = new Vector2(rb.velocity.x, 0f);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            animator.SetTrigger("jump");
+            photonView.RPC("SetAnimation", RpcTarget.All, "jump");
         }
     }
 
@@ -133,7 +132,7 @@ public class PlayerModel : MonoBehaviourPun
             photonView.RPC("DisablePlayer", RpcTarget.All);
             boomerangController.BoomerangModel.photonView.RPC("DisableBoomerang", RpcTarget.All);
             StartCoroutine(DestroyPlayerAndHisBoomerang());
-            PhotonNetwork.Instantiate("Prefabs/Skull/Skull",transform.position, Quaternion.identity);
+            PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
         }
     }
 
@@ -179,6 +178,12 @@ public class PlayerModel : MonoBehaviourPun
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.simulated = false;
         boxCollider.enabled = false;
+    }
+
+    [PunRPC]
+    private void SetAnimation(string paramterName)
+    {
+        animator.SetTrigger(paramterName);
     }
 
     private IEnumerator DestroyPlayerAndHisBoomerang()
@@ -249,11 +254,7 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            if (!acceptingInput)
-            {
-                rb.velocity = Vector2.zero;
-                return;
-            }
+            if (!acceptingInput) return;
 
             Vector2 move = PlayerInputsManager.Instance.GetMoveAxis();
             rb.velocity = new Vector2(move.normalized.x * speed, rb.velocity.y);

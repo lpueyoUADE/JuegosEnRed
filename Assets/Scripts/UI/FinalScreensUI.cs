@@ -17,11 +17,17 @@ public class FinalScreensUI : MonoBehaviour
     void Update()
     {
         // Test
-        /*if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
+
             ScenesManager.Instance.LoadScene("Game");
-            TimeManager.Instance.photonView.RPC("RestartIsCountdownFinished", RpcTarget.All);
-        }*/
+            PlayerModel[] allPlayers = FindObjectsOfType<PlayerModel>();
+            foreach (var p in allPlayers)
+            {
+                if (p.photonView.IsMine)
+                    PhotonNetwork.Destroy(p.gameObject);
+            }
+        }
     }
 
     void OnDestroy()

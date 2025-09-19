@@ -32,6 +32,8 @@ public class GameUI : MonoBehaviour
 
     private void ShowOrHidePanelToGoBackToMainMenu()
     {
+        if (ScenesManager.Instance.IsInLoadingScenePanel) return;
+
         if (PlayerInputsManager.Instance.BackUI())
         {
             if (panelBackToMainMenu.activeSelf)
@@ -39,7 +41,8 @@ public class GameUI : MonoBehaviour
                 panelBackToMainMenu.SetActive(false);
                 OnSetMainMenuState?.Invoke(true);
                 HybridCursorManager.Instance.SetBattlePointer();
-            } 
+            }
+            
             else
             {
                 panelBackToMainMenu.SetActive(true);

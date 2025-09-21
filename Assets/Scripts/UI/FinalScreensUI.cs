@@ -1,4 +1,3 @@
-using Photon.Pun;
 using UnityEngine;
 
 public class FinalScreensUI : MonoBehaviour
@@ -19,13 +18,9 @@ public class FinalScreensUI : MonoBehaviour
         // Test
         if (Input.GetKeyDown(KeyCode.R))
         {
-
-            ScenesManager.Instance.LoadScene("Game");
-            PlayerModel[] allPlayers = FindObjectsOfType<PlayerModel>();
-            foreach (var p in allPlayers)
+            if (PhotonNetworkManager.Instance.IsHost)
             {
-                if (p.photonView.IsMine)
-                    PhotonNetwork.Destroy(p.gameObject);
+                ScenesManager.Instance.LoadScene("Level2");   
             }
         }
     }
@@ -38,17 +33,17 @@ public class FinalScreensUI : MonoBehaviour
 
     private void SuscribeToPlayerModelEvents()
     {
-        PlayerModel.OnPlayerWin += ShowWinPanel;
-        PlayerModel.OnPlayerDeath += ShowLoosePanel;
+        PlayerModel.OnPlayerWin += OnShowWinPanel;
+        PlayerModel.OnPlayerDeath += OnShowLoosePanel;
     }
 
     private void UnsuscribeToPlayerModelEvents()
     {
-        PlayerModel.OnPlayerWin -= ShowWinPanel;
-        PlayerModel.OnPlayerDeath -= ShowLoosePanel;
+        PlayerModel.OnPlayerWin -= OnShowWinPanel;
+        PlayerModel.OnPlayerDeath -= OnShowLoosePanel;
     }
 
-    private void ShowWinPanel()
+    private void OnShowWinPanel()
     {
         PlayerModel[] playerModels = FindObjectsOfType<PlayerModel>();
 
@@ -61,7 +56,7 @@ public class FinalScreensUI : MonoBehaviour
         }
     }
 
-    private void ShowLoosePanel()
+    private void OnShowLoosePanel()
     {
         panel.SetActive(true);
         looseText.SetActive(true);

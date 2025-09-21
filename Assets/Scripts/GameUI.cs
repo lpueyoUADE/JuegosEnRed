@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,20 +8,28 @@ public class GameUI : MonoBehaviour
 {
     [SerializeField] private GameObject panelBackToMainMenu;
 
+    private static event Action onPlayerLeaveRoomFrameEarlier;
     public static event Action<bool> OnSetMainMenuState;
-    private void Start()
+
+    public static Action OnPlayerLeaveRoomFrameEarlier { get => onPlayerLeaveRoomFrameEarlier; set => onPlayerLeaveRoomFrameEarlier = value; }
+
+
+    void Start()
     {
         AudioManager.Instance.PlayMusic(MusicTrack.Gameplay);
         HybridCursorManager.Instance.SetBattlePointer();
     }
+
     void Update()
     {
         ShowOrHidePanelToGoBackToMainMenu();
     }
+
+
     public void ButtonYes()
     {
+        onPlayerLeaveRoomFrameEarlier?.Invoke();
         PhotonNetworkManager.Instance.LeaveRoom();
-        //TimeManager.Instance.RestartIsCountdownFinished();
     }
 
     public void ButtonNo()
@@ -29,6 +38,7 @@ public class GameUI : MonoBehaviour
         OnSetMainMenuState?.Invoke(true);
         HybridCursorManager.Instance.SetBattlePointer();
     }
+
 
     private void ShowOrHidePanelToGoBackToMainMenu()
     {

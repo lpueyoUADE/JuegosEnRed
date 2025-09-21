@@ -26,6 +26,7 @@ public class PlayerModel : MonoBehaviourPun
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
 
+    private int myViewId;
     private int currentHealth;
     private int minHealth = 1;
     
@@ -47,7 +48,13 @@ public class PlayerModel : MonoBehaviourPun
     void Awake()
     {
         SuscribeToUpdateManagerEvents();
+        SuscribeToGameUIEvent();
         GetComponents();
+        RegisterPlayer();
+    }
+
+    void Start()
+    {
         InitializeSkin();
         InitializeHealthAndHealthBar();
         InitializeBoomerang();
@@ -69,6 +76,7 @@ public class PlayerModel : MonoBehaviourPun
     void OnDestroy()
     {
         UnsuscribeToUpdateManagerEvents();
+        UnsuscribeToGameUIEvent();
     }
 
 
@@ -87,12 +95,23 @@ public class PlayerModel : MonoBehaviourPun
             return;
         }
 
-        // Si el boomerang esta pegado a algun objeto del escenario
-        else if (boomerangController.BoomerangModel.Rb.velocity.sqrMagnitude == 0)
+        switch (boomerangController.BoomerangModel.BoomerangType)
         {
-            boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.All);
-            return;            
-        }
+            case BoomerangType.Default: case BoomerangType.Fast:
+
+                // Solo se puede traer si está pegado
+                if (boomerangController.BoomerangModel.Rb.velocity.sqrMagnitude == 0)
+                {
+                    boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.All);
+                }
+                break;
+
+            case BoomerangType.Returnable:
+                // Siempre se puede traer
+                boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.All);
+                break;
+
+        } 
     }
 
     public void Jump()
@@ -106,6 +125,13 @@ public class PlayerModel : MonoBehaviourPun
         }
     }
 
+    public void ChangeCurrentBoomerangToNewOne(BoomerangController newBoomerang)
+    {
+        PhotonNetwork.Destroy(boomerangController?.gameObject);
+        boomerangController = null;
+        boomerangController = newBoomerang;
+    }
+
     [PunRPC]
     public void Teleport(Vector3 newPosition)
     {
@@ -115,8 +141,6 @@ public class PlayerModel : MonoBehaviourPun
     [PunRPC]
     public void GetDamage(int damage)
     {
-        if (!photonView.IsMine) return;
-
         currentHealth -= damage;
         photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.HitOtherPlayers);
         photonView.RPC("UpdateHealthBar", RpcTarget.All, currentHealth);
@@ -131,8 +155,7 @@ public class PlayerModel : MonoBehaviourPun
             photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.Death1);
             photonView.RPC("DisablePlayer", RpcTarget.All);
             boomerangController.BoomerangModel.photonView.RPC("DisableBoomerang", RpcTarget.All);
-            StartCoroutine(DestroyPlayerAndHisBoomerang());
-            PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
+            StartCoroutine(Death());
         }
     }
 
@@ -186,13 +209,16 @@ public class PlayerModel : MonoBehaviourPun
         animator.SetTrigger(paramterName);
     }
 
-    private IEnumerator DestroyPlayerAndHisBoomerang()
+    private IEnumerator Death()
     {
+        PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
+
         yield return null;
 
-        PhotonNetwork.Destroy(boomerangController.gameObject);
-        PhotonNetwork.Destroy(gameObject);
+        UnregisterPlayer();
         onPlayerDeath?.Invoke();
+        PhotonNetwork.Destroy(boomerangController?.gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     private void SuscribeToUpdateManagerEvents()
@@ -207,6 +233,22 @@ public class PlayerModel : MonoBehaviourPun
         UpdateManager.OnFixedUpdate -= FixedUpdatePlayerModel;
     }
 
+    private void SuscribeToGameUIEvent()
+    {
+        GameUI.OnPlayerLeaveRoomFrameEarlier += OnUnregisterPlayerIfLeaveRoom;
+    }
+
+    private void UnsuscribeToGameUIEvent()
+    {
+        GameUI.OnPlayerLeaveRoomFrameEarlier -= OnUnregisterPlayerIfLeaveRoom;
+    }
+
+    private void OnUnregisterPlayerIfLeaveRoom()
+    {
+        PlayersManager.Instance.photonView.RPC("UnregisterPlayerForAll", RpcTarget.All, myViewId);
+        PlayersManager.Instance.UnregisterMeForMe(this);
+    }
+
     private void GetComponents()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -216,6 +258,21 @@ public class PlayerModel : MonoBehaviourPun
         healthBar = GetComponentInChildren<Slider>();
         fillImage = healthBar.fillRect.GetComponent<Image>();
         boomerangHandPosition = transform.Find("BoomerangHandPosition");
+    }
+
+    private void RegisterPlayer()
+    {
+        if (photonView.IsMine)
+        {
+            myViewId = photonView.ViewID;
+        }
+
+        PlayersManager.Instance.photonView.RPC("RegisterPlayerForAll", RpcTarget.All, myViewId);
+    }
+
+    private void UnregisterPlayer()
+    {
+        PlayersManager.Instance.photonView.RPC("UnregisterPlayerForAll", RpcTarget.All, myViewId);        
     }
 
     private void InitializeSkin()
@@ -244,8 +301,8 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            GameObject projGO = PhotonNetwork.Instantiate("Prefabs/Boomerangs/Boomerang", boomerangHandPosition.position, Quaternion.identity);
-            boomerangController = projGO.GetComponent<BoomerangController>();
+            GameObject boomerangGO = PhotonNetwork.Instantiate("Prefabs/Boomerangs/BoomerangReturnable", boomerangHandPosition.position, Quaternion.identity);
+            boomerangController = boomerangGO.GetComponent<BoomerangController>();
             boomerangController.BoomerangModel.photonView.RPC("Initialize", RpcTarget.All, photonView.OwnerActorNr);
         }
     }

@@ -2017,7 +2017,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6876471039273520718, guid: 6625569db6e1be44b90b856df92a629e, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6876471039273520718, guid: 6625569db6e1be44b90b856df92a629e, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -4262,7 +4262,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2542489431585885134, guid: d593f5353a5067743a75fd657dd283f5, type: 3}
       propertyPath: sounds.Array.size
-      value: 14
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 2542489431585885134, guid: d593f5353a5067743a75fd657dd283f5, type: 3}
       propertyPath: musics.Array.data[1].id
@@ -4317,6 +4317,14 @@ PrefabInstance:
       value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 2542489431585885134, guid: d593f5353a5067743a75fd657dd283f5, type: 3}
+      propertyPath: sounds.Array.data[14].id
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542489431585885134, guid: d593f5353a5067743a75fd657dd283f5, type: 3}
+      propertyPath: sounds.Array.data[15].id
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542489431585885134, guid: d593f5353a5067743a75fd657dd283f5, type: 3}
       propertyPath: musics.Array.data[1].clip
       value: 
       objectReference: {fileID: 8300000, guid: 8848711587eb7c34f9e7c1d75a896ed5, type: 3}
@@ -4368,6 +4376,14 @@ PrefabInstance:
       propertyPath: sounds.Array.data[13].clip
       value: 
       objectReference: {fileID: 8300000, guid: 0f0e444e27a823e4da713921c7331437, type: 3}
+    - target: {fileID: 2542489431585885134, guid: d593f5353a5067743a75fd657dd283f5, type: 3}
+      propertyPath: sounds.Array.data[14].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 7fdce9486a6687a4b824997311a27805, type: 3}
+    - target: {fileID: 2542489431585885134, guid: d593f5353a5067743a75fd657dd283f5, type: 3}
+      propertyPath: sounds.Array.data[15].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: c12b74396fe84f246836bb7ed945c726, type: 3}
     - target: {fileID: 2542489431585885135, guid: d593f5353a5067743a75fd657dd283f5, type: 3}
       propertyPath: m_Name
       value: AudioManager

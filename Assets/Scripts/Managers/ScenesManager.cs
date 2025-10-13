@@ -4,6 +4,11 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using System;
 
+public enum GameScenes
+{
+    MainMenu, Room, Level1, Level2, Level3, Level4, Level5
+}
+
 public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
 {
     private event Action onSceneGameLoaded;
@@ -32,8 +37,11 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
 
     void Start()
     {
+        StartCoroutine(InitializeBootstrapScene());
         SuscribeToSceneLoadedEvent();
         SuscribeToPhotonNetworkManager();
+
+        connectingToOnlineServicesPanel.SetActive(true);
     }
 
 
@@ -58,6 +66,15 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
     }
 
 
+    private IEnumerator InitializeBootstrapScene()
+    {
+        AsyncOperation loadOpDataScene = SceneManager.LoadSceneAsync("Bootstrap", LoadSceneMode.Additive);
+
+        yield return new WaitUntil(() => loadOpDataScene.isDone);
+
+        SceneManager.UnloadSceneAsync("Bootstrap");
+    }
+
     private void SuscribeToSceneLoadedEvent()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -70,7 +87,7 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Game" || scene.name == "Room" || scene.name == "MainMenu")
+        if (Enum.TryParse(scene.name, out GameScenes parsedScene))
         {
             StartCoroutine(ShowLoadingPanel());
         }
@@ -107,7 +124,9 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
         isInLoadingScenePanel = false;
         loadingScenePanel.SetActive(false);
 
-        if (SceneManager.GetActiveScene().name == "Game")
+        Scene scene = SceneManager.GetActiveScene();
+
+        if (scene.name.StartsWith("Level"))
         {
             onSceneGameLoaded?.Invoke();
         }

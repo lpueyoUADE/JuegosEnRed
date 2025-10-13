@@ -4,23 +4,16 @@ using Photon.Pun;
 public class BoomerangView : MonoBehaviourPun
 {
     private SpriteRenderer sprite;
+    TrailRenderer trailRenderer;
     [SerializeField] private Material myOutlineView;
-    [SerializeField] TrailRenderer trailRenderer;
 
-    private BoomerangController controller;
-
-    public BoomerangController Controller { get => controller; set => controller = value; }
 
     void Awake()
     {
         SuscribeToBoomerangModelEvent();
         GetComponents();
         InitializeSpriteOutline();
-    }
-
-    private void Start()
-    {
-        controller.BoomerangModel.IsBoomerangFlying += SetActiveTrail;
+        InitializeTrailRenderer();
     }
 
     void OnDestroy()
@@ -28,20 +21,23 @@ public class BoomerangView : MonoBehaviourPun
         UnsuscribeToBoomerangModelEvent();
     }
 
+
     private void SuscribeToBoomerangModelEvent()
     {
         BoomerangModel.OnDisableSprite += OnDisableSprite;
+        BoomerangModel.OnShowTrail += OnShowTrail;
     }
 
     private void UnsuscribeToBoomerangModelEvent()
     {
         BoomerangModel.OnDisableSprite -= OnDisableSprite;
-        controller.BoomerangModel.IsBoomerangFlying -= SetActiveTrail;
+        BoomerangModel.OnShowTrail -= OnShowTrail;
     }
 
     private void GetComponents()
     {
         sprite = GetComponent<SpriteRenderer>();
+        trailRenderer = GetComponentInChildren<TrailRenderer>();
     }
 
     // El boomerang correcto reacciona a la desactivacion del sprite gracias al viewID y que esta invocando el evento por un RPC
@@ -52,6 +48,18 @@ public class BoomerangView : MonoBehaviourPun
 
         sprite.enabled = false;
         sprite.material = null;
+    }
+
+    private void OnShowTrail(int viewID, bool status)
+    {
+        if (photonView.ViewID != viewID) return;
+
+        if (status)
+        {
+            trailRenderer.Clear();
+        }
+
+        trailRenderer.emitting = status;
     }
 
     private void InitializeSpriteOutline()
@@ -65,8 +73,20 @@ public class BoomerangView : MonoBehaviourPun
         }
     }
 
-    public void SetActiveTrail(bool status)
+    private void InitializeTrailRenderer()
     {
-        trailRenderer.emitting = status;
+        if (photonView.Owner.CustomProperties.ContainsKey("SkinIndex"))
+        {
+            int skinIndex = (int)photonView.Owner.CustomProperties["SkinIndex"];
+            Color skinColor = PlayerSkinManager.Instance.PlayerSkins[skinIndex];
+
+            Gradient gradient = new Gradient();
+            gradient.SetKeys(
+                new GradientColorKey[] { new GradientColorKey(skinColor, 0f), new GradientColorKey(skinColor, 1f) },
+                new GradientAlphaKey[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 1f) }
+            );
+
+            trailRenderer.colorGradient = gradient;
+        }
     }
 }

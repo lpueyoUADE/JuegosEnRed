@@ -12,6 +12,7 @@ public class PlayerSpawnerManager : MonoBehaviour
         SpawnPlayer();
     }
 
+
     private void SpawnPlayer()
     {
         int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;

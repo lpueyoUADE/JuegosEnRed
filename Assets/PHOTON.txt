@@ -1,0 +1,10 @@
+(PhotonView.IsMine == true) : Si se ejecuta en métodos de unity como Awake, Update, etc, lo usamos para que el contenido de dentro se ejecute únicamente en nuestro cliente, ósea nosotros.
+
+(PhotonView.IsMine == false) : Si se ejecuta en métodos de unity como Awake, Update, etc, lo usamos para que el contenido de dentro se ejecute en los demás clientes que están en la room, ósea los demás jugadores excepto nosotros
+
+Si no ponemos nada : Si se ejecuta en métodos de unity como Awake, Update, etc, lo usamos para que el contenido de dentro se ejecute para todos los clientes.
+
+Si ejecutamos un evento statico dentro de un método PunRPC con targetAll, el evento se ejecutara en todos los clientes, por lo que hay que gestionarlo de forma correcta según necesitamos
+
+Si ejecutamos un evento de instancia dentro de un método PunRPC con targetAll, el evento se ejecutara únicamente en nuestro cliente.
+

@@ -22,4 +22,8 @@ public enum SoundEffect
 
     // Countdown
     Countdown,
+
+    // PowerUp
+    Spawn,
+    PickUp
 }

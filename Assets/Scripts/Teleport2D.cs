@@ -14,7 +14,7 @@ public class Teleport2D : MonoBehaviour
 
     private void OnTriggerEnter2DWithPlayerOrBoomerang(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("Player") || collider.gameObject.CompareTag("Boomerang"))
+        if (collider.gameObject.CompareTag("Player") || collider.gameObject.layer == LayerMask.NameToLayer("Boomerang"))
         {
             PhotonView pv = collider.GetComponent<PhotonView>();
 

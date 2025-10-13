@@ -1,5 +1,6 @@
 using Photon.Pun;
 using System;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -7,6 +8,9 @@ public class PlayerController : MonoBehaviourPun
     private PlayerView playerView;
 
     private static event Action onInteract;
+
+    public PlayerModel PlayerModel { get => playerModel; }
+    public PlayerView PlayerView { get => playerView; }
 
     public static Action OnInteract { get => onInteract; set => onInteract = value; }
 
@@ -19,21 +23,22 @@ public class PlayerController : MonoBehaviourPun
         GameUI.OnSetMainMenuState += SetInputState;
     }
 
-    private void SetInputState(bool isAcceptingInput)
+    // Simulacion de Update
+    void UpdatePlayerController()
     {
-        playerModel.AcceptingInput = isAcceptingInput;
+        CheckInputs();
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         GameUI.OnSetMainMenuState -= SetInputState;
         UnsuscribeToUpdateManagerEvent();
     }
 
-    // Simulacion de Update
-    void UpdatePlayerController()
+
+    private void SetInputState(bool isAcceptingInput)
     {
-        CheckInputs();
+        playerModel.AcceptingInput = isAcceptingInput;
     }
 
     private void SuscribeToUpdateManagerEvent()

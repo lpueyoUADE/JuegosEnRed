@@ -3,6 +3,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BoomerangType
+{
+    Default, Fast, Returnable
+}
+
 public class BoomerangModel : MonoBehaviourPun
 {
     private Rigidbody2D rb;
@@ -11,7 +16,7 @@ public class BoomerangModel : MonoBehaviourPun
     private PlayerModel ownerPlayerModel;
     private BoxCollider2D ownerPlayerCollider;
 
-    [SerializeField] private PlayerModel auxiliarPlayerModel;
+    private PlayerModel auxiliarPlayerModel;
 
     private Dictionary<int, float> hitCooldowns = new Dictionary<int, float>();
 
@@ -19,6 +24,8 @@ public class BoomerangModel : MonoBehaviourPun
     private static event Action<int, bool> onShowTrail;
 
     private Vector2 currentDir;
+
+    [SerializeField] private BoomerangType boomerangType;
 
     [SerializeField] private int damage;
 
@@ -41,6 +48,8 @@ public class BoomerangModel : MonoBehaviourPun
 
     public static Action<int> OnDisableSprite { get => onDisableSprite; set => onDisableSprite = value; }
     public static Action<int, bool> OnShowTrail { get => onShowTrail; set => onShowTrail = value; }
+
+    public BoomerangType BoomerangType { get => boomerangType; }
 
 
     void Awake()
@@ -133,12 +142,15 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     public void ReturnBoomerang()
     {
+        if (isReturning) return; // Esta linea fue agregada por el Boomerang Returnable
+
         AudioManager.Instance.PlaySound(SoundEffect.ThrowBack);
         rotationDirection = UnityEngine.Random.value < 0.5f ? 1 : -1;
         canRotate = true;
         isReturning = true;
         rb.simulated = true;
         circleCollider.enabled = true;
+        circleCollider.isTrigger = true; // Esta linea fue agregada por el Boomerang Returnable
         rb.bodyType = RigidbodyType2D.Dynamic;
         onShowTrail?.Invoke(photonView.ViewID, true);
         transform.SetParent(null, true);

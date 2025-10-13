@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using Photon.Pun;
 
 public class TimeManager : SingletonMonoBehaviour<TimeManager>
 {
@@ -23,12 +22,6 @@ public class TimeManager : SingletonMonoBehaviour<TimeManager>
     }
 
 
-    public void RestartIsCountdownFinished()
-    {
-        isCountDownFinished = false;
-    }
-
-
     private void SuscribeToScenesManagerEvent()
     {
         ScenesManager.Instance.OnSceneGameLoaded += Countdown;
@@ -36,6 +29,7 @@ public class TimeManager : SingletonMonoBehaviour<TimeManager>
 
     private void Countdown()
     {
+        isCountDownFinished = false;
         StartCoroutine(StartCountdown());
     }
 

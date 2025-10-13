@@ -68,6 +68,17 @@ MonoBehaviour:
   - DestroyPlayerAndHisBoomerang
   - RestartIsCountdownFinished
   - PlaySoundChoice
+  - SetAnimation
+  - RegisterPlayer
+  - UnregisterPlayer
+  - ChangeScene
+  - ChangeNextLevel
+  - RegisterPlayerForAll
+  - UnregisterPlayerForAll
+  - DestroyPowerUp
+  - DisablePowerUpTriggerEnter
+  - DisablePowerUp
+  - PlayAudio
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

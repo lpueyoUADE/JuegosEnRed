@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Boomerang
+  - Paddle
+  - Ball
+  - Bounds
+  - LeftWall
+  - RightWall
   layers:
   - Default
   - TransparentFX
@@ -14,9 +19,9 @@ TagManager:
   - UI
   - Floor
   - Boomerang
-  - 
-  - 
-  - 
+  - Bounds
+  - Ball
+  - Paddle
   - 
   - 
   - 

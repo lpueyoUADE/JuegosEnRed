@@ -7,7 +7,8 @@ using UnityEngine;
 public class PongBall : MonoBehaviourPun
 {
     [Header("Movimiento")]
-    public float speed = 5f;
+    public float initialSpeed = 5f;
+    public float speedIncrement = 0.1f;
     public float rotationSpeed = 360f;
 
     [Header("Trail")]
@@ -16,9 +17,12 @@ public class PongBall : MonoBehaviourPun
     private Vector2 direction;
     private BoxCollider2D bounds;
 
+    private float speed;
+
     private void Start()
     {
         bounds = PongGameManager.Instance.bounds;
+        speed = initialSpeed;
     }
 
     private void Update()
@@ -45,11 +49,13 @@ public class PongBall : MonoBehaviourPun
         {
             pos.y = max.y;
             direction.y *= -1;
+            speed += speedIncrement;
         }
         else if (pos.y < min.y)
         {
             pos.y = min.y;
             direction.y *= -1;
+            speed += speedIncrement;
         }
 
         // Goles / límites horizontales
@@ -81,7 +87,7 @@ public class PongBall : MonoBehaviourPun
             direction.y += normalizedOffset * 0.5f;
             direction.Normalize();
 
-            speed *= 1.02f; // leve aceleración
+            speed += speedIncrement;
         }
     }
     public void SetPosition(Vector3 position)
@@ -90,6 +96,7 @@ public class PongBall : MonoBehaviourPun
         transform.position = position;
         trailRenderer.Clear();
         trailRenderer.emitting = true;
+        speed = initialSpeed;
     }
     public void LaunchInDirection(bool toRight)
     {

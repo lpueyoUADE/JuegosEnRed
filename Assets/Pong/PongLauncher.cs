@@ -13,6 +13,8 @@ public class PongLauncher : MonoBehaviourPunCallbacks
     {
         Debug.Log("Conectando a Photon...");
         PhotonNetwork.ConnectUsingSettings(); // Usa los datos del PhotonServerSettings
+        PhotonNetwork.SendRate = 60;
+        PhotonNetwork.SerializationRate = 30;
     }
 
     public override void OnConnectedToMaster()
@@ -31,7 +33,7 @@ public class PongLauncher : MonoBehaviourPunCallbacks
     {
         Debug.Log("Entró en la sala: " + PhotonNetwork.CurrentRoom.Name);
         // Cargar la escena del juego una vez que está dentro
-        SceneManager.LoadScene(gameplayScene);
+        PhotonNetwork.LoadLevel(gameplayScene);
     }
 
     public override void OnDisconnected(DisconnectCause cause)

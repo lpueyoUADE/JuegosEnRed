@@ -24,6 +24,10 @@ public class PongGameManager : MonoBehaviourPunCallbacks
     [Header("Bounds del juego")]
     public BoxCollider2D bounds;
 
+    [Header("Configuración del juego")]
+    public int maxScoreToWin = 5;
+    public string winSceneName;
+
     private PongBall ball;
 
     private int scoreLeft;
@@ -53,6 +57,26 @@ public class PongGameManager : MonoBehaviourPunCallbacks
             ball.LaunchInDirection(toRight);
         }
     }
+    [PunRPC]
+    private void RPC_EndGame(string winner)
+    {
+        Debug.Log($"El equipo {winner} ganó la partida!");
+        PhotonNetwork.LoadLevel(winSceneName);
+        PlayerPrefs.SetString("WinnerTeam", winner);
+        PlayerPrefs.SetString("Points", $"{scoreLeft} | {scoreRight}");
+    }
+
+    private void CheckForWinner()
+    {
+        if (scoreLeft >= maxScoreToWin)
+        {
+            photonView.RPC(nameof(RPC_EndGame), RpcTarget.All, "Left");
+        }
+        else if (scoreRight >= maxScoreToWin)
+        {
+            photonView.RPC(nameof(RPC_EndGame), RpcTarget.All, "Right");
+        }
+    }
 
     public void AddPointToLeft()
     {
@@ -61,6 +85,7 @@ public class PongGameManager : MonoBehaviourPunCallbacks
         scoreLeft++;
         Debug.Log("Puntaje Izquierdo: " + scoreLeft);
         BroadcastScore();
+        CheckForWinner();
         ResetBall(toRight: false);
     }
 
@@ -71,6 +96,7 @@ public class PongGameManager : MonoBehaviourPunCallbacks
         scoreRight++;
         Debug.Log("Puntaje Derecho: " + scoreRight);
         BroadcastScore();
+        CheckForWinner();
         ResetBall(toRight: true);
     }
 

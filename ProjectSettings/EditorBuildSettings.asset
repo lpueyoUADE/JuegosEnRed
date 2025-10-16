@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Pong/PongGameplay.unity
     guid: 7ca0f99004223a845bc0fe6ac842c786
+  - enabled: 1
+    path: Assets/Pong/PongEndGame.unity
+    guid: 9f018d0f6ef5f174287e2198e9c88ac5
   m_configObjects: {}

@@ -275,6 +275,8 @@ MonoBehaviour:
   rightSpawn1: {fileID: 734048311}
   rightSpawn2: {fileID: 1636619215}
   bounds: {fileID: 2036064655}
+  maxScoreToWin: 3
+  winSceneName: PongEndGame
 --- !u!4 &285747062
 Transform:
   m_ObjectHideFlags: 0

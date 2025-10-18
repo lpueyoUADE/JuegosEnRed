@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Pong/PongLobby.unity
-    guid: 4990e629937225f41a645903f5f794d7
+    path: Assets/Pong/PongMainMenu.unity
+    guid: 1257ef335adacc04693ab0d99f32bb9a
   - enabled: 1
     path: Assets/Pong/PongGameplay.unity
     guid: 7ca0f99004223a845bc0fe6ac842c786

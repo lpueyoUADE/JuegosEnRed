@@ -43,7 +43,6 @@ public class PongGameManager : MonoBehaviourPunCallbacks
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -125,7 +124,19 @@ public class PongGameManager : MonoBehaviourPunCallbacks
         }
 
         GameObject paddle = PhotonNetwork.Instantiate("Prefabs/Pong/" + paddlePrefab.name, spawnPoint.position, Quaternion.identity);
-        paddle.GetComponent<PaddleController>().SetBounds(bounds);
+
+        PaddleController controller = paddle.GetComponent<PaddleController>();
+        controller.SetBounds(bounds);
+
+        // Solo el Master Client decide el color
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Color chosenColor = PaddleController.GetRandomColor();
+
+            // Llamamos al RPC usando el photonView del paddle
+            controller.photonView.RPC(nameof(controller.RPC_SetPaddleColor), RpcTarget.AllBuffered,
+                chosenColor.r, chosenColor.g, chosenColor.b);
+        }
 
         Debug.Log($"Jugador {PhotonNetwork.LocalPlayer.NickName} spawn en {(isLeftTeam ? "IZQUIERDA" : "DERECHA")}");
     }

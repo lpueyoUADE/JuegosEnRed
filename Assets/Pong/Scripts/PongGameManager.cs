@@ -1,9 +1,8 @@
 using Photon.Pun;
-using Photon.Pun.Demo.PunBasics;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PongGameManager : MonoBehaviourPunCallbacks
@@ -29,7 +28,6 @@ public class PongGameManager : MonoBehaviourPunCallbacks
     public string winSceneName;
 
     private PongBall ball;
-
     private int scoreLeft;
     private int scoreRight;
 
@@ -52,29 +50,23 @@ public class PongGameManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             SpawnBall();
-            bool toRight = UnityEngine.Random.value < 0.5f;
-            ball.LaunchInDirection(toRight);
         }
     }
     [PunRPC]
     private void RPC_EndGame(string winner)
     {
         Debug.Log($"El equipo {winner} ganó la partida!");
-        PhotonNetwork.LoadLevel(winSceneName);
         PlayerPrefs.SetString("WinnerTeam", winner);
         PlayerPrefs.SetString("Points", $"{scoreLeft} | {scoreRight}");
+        PhotonNetwork.LoadLevel(winSceneName);
     }
 
     private void CheckForWinner()
     {
         if (scoreLeft >= maxScoreToWin)
-        {
             photonView.RPC(nameof(RPC_EndGame), RpcTarget.All, "Left");
-        }
         else if (scoreRight >= maxScoreToWin)
-        {
             photonView.RPC(nameof(RPC_EndGame), RpcTarget.All, "Right");
-        }
     }
 
     public void AddPointToLeft()
@@ -82,7 +74,6 @@ public class PongGameManager : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient) return;
 
         scoreLeft++;
-        Debug.Log("Puntaje Izquierdo: " + scoreLeft);
         BroadcastScore();
         CheckForWinner();
         ResetBall(toRight: false);
@@ -93,12 +84,23 @@ public class PongGameManager : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient) return;
 
         scoreRight++;
-        Debug.Log("Puntaje Derecho: " + scoreRight);
         BroadcastScore();
         CheckForWinner();
         ResetBall(toRight: true);
     }
 
+    private void BroadcastScore()
+    {
+        photonView.RPC(nameof(RPC_UpdateScore), RpcTarget.All, scoreLeft, scoreRight);
+    }
+
+    [PunRPC]
+    private void RPC_UpdateScore(int left, int right)
+    {
+        scoreLeft = left;
+        scoreRight = right;
+        OnScoreChanged?.Invoke(scoreLeft, scoreRight);
+    }
 
     public void ResetBall(bool toRight)
     {
@@ -110,33 +112,23 @@ public class PongGameManager : MonoBehaviourPunCallbacks
     {
         GameObject go = PhotonNetwork.Instantiate("Prefabs/Pong/" + ballPrefab.name, spawnBallPoint.position, Quaternion.identity);
         ball = go.GetComponent<PongBall>();
+        bool toRight = UnityEngine.Random.value < 0.5f;
+        ball.LaunchInDirection(toRight);
     }
 
     public void SpawnPlayer()
     {
-        int actorIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1;
+        int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+        int actorIndex = actorNumber - 1;
         bool isLeftTeam = actorIndex % 2 == 0;
 
         Transform spawnPoint = GetSpawnPoint(actorIndex, isLeftTeam);
         if (spawnPoint == null)
-        {
             Debug.LogWarning("No hay spawn point disponible para este jugador, usando posición (0,0)");
-        }
 
-        GameObject paddle = PhotonNetwork.Instantiate("Prefabs/Pong/" + paddlePrefab.name, spawnPoint.position, Quaternion.identity);
-
-        PaddleController controller = paddle.GetComponent<PaddleController>();
+        GameObject paddleObj = PhotonNetwork.Instantiate("Prefabs/Pong/" + paddlePrefab.name, spawnPoint.position, Quaternion.identity);
+        PaddleController controller = paddleObj.GetComponent<PaddleController>();
         controller.SetBounds(bounds);
-
-        // Solo el Master Client decide el color
-        if (PhotonNetwork.IsMasterClient)
-        {
-            Color chosenColor = PaddleController.GetRandomColor();
-
-            // Llamamos al RPC usando el photonView del paddle
-            controller.photonView.RPC(nameof(controller.RPC_SetPaddleColor), RpcTarget.AllBuffered,
-                chosenColor.r, chosenColor.g, chosenColor.b);
-        }
 
         Debug.Log($"Jugador {PhotonNetwork.LocalPlayer.NickName} spawn en {(isLeftTeam ? "IZQUIERDA" : "DERECHA")}");
     }
@@ -144,27 +136,9 @@ public class PongGameManager : MonoBehaviourPunCallbacks
     private Transform GetSpawnPoint(int index, bool isLeftTeam)
     {
         if (isLeftTeam)
-        {
             return (index / 2) % 2 == 0 ? leftSpawn1 : leftSpawn2;
-        }
         else
-        {
             return (index / 2) % 2 == 0 ? rightSpawn1 : rightSpawn2;
-        }
-    }
-    // Envía el puntaje actual a todos
-    private void BroadcastScore()
-    {
-        photonView.RPC(nameof(RPC_UpdateScore), RpcTarget.All, scoreLeft, scoreRight);
-    }
-
-    // Recibe y aplica el puntaje
-    [PunRPC]
-    private void RPC_UpdateScore(int left, int right)
-    {
-        scoreLeft = left;
-        scoreRight = right;
-        OnScoreChanged?.Invoke(scoreLeft, scoreRight);
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)

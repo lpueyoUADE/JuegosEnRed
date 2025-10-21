@@ -35,12 +35,12 @@ public class PaddleController : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void RPC_SetPaddleColor(float r, float g, float b)
+    public void RPC_SetColor(float r, float g, float b)
     {
-        SetPaddleColor(new Color(r, g, b));
+        SetColor(new Color(r, g, b));
     }
 
-    public void SetPaddleColor(Color color)
+    public void SetColor(Color color)
     {
         spriteRenderer.material.SetColor("_SolidOutline", color);
     }

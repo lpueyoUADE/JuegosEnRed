@@ -82,6 +82,10 @@ MonoBehaviour:
   - RPC_UpdateScore
   - RPC_EndGame
   - RPC_SetPaddleColor
+  - RPC_SetColor
+  - RPC_SetPlayerColor
+  - RPC_SyncColorIndex
+  - RPC_SyncColorList
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

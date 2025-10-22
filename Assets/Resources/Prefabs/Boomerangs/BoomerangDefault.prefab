@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ea1c0768a99043920a64c88a673dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boomerangType: 0
   damage: 1
   movementSpeed: 10
   rotationSpeed: 500

@@ -1302,7 +1302,7 @@ MonoBehaviour:
   - {fileID: 717964986}
   - {fileID: 2118657971}
   - {fileID: 7261870}
-  timeToSpawnNewBoomerang: 7
+  timeToSpawnNewBoomerang: 45
 --- !u!1 &452755996
 GameObject:
   m_ObjectHideFlags: 0
@@ -4126,7 +4126,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1929862662
 SpriteRenderer:
   m_ObjectHideFlags: 0

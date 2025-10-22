@@ -31,7 +31,7 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
 
             PhotonNetwork.Instantiate("Prefabs/PowerUpBoomerangs/" + powerUpPrefabs[randomPowerUp].name, spawnPositions[randomSpawnPosition].position, Quaternion.identity);
             counterSpawnBoomerang = 0;
-            timeToSpawnNewBoomerang *= 1.5f;
+            //timeToSpawnNewBoomerang *= 1.5f;
         }
     }
 }

@@ -373,6 +373,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 10
@@ -523,6 +524,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &6884522133414290067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -731,6 +733,7 @@ MonoBehaviour:
   startingHealth: 5
   speed: 6
   jumpForce: 10
+  bloodPrefab: {fileID: 5420533968082722717, guid: a289d2eff81cf364db3b3e02f7cba55c, type: 3}
 --- !u!114 &7830868013348611928
 MonoBehaviour:
   m_ObjectHideFlags: 0

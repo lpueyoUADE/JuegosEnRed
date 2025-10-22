@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Pun.Demo.Procedural;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -25,6 +26,8 @@ public class PlayerModel : MonoBehaviourPun
 
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
+
+    [SerializeField] private ParticleSystem bloodPrefab;
 
     private int myViewId;
     private int currentHealth;
@@ -59,7 +62,13 @@ public class PlayerModel : MonoBehaviourPun
         InitializeHealthAndHealthBar();
         InitializeBoomerang();
     }
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            GetDamage(100);
+        }
+    }
     // Simulacion de Update
     void UpdatePlayerModel()
     {
@@ -155,6 +164,7 @@ public class PlayerModel : MonoBehaviourPun
             photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.Death1);
             photonView.RPC("DisablePlayer", RpcTarget.All);
             boomerangController.BoomerangModel.photonView.RPC("DisableBoomerang", RpcTarget.All);
+
             StartCoroutine(Death());
         }
     }
@@ -212,7 +222,7 @@ public class PlayerModel : MonoBehaviourPun
     private IEnumerator Death()
     {
         PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
-
+        PhotonNetwork.Instantiate("Prefabs/Player/blood", transform.position, Quaternion.identity);
         yield return null;
 
         UnregisterPlayer();

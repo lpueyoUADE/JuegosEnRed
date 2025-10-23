@@ -62,13 +62,7 @@ public class PlayerModel : MonoBehaviourPun
         InitializeHealthAndHealthBar();
         InitializeBoomerang();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            GetDamage(100);
-        }
-    }
+
     // Simulacion de Update
     void UpdatePlayerModel()
     {

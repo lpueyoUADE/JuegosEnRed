@@ -108,6 +108,34 @@
             ]
         },
         {
+            "name": "TabUI",
+            "id": "7762b72f-1594-485b-a44c-2537628086e0",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "d59983c0-9e24-44ca-a73f-2b7c498c75c2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "06a9ad20-1e8b-42df-83f1-5b1cccc2bb84",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Jump",
             "id": "c42204d5-d1bd-40d7-aa59-62059fabf8be",
             "actions": [

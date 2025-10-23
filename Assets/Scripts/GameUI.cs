@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class GameUI : MonoBehaviour
 {
+    [Header("Panels")]
     [SerializeField] private GameObject panelBackToMainMenu;
+    [SerializeField] private GameObject podiumPanel;
 
     private static event Action onPlayerLeaveRoomFrameEarlier;
     public static event Action<bool> OnSetMainMenuState;
@@ -22,7 +24,9 @@ public class GameUI : MonoBehaviour
 
     void Update()
     {
+        if (ScenesManager.Instance.IsInLoadingScenePanel) return;
         ShowOrHidePanelToGoBackToMainMenu();
+        ShowOrHidePodiumPanel();
     }
 
 
@@ -42,8 +46,6 @@ public class GameUI : MonoBehaviour
 
     private void ShowOrHidePanelToGoBackToMainMenu()
     {
-        if (ScenesManager.Instance.IsInLoadingScenePanel) return;
-
         if (PlayerInputsManager.Instance.BackUI())
         {
             if (panelBackToMainMenu.activeSelf)
@@ -60,5 +62,10 @@ public class GameUI : MonoBehaviour
                 HybridCursorManager.Instance.SetUIPointer();
             }
         }
+    }
+
+    private void ShowOrHidePodiumPanel()
+    {
+        podiumPanel.SetActive(PlayerInputsManager.Instance.TabUI());
     }
 }

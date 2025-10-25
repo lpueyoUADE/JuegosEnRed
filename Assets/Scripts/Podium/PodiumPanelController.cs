@@ -12,7 +12,7 @@ public class PodiumPanelController : MonoBehaviour
         if (PhotonNetworkManager.Instance != null)
         {
             PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += RefreshPlayers;
-            PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += RefreshPlayers;
+            //PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += RefreshPlayers;
         }
 
         RefreshPlayers();
@@ -23,7 +23,7 @@ public class PodiumPanelController : MonoBehaviour
         if (PhotonNetworkManager.Instance != null)
         {
             PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= RefreshPlayers;
-            PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= RefreshPlayers;
+            //PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= RefreshPlayers;
         }
     }
 
@@ -31,7 +31,7 @@ public class PodiumPanelController : MonoBehaviour
     {
         var sortedPlayers = PlayersManager.Instance.PlayersPodium
             .OrderByDescending(p => p.Value.score)
-            .Select(p => (p.Key, p.Value.score, p.Value.deaths, p.Value.color))
+            .Select(p => (p.Value.nickname, p.Value.score, p.Value.deaths, p.Value.color))
             .ToList();
 
         for (int i = 0; i < podiumPlayers.Count; i++)
@@ -40,7 +40,7 @@ public class PodiumPanelController : MonoBehaviour
 
             if(i < sortedPlayers.Count)
             {
-                podiumPlayers[i].playerName.text = sortedPlayers[i].Key; // name
+                podiumPlayers[i].playerName.text = sortedPlayers[i].nickname;
                 podiumPlayers[i].score.text = sortedPlayers[i].score.ToString();
                 podiumPlayers[i].deaths.text = sortedPlayers[i].deaths.ToString();
                 podiumPlayers[i].SetColor(sortedPlayers[i].color);

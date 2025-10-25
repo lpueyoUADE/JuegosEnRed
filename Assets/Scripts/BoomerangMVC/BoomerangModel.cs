@@ -300,7 +300,7 @@ public class BoomerangModel : MonoBehaviourPun
     }
 
     [PunRPC]
-    private void PointAcquired(string killer, string killed)
+    private void PointAcquired(int killer, int killed)
     {
         PlayersManager.Instance.PlayersPodium[killer].score += 1;
         PlayersManager.Instance.PlayersPodium[killed].deaths += 1;
@@ -320,7 +320,7 @@ public class BoomerangModel : MonoBehaviourPun
                 {
                     auxiliarPlayerModel.Deaths += 1;
                     ownerPlayerModel.Score += 1;
-                    photonView.RPC(nameof(PointAcquired), RpcTarget.All, ownerPlayerModel.GetNickname(), auxiliarPlayerModel.GetNickname());
+                    photonView.RPC(nameof(PointAcquired), RpcTarget.All, photonView.Owner.ActorNumber, playerPV.Owner.ActorNumber);
                 }
                 
                 playerPV.RPC("GetDamage", playerPV.Owner, damage);

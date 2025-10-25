@@ -14,19 +14,21 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
     [Serializable]
     public class PlayerStats
     {
+        public string nickname;
         public int score;
         public int deaths;
         public Color color;
 
-        public PlayerStats(int score, int deaths, Color color)
+        public PlayerStats(string nickname, int score, int deaths, Color color)
         {
+            this.nickname = nickname;
             this.score = score;
             this.deaths = deaths;
             this.color = color;
         }
     }
 
-    public Dictionary<string, PlayerStats> PlayersPodium;
+    public Dictionary<int, PlayerStats> PlayersPodium;
     public List<PlayerModel> CurrentPlayers { get => currentPlayers; }
 
     void Awake()
@@ -51,7 +53,7 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
             if (playerModel != null && !currentPlayers.Contains(playerModel))
             {
                 currentPlayers.Add(playerModel);
-                PlayersPodium.Add(playerModel.GetNickname(), new(0, 0, playerModel.Color));
+                PlayersPodium.Add(pv.Owner.ActorNumber, new(playerModel.GetNickname(), 0, 0, playerModel.Color));
             }
         }
     }
@@ -66,7 +68,7 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
             if (playerModel != null && currentPlayers.Contains(playerModel))
             {
                 currentPlayers.Remove(playerModel);
-                PlayersPodium.Remove(playerModel.GetNickname());
+                PlayersPodium.Remove(pv.Owner.ActorNumber);
             }
         }
     }

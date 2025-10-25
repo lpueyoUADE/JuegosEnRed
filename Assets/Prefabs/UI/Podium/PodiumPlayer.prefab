@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerName: {fileID: 219568438159021590}
-  points: {fileID: 431978934974417047}
+  score: {fileID: 431978934974417047}
   deaths: {fileID: 1141230185971613441}
 --- !u!1 &6769962376493084942
 GameObject:

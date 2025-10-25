@@ -6,7 +6,7 @@ using UnityEngine;
 public class PodiumPlayerUI : MonoBehaviour
 {
     public TextMeshProUGUI playerName;
-    public TextMeshProUGUI points;
+    public TextMeshProUGUI score;
     public TextMeshProUGUI deaths;
 
     public void SetName(string name)
@@ -14,9 +14,9 @@ public class PodiumPlayerUI : MonoBehaviour
         playerName.text = name;
     }
 
-    public void SetPoints(string points)
+    public void SetScore(string score)
     {
-        this.points.text = points;
+        this.score.text = score;
     }
 
     public void SetDeaths(string deaths)
@@ -27,7 +27,7 @@ public class PodiumPlayerUI : MonoBehaviour
     public void SetColor(Color color)
     {
         playerName.color = color;
-        points.color = color;
+        score.color = color;
         deaths.color = color;
     }
 }

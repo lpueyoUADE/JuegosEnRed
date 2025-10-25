@@ -299,6 +299,12 @@ public class BoomerangModel : MonoBehaviourPun
         transform.SetParent(ownerPlayerModel.transform, true);
     }
 
+    [PunRPC]
+    private void PointAcquired(string killer, string killed)
+    {
+        PlayersManager.Instance.PlayersPodium[killer].score += 1;
+        PlayersManager.Instance.PlayersPodium[killed].deaths += 1;
+    }
     private void OnCollisionEnterWithOtherPlayers(Collision2D collision)
     {
         if (!photonView.IsMine) return;
@@ -310,6 +316,13 @@ public class BoomerangModel : MonoBehaviourPun
 
             if (playerPV.OwnerActorNr != ownerActorNumber)
             {
+                if(auxiliarPlayerModel.CurrentHealth - damage <= 0)
+                {
+                    auxiliarPlayerModel.Deaths += 1;
+                    ownerPlayerModel.Score += 1;
+                    photonView.RPC(nameof(PointAcquired), RpcTarget.All, ownerPlayerModel.GetNickname(), auxiliarPlayerModel.GetNickname());
+                }
+                
                 playerPV.RPC("GetDamage", playerPV.Owner, damage);
                 photonView.RPC("OnBoomerangCollisionEnterWithOtherPlayers", RpcTarget.All, playerPV.OwnerActorNr, playerPV.ViewID);
             }

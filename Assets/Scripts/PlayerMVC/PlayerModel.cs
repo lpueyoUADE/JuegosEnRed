@@ -32,6 +32,8 @@ public class PlayerModel : MonoBehaviourPun
     private int myViewId;
     private int currentHealth;
     private int minHealth = 1;
+    private int score = 0;
+    private int deaths = 0;
     
     private bool isGrounded;
     private bool acceptingInput;
@@ -46,7 +48,13 @@ public class PlayerModel : MonoBehaviourPun
     public int MinHealth { get => minHealth; }
 
     public bool AcceptingInput { get => acceptingInput; set => acceptingInput = value; }
-
+    public int Score { get => score; set => score = value; }
+    public int Deaths { get => deaths; set => deaths = value; }
+    public Color Color { get => sprite.color; }
+    public string GetNickname()
+    {
+        return photonView.Owner.NickName;
+    }
 
     void Awake()
     {

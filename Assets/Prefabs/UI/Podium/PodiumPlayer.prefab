@@ -92,9 +92,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d501726dcdacf947a042f458c67d0fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerName: {fileID: 219568438159021590}
-  score: {fileID: 431978934974417047}
-  deaths: {fileID: 1141230185971613441}
+  playerNameText: {fileID: 219568438159021590}
+  playerCurrentScore: {fileID: 431978934974417047}
+  playerCurrentDeaths: {fileID: 1141230185971613441}
 --- !u!1 &6769962376493084942
 GameObject:
   m_ObjectHideFlags: 0

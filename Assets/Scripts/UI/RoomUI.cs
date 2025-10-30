@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class RoomUI : MonoBehaviour
 {
@@ -13,14 +13,16 @@ public class RoomUI : MonoBehaviour
     [Header("PlayerInformation:")]
     [SerializeField] private RoomPlayerSlot[] roomPlayerSlots;
 
-    private void Start()
+
+    void Start()
     {
         HybridCursorManager.Instance.SetUIPointer();
     }
+
     void Awake()
     {
         SuscribeToPhotonNetworkManagerEvents();
-        RefreshSlots();
+        OnRefreshSlots();
     }
 
     void Update()
@@ -78,18 +80,18 @@ public class RoomUI : MonoBehaviour
     {
         PhotonNetworkManager.Instance.OnJoinedRoomEvent += OnShowButtonStartGameIfIsHost;
         PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += OnChangeButtonStartGameInteraction;
-        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += RefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += OnRefreshSlots;
         PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += OnChangeButtonStartGameInteraction;
-        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += RefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += OnRefreshSlots;
     }
 
     private void UnsuscribeToPhotonNetworkManagerEvents()
     {
         PhotonNetworkManager.Instance.OnJoinedRoomEvent -= OnShowButtonStartGameIfIsHost;
         PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= OnChangeButtonStartGameInteraction;
-        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= RefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= OnRefreshSlots;
         PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= OnChangeButtonStartGameInteraction;
-        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= RefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= OnRefreshSlots;
     }
 
     private void OnShowButtonStartGameIfIsHost()
@@ -115,7 +117,7 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    private void RefreshSlots()
+    private void OnRefreshSlots()
     {
         foreach (var slot in roomPlayerSlots)
         {

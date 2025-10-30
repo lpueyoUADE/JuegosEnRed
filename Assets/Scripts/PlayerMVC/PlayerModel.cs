@@ -1,5 +1,5 @@
 using Photon.Pun;
-using Photon.Pun.Demo.Procedural;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -27,13 +27,10 @@ public class PlayerModel : MonoBehaviourPun
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
 
-    [SerializeField] private ParticleSystem bloodPrefab;
-
     private int myViewId;
     private int currentHealth;
     private int minHealth = 1;
-    private int score = 0;
-    private int deaths = 0;
+
     
     private bool isGrounded;
     private bool acceptingInput;
@@ -48,13 +45,7 @@ public class PlayerModel : MonoBehaviourPun
     public int MinHealth { get => minHealth; }
 
     public bool AcceptingInput { get => acceptingInput; set => acceptingInput = value; }
-    public int Score { get => score; set => score = value; }
-    public int Deaths { get => deaths; set => deaths = value; }
-    public Color Color { get => sprite.color; }
-    public string GetNickname()
-    {
-        return photonView.Owner.NickName;
-    }
+
 
     void Awake()
     {
@@ -150,7 +141,7 @@ public class PlayerModel : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void GetDamage(int damage)
+    public void GetDamage(int damage, int attackerActorNumber)
     {
         currentHealth -= damage;
         photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.HitOtherPlayers);
@@ -167,6 +158,7 @@ public class PlayerModel : MonoBehaviourPun
             photonView.RPC("DisablePlayer", RpcTarget.All);
             boomerangController.BoomerangModel.photonView.RPC("DisableBoomerang", RpcTarget.All);
 
+            AddPointToAttackerPlayer(attackerActorNumber);
             StartCoroutine(Death());
         }
     }
@@ -221,10 +213,20 @@ public class PlayerModel : MonoBehaviourPun
         animator.SetTrigger(paramterName);
     }
 
+    private void AddPointToAttackerPlayer(int attackerActorNumber)
+    {
+        Player attackerPlayer = PhotonNetwork.CurrentRoom.GetPlayer(attackerActorNumber);
+        if (attackerPlayer != null)
+        {
+            PodiumManager.Instance.AddScore(attackerPlayer, 1);
+        }
+    }
+
     private IEnumerator Death()
     {
         PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
         PhotonNetwork.Instantiate("Prefabs/Player/blood", transform.position, Quaternion.identity);
+        PodiumManager.Instance.AddDeath(1);
         yield return null;
 
         UnregisterPlayer();

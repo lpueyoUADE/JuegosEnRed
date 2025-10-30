@@ -733,7 +733,6 @@ MonoBehaviour:
   startingHealth: 5
   speed: 6
   jumpForce: 10
-  bloodPrefab: {fileID: 5420533968082722717, guid: a289d2eff81cf364db3b3e02f7cba55c, type: 3}
 --- !u!114 &7830868013348611928
 MonoBehaviour:
   m_ObjectHideFlags: 0

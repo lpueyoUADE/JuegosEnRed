@@ -11,30 +11,10 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
     [SerializeField] private float cameraEffectDuringTime;
 
-    [Serializable]
-    public class PlayerStats
-    {
-        public string nickname;
-        public int score;
-        public int deaths;
-        public Color color;
-
-        public PlayerStats(string nickname, int score, int deaths, Color color)
-        {
-            this.nickname = nickname;
-            this.score = score;
-            this.deaths = deaths;
-            this.color = color;
-        }
-    }
-
-    public Dictionary<int, PlayerStats> PlayersPodium;
-    public List<PlayerModel> CurrentPlayers { get => currentPlayers; }
 
     void Awake()
     {
         CreateSingleton(true);
-        PlayersPodium = new();
     }
 
     void Start()
@@ -53,7 +33,6 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
             if (playerModel != null && !currentPlayers.Contains(playerModel))
             {
                 currentPlayers.Add(playerModel);
-                PlayersPodium.Add(pv.Owner.ActorNumber, new(playerModel.GetNickname(), 0, 0, playerModel.Color));
             }
         }
     }
@@ -68,7 +47,6 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
             if (playerModel != null && currentPlayers.Contains(playerModel))
             {
                 currentPlayers.Remove(playerModel);
-                PlayersPodium.Remove(pv.Owner.ActorNumber);
             }
         }
     }

@@ -299,12 +299,6 @@ public class BoomerangModel : MonoBehaviourPun
         transform.SetParent(ownerPlayerModel.transform, true);
     }
 
-    [PunRPC]
-    private void PointAcquired(int killer, int killed)
-    {
-        PlayersManager.Instance.PlayersPodium[killer].score += 1;
-        PlayersManager.Instance.PlayersPodium[killed].deaths += 1;
-    }
     private void OnCollisionEnterWithOtherPlayers(Collision2D collision)
     {
         if (!photonView.IsMine) return;
@@ -315,15 +309,8 @@ public class BoomerangModel : MonoBehaviourPun
             PhotonView playerPV = collision.gameObject.GetComponent<PhotonView>();
 
             if (playerPV.OwnerActorNr != ownerActorNumber)
-            {
-                if(auxiliarPlayerModel.CurrentHealth - damage <= 0)
-                {
-                    auxiliarPlayerModel.Deaths += 1;
-                    ownerPlayerModel.Score += 1;
-                    photonView.RPC(nameof(PointAcquired), RpcTarget.All, photonView.Owner.ActorNumber, playerPV.Owner.ActorNumber);
-                }
-                
-                playerPV.RPC("GetDamage", playerPV.Owner, damage);
+            {    
+                playerPV.RPC("GetDamage", playerPV.Owner, damage, ownerActorNumber);
                 photonView.RPC("OnBoomerangCollisionEnterWithOtherPlayers", RpcTarget.All, playerPV.OwnerActorNr, playerPV.ViewID);
             }
         }
@@ -388,7 +375,7 @@ public class BoomerangModel : MonoBehaviourPun
             // Chequeamos si ya pasó suficiente tiempo desde el último daño
             if (Time.time >= hitCooldowns[targetActorNr])
             {
-                playerPV.RPC("GetDamage", playerPV.Owner, damage);
+                playerPV.RPC("GetDamage", playerPV.Owner, damage, ownerActorNumber);
 
                 hitCooldowns[targetActorNr] = Time.time + damageCooldown;
             }

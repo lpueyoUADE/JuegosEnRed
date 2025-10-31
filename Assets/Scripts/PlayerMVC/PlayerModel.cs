@@ -21,6 +21,7 @@ public class PlayerModel : MonoBehaviourPun
     private static event Action<int> onDisableNicknameText;
     private static event Action onPlayerDeath;
     private static event Action onPlayerWin;
+    private static event Action<string, string> onInformPointAcquired;
 
     [SerializeField] private int startingHealth;
 
@@ -39,6 +40,7 @@ public class PlayerModel : MonoBehaviourPun
     public static Action<int> OnDisableNicknameText { get => onDisableNicknameText; set => onDisableNicknameText = value; }
     public static Action OnPlayerDeath { get => onPlayerDeath; set => onPlayerDeath = value; }
     public static Action OnPlayerWin { get => onPlayerWin; set => onPlayerWin = value; }
+    public static Action<string, string> OnInformPointAcquired { get => onInformPointAcquired; set => onInformPointAcquired = value; }
 
     public int CurrentHealth { get => currentHealth; }
     public int MinHealth { get => minHealth; }
@@ -212,11 +214,19 @@ public class PlayerModel : MonoBehaviourPun
         animator.SetTrigger(paramterName);
     }
 
+    [PunRPC]
+    private void OnInformPointAcquiredRPC(string killer, string killed)
+    {
+        onInformPointAcquired?.Invoke(killer, killed);
+        Debug.Log(killer + "Mato a " + killed);
+    }
+
     private void AddPointToAttackerPlayer(int attackerActorNumber)
     {
         Player attackerPlayer = PhotonNetwork.CurrentRoom.GetPlayer(attackerActorNumber);
         if (attackerPlayer != null)
         {
+            photonView.RPC("OnInformPointAcquiredRPC", RpcTarget.All, attackerPlayer.NickName, PhotonNetwork.LocalPlayer.NickName);
             StatsManager.Instance.AddScore(attackerPlayer, 1);
         }
     }

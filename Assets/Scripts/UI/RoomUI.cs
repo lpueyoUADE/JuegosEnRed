@@ -150,6 +150,7 @@ public class RoomUI : MonoBehaviour
         }
     }
 
+    // Poner abajo el texto waiting
     private void OnStopStartingGameIfCurrentPlayersChange()
     {
         if (countdownCoroutine != null)

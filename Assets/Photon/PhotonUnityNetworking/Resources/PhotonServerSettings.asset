@@ -83,6 +83,7 @@ MonoBehaviour:
   - TryChangeNextLevel
   - RPC_UpdateCountdown
   - UpdateCountdownText
+  - OnInformPointAcquiredRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

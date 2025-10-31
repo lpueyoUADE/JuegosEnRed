@@ -67,11 +67,11 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
     private void OnUpdateCurrentPlayer()
     {
-        photonView.RPC("ChangeNextLevel", RpcTarget.All);
+        photonView.RPC("TryChangeNextLevel", RpcTarget.All);
     }
 
     [PunRPC]
-    private void ChangeNextLevel()
+    private void TryChangeNextLevel()
     {
         if (currentPlayers.Count > 1) return;
 
@@ -87,7 +87,6 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
     {
         yield return StartCoroutine(ZoomToPlayerBeforeSceneChange(cameraEffectDuringTime)); 
 
-
         yield return new WaitForSecondsRealtime(1.5f);
 
         currentPlayers.Clear();
@@ -101,8 +100,9 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
         }*/
 
         string currentSceneName = SceneManager.GetActiveScene().name;
+        ScenesManager.Instance.LoadScene("Podium");
 
-        if (Enum.TryParse(currentSceneName, out GameScenes currentSceneEnum))
+        /*if (Enum.TryParse(currentSceneName, out GameScenes currentSceneEnum))
         {
             int nextSceneValue = (int)currentSceneEnum + 1;
 
@@ -114,7 +114,7 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
             GameScenes nextSceneEnum = (GameScenes)nextSceneValue;
             ScenesManager.Instance.LoadScene(nextSceneEnum.ToString());
-        }
+        }*/
     }
 
     private IEnumerator ZoomToPlayerBeforeSceneChange(float duration)

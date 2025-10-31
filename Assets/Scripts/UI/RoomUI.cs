@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using ExitGames.Client.Photon;
+using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
@@ -6,23 +7,27 @@ using UnityEngine.UI;
 
 public class RoomUI : MonoBehaviour
 {
-    [SerializeField] private Button buttonStartGame;
-    [SerializeField] private TMP_Text buttonStartGameText;
+    private PhotonView photonView;
+    private Coroutine countdownCoroutine;
+
+    [SerializeField] private Button buttonReadyOrNot;
+    [SerializeField] private TMP_Text buttonReadyOrNotText;
+    [SerializeField] private TMP_Text countdownText;
     [SerializeField] private GameObject panelBackToMainMenu;
 
     [Header("PlayerInformation:")]
     [SerializeField] private RoomPlayerSlot[] roomPlayerSlots;
 
 
-    void Start()
-    {
-        HybridCursorManager.Instance.SetUIPointer();
-    }
-
     void Awake()
     {
         SuscribeToPhotonNetworkManagerEvents();
-        OnRefreshSlots();
+        GetComponents();
+    }
+
+    void Start()
+    {
+        HybridCursorManager.Instance.SetUIPointer();
     }
 
     void Update()
@@ -43,25 +48,31 @@ public class RoomUI : MonoBehaviour
 
 
     // Funciones asignada a boton de la UI
-    public void ButtonStartGame()
+    public void ButtonReadyOrNot()
     {
-        PhotonNetworkManager.Instance.CloseRoom();
-        ScenesManager.Instance.LoadScene("Level1");
+        Player localPlayer = PhotonNetwork.LocalPlayer;
+
+        bool currentReadyState = localPlayer.CustomProperties.ContainsKey("IsReady") && (bool)localPlayer.CustomProperties["IsReady"];
+        bool newReadyState = !currentReadyState;
+
+        Hashtable props = new Hashtable();
+        props["IsReady"] = newReadyState;
+        localPlayer.SetCustomProperties(props);
     }
 
     public void ButtonStartGameOnPointerEnter()
     {
         if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() == 1)
         {
-            buttonStartGameText.gameObject.SetActive(true);
+            buttonReadyOrNotText.gameObject.SetActive(true);
         }
     }
 
     public void ButtonStartGameOnPointerExit()
     {
-        if (buttonStartGameText.gameObject.activeSelf)
+        if (buttonReadyOrNotText.gameObject.activeSelf)
         {
-            buttonStartGameText.gameObject.SetActive(false);
+            buttonReadyOrNotText.gameObject.SetActive(false);
         }
     }
 
@@ -78,42 +89,75 @@ public class RoomUI : MonoBehaviour
 
     private void SuscribeToPhotonNetworkManagerEvents()
     {
-        PhotonNetworkManager.Instance.OnJoinedRoomEvent += OnShowButtonStartGameIfIsHost;
-        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += OnChangeButtonStartGameInteraction;
+        PhotonNetworkManager.Instance.OnPlayerPropertiesUpdateEvent += OnPlayerReadyStateChanged;
+        PhotonNetworkManager.Instance.OnJoinedRoomEvent += OnSelectableTrueButtonReadyOrNot;
+        PhotonNetworkManager.Instance.OnJoinedRoomEvent += OnRefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += OnChangeButtonReadyOrNotInteraction;
         PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += OnRefreshSlots;
-        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += OnChangeButtonStartGameInteraction;
+        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent += OnStopStartingGameIfCurrentPlayersChange;
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += OnChangeButtonReadyOrNotInteraction;
         PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += OnRefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += OnStopStartingGameIfCurrentPlayersChange;
     }
 
     private void UnsuscribeToPhotonNetworkManagerEvents()
     {
-        PhotonNetworkManager.Instance.OnJoinedRoomEvent -= OnShowButtonStartGameIfIsHost;
-        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= OnChangeButtonStartGameInteraction;
+        PhotonNetworkManager.Instance.OnPlayerPropertiesUpdateEvent -= OnPlayerReadyStateChanged;
+        PhotonNetworkManager.Instance.OnJoinedRoomEvent -= OnSelectableTrueButtonReadyOrNot;
+        PhotonNetworkManager.Instance.OnJoinedRoomEvent -= OnRefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= OnChangeButtonReadyOrNotInteraction;
         PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= OnRefreshSlots;
-        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= OnChangeButtonStartGameInteraction;
+        PhotonNetworkManager.Instance.OnPlayerEnteredRoomEvent -= OnStopStartingGameIfCurrentPlayersChange;
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= OnChangeButtonReadyOrNotInteraction;
         PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= OnRefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= OnStopStartingGameIfCurrentPlayersChange;
     }
 
-    private void OnShowButtonStartGameIfIsHost()
+    private void OnPlayerReadyStateChanged(Player targetPlayer, Hashtable changedProps)
     {
-        buttonStartGame.gameObject.SetActive(PhotonNetworkManager.Instance.IsHost);
+        if (changedProps.ContainsKey("IsReady"))
+        {
+            if (PhotonNetworkManager.Instance.IsHost)
+            {
+                CheckAllPlayersReady();
+            }
+        }
     }
 
-    private void OnChangeButtonStartGameInteraction()
+    private void OnSelectableTrueButtonReadyOrNot()
     {
         if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() > 1)
         {
-            buttonStartGame.interactable = true;
+            buttonReadyOrNot.interactable = true;
+        }
+    }
 
-            if (buttonStartGameText.gameObject.activeSelf)
+    private void OnChangeButtonReadyOrNotInteraction()
+    {
+        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() > 1)
+        {
+            buttonReadyOrNot.interactable = true;
+
+            if (buttonReadyOrNotText.gameObject.activeSelf)
             {
-                buttonStartGameText.gameObject.SetActive(false);
+                buttonReadyOrNotText.gameObject.SetActive(false);
             }
         }
 
         else
         {
-            buttonStartGame.interactable = false;
+            buttonReadyOrNot.interactable = false;
+        }
+    }
+
+    private void OnStopStartingGameIfCurrentPlayersChange()
+    {
+        if (countdownCoroutine != null)
+        {
+            StopCoroutine(countdownCoroutine);
+            countdownCoroutine = null;
+
+            countdownText.text = "Waiting for all players to be ready";
         }
     }
 
@@ -132,6 +176,65 @@ public class RoomUI : MonoBehaviour
             {
                 roomPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
             }
+        }
+    }
+
+    private void GetComponents()
+    {
+        photonView = GetComponent<PhotonView>();    
+    }
+
+    private void CheckAllPlayersReady()
+    {
+        Player[] players = PhotonNetwork.PlayerList;
+        foreach (var player in players)
+        {
+            if (!player.CustomProperties.ContainsKey("IsReady") || !(bool)player.CustomProperties["IsReady"])
+            {
+                return; // Si alguien no esta lista finalizar
+            }
+        }
+
+        if (countdownCoroutine == null)
+        {
+            countdownCoroutine = StartCoroutine(StartGameCountdown());
+        }
+    }
+
+    private System.Collections.IEnumerator StartGameCountdown()
+    {
+        float countdown = 4f;
+        while (countdown > 0)
+        {
+            photonView.RPC("UpdateCountdownText", RpcTarget.All, Mathf.CeilToInt(countdown));
+
+            yield return new WaitForSeconds(1f);
+            countdown -= 1f;
+        }
+
+        photonView.RPC("UpdateCountdownText", RpcTarget.All, 0);
+        yield return new WaitForSeconds(1f);
+
+        if (PhotonNetworkManager.Instance.IsHost)
+        {
+            ScenesManager.Instance.LoadScene("Level1");
+            PhotonNetworkManager.Instance.CloseRoom();
+        }
+
+        countdownCoroutine = null;
+    }
+
+    [PunRPC]
+    private void UpdateCountdownText(int timeLeft)
+    {
+        if (timeLeft > 0)
+        {
+            countdownText.text = $"Game starting in {timeLeft}...";
+        }
+
+        else
+        {
+            countdownText.text = "Starting!";
         }
     }
 

@@ -29,7 +29,6 @@ public class GameUI : MonoBehaviour
         ShowOrHidePodiumPanel();
     }
 
-
     public void ButtonYes()
     {
         onPlayerLeaveRoomFrameEarlier?.Invoke();
@@ -58,6 +57,7 @@ public class GameUI : MonoBehaviour
             else
             {
                 panelBackToMainMenu.SetActive(true);
+                podiumPanel.SetActive(false);
                 OnSetMainMenuState?.Invoke(false);
                 HybridCursorManager.Instance.SetUIPointer();
             }
@@ -66,6 +66,8 @@ public class GameUI : MonoBehaviour
 
     private void ShowOrHidePodiumPanel()
     {
+        if (panelBackToMainMenu.activeSelf) return;
+
         podiumPanel.SetActive(PlayerInputsManager.Instance.TabUI());
     }
 }

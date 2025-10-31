@@ -31,7 +31,6 @@ public class PlayerModel : MonoBehaviourPun
     private int currentHealth;
     private int minHealth = 1;
 
-    
     private bool isGrounded;
     private bool acceptingInput;
 
@@ -218,7 +217,7 @@ public class PlayerModel : MonoBehaviourPun
         Player attackerPlayer = PhotonNetwork.CurrentRoom.GetPlayer(attackerActorNumber);
         if (attackerPlayer != null)
         {
-            PodiumManager.Instance.AddScore(attackerPlayer, 1);
+            StatsManager.Instance.AddScore(attackerPlayer, 1);
         }
     }
 
@@ -226,7 +225,8 @@ public class PlayerModel : MonoBehaviourPun
     {
         PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
         PhotonNetwork.Instantiate("Prefabs/Player/blood", transform.position, Quaternion.identity);
-        PodiumManager.Instance.AddDeath(1);
+        StatsManager.Instance.AddDeath(1);
+
         yield return null;
 
         UnregisterPlayer();

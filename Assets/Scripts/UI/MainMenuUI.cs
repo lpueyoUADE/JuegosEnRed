@@ -6,20 +6,13 @@ using UnityEngine;
 
 public class MainMenuUI : MonoBehaviour
 {
-    [Header("Main Menu")]
+    [Header("UI Panels")]
     [SerializeField] private GameObject mainMenuPanel;
-
-    [Header("Create Room")]
     [SerializeField] private ConnectionToRoomPanel createRoomPanel;
-
-    [Header("Join Room")]
     [SerializeField] private ConnectionToRoomPanel joinRoomPanel;
-
-    [Header("Settings")]
     [SerializeField] private GameObject settingsPanel;
-
-    [Header("Credits")]
     [SerializeField] private GameObject creditsPanel;
+    [SerializeField] private GameObject howToPlayPanel;
     void Awake()
     {
         SuscribeToPhotonNetworkManagerEvents();
@@ -31,7 +24,8 @@ public class MainMenuUI : MonoBehaviour
         CreateRoom,
         JoinRoom,
         Settings,
-        Credits
+        Credits,
+        HowToPlay
     }
 
 
@@ -43,6 +37,7 @@ public class MainMenuUI : MonoBehaviour
         joinRoomPanel.gameObject.SetActive(false);
         settingsPanel.SetActive(false);
         creditsPanel.SetActive(false);
+        howToPlayPanel.SetActive(false);
 
         switch (panelToActivate)
         {
@@ -64,6 +59,10 @@ public class MainMenuUI : MonoBehaviour
 
             case UIPanel.Credits:
                 creditsPanel.SetActive(true);
+                break;
+
+            case UIPanel.HowToPlay:
+                howToPlayPanel.SetActive(true);
                 break;
         }
     }
@@ -153,6 +152,10 @@ public class MainMenuUI : MonoBehaviour
     public void ButtonCredits()
     {
         SetPanels(UIPanel.Credits);
+    }
+    public void ButtonHowToPlay()
+    {
+        SetPanels(UIPanel.HowToPlay);
     }
 
     public void ButtonExitGame()

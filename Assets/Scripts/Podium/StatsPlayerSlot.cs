@@ -3,7 +3,7 @@ using UnityEngine;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 
-public class PodiumPlayerSlot : MonoBehaviour
+public class StatsPlayerSlot : MonoBehaviour
 {
     private Player assignedPlayer;
 

@@ -6,7 +6,7 @@ using System;
 
 public enum GameScenes
 {
-    MainMenu, Room, Level1, Level2, Level3, Level4, Level5
+    MainMenu, Room, Podium, Level1, Level2, Level3, Level4, Level5
 }
 
 public class ScenesManager : SingletonMonoBehaviour<ScenesManager>

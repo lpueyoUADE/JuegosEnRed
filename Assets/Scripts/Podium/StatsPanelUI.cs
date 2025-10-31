@@ -2,10 +2,10 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-public class PodiumPanelUI : MonoBehaviour
+public class StatsPanelUI : MonoBehaviour
 {
     [Header("PlayerInformation:")]
-    [SerializeField] private PodiumPlayerSlot[] podiumPlayerSlots;
+    [SerializeField] private StatsPlayerSlot[] tatsPlayerSlots;
 
 
     void Awake()
@@ -32,7 +32,7 @@ public class PodiumPanelUI : MonoBehaviour
 
     private void RefreshSlots()
     {
-        foreach (var slot in podiumPlayerSlots)
+        foreach (var slot in tatsPlayerSlots)
         {
             slot.ClearPlayerInfoFromSlot();
         }
@@ -43,7 +43,7 @@ public class PodiumPanelUI : MonoBehaviour
         {
             if (i < players.Length)
             {
-                podiumPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
+                tatsPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
             }
         }
     }

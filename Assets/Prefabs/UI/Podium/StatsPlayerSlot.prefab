@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1490933606274150625}
   - component: {fileID: 3128891540549697628}
   m_Layer: 5
-  m_Name: PodiumPlayer
+  m_Name: StatsPlayerSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

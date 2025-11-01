@@ -21,7 +21,6 @@ public class PlayerModel : MonoBehaviourPun
 
     private static event Action<int> onDisableNicknameText;
     private static event Action onPlayerDeath;
-    private static event Action onPlayerWin;
     private static event Action<string, string> onInformPointAcquired;
 
     [SerializeField] private int startingHealth;
@@ -41,7 +40,6 @@ public class PlayerModel : MonoBehaviourPun
 
     public static Action<int> OnDisableNicknameText { get => onDisableNicknameText; set => onDisableNicknameText = value; }
     public static Action OnPlayerDeath { get => onPlayerDeath; set => onPlayerDeath = value; }
-    public static Action OnPlayerWin { get => onPlayerWin; set => onPlayerWin = value; }
     public static Action<string, string> OnInformPointAcquired { get => onInformPointAcquired; set => onInformPointAcquired = value; }
 
     public int CurrentHealth { get => currentHealth; }
@@ -348,7 +346,7 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            GameObject boomerangGO = PhotonNetwork.Instantiate("Prefabs/Boomerangs/BoomerangReturnable", boomerangHandPosition.position, Quaternion.identity);
+            GameObject boomerangGO = PhotonNetwork.Instantiate("Prefabs/Boomerangs/BoomerangDefault", boomerangHandPosition.position, Quaternion.identity);
             boomerangController = boomerangGO.GetComponent<BoomerangController>();
             boomerangController.BoomerangModel.photonView.RPC("Initialize", RpcTarget.All, photonView.OwnerActorNr);
         }

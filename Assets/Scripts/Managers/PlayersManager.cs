@@ -90,8 +90,13 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
         if (!PhotonNetworkManager.Instance.IsHost) yield break;
 
+        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < 2)
+        {
+            ScenesManager.Instance.LoadScene("Podium");
+            yield break;
+        }
+
         string currentSceneName = SceneManager.GetActiveScene().name;
-        //ScenesManager.Instance.LoadScene("Podium");
 
         if (Enum.TryParse(currentSceneName, out GameScenes currentSceneEnum))
         {

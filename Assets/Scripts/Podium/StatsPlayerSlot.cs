@@ -36,8 +36,8 @@ public class StatsPlayerSlot : MonoBehaviour
             Color playerColor = PlayerSkinManager.Instance.PlayerSkins[skinIndex];
 
             playerNameText.color = playerColor;
-            playerCurrentScore.color = playerColor;
-            playerCurrentDeaths.color = playerColor;
+            //playerCurrentScore.color = playerColor;
+            //playerCurrentDeaths.color = playerColor;
         }
     }
 

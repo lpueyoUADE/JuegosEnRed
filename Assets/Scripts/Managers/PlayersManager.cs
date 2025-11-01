@@ -11,6 +11,8 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
     [SerializeField] private float cameraEffectDuringTime;
 
+    public List<PlayerModel> CurrentPlayers { get => currentPlayers; }
+
 
     void Awake()
     {
@@ -75,11 +77,6 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
     {
         if (currentPlayers.Count > 1) return;
 
-        for (int i = 0; i < currentPlayers.Count; i++)
-        {
-            currentPlayers[i].AcceptingInput = false;
-        }
-
         StartCoroutine(WaitSomeSecondsToChangeScene());
     }
 
@@ -91,18 +88,12 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
         currentPlayers.Clear();
 
-        /*foreach (var player in Instance.currentPlayers.ToArray())
-        {
-            if (player.photonView.IsMine)
-            {
-                PhotonNetwork.Destroy(player.gameObject);
-            }
-        }*/
+        if (!PhotonNetworkManager.Instance.IsHost) yield break;
 
         string currentSceneName = SceneManager.GetActiveScene().name;
-        ScenesManager.Instance.LoadScene("Podium");
+        //ScenesManager.Instance.LoadScene("Podium");
 
-        /*if (Enum.TryParse(currentSceneName, out GameScenes currentSceneEnum))
+        if (Enum.TryParse(currentSceneName, out GameScenes currentSceneEnum))
         {
             int nextSceneValue = (int)currentSceneEnum + 1;
 
@@ -114,7 +105,7 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
             GameScenes nextSceneEnum = (GameScenes)nextSceneValue;
             ScenesManager.Instance.LoadScene(nextSceneEnum.ToString());
-        }*/
+        }
     }
 
     private IEnumerator ZoomToPlayerBeforeSceneChange(float duration)

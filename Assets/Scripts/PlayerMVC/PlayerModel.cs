@@ -17,6 +17,7 @@ public class PlayerModel : MonoBehaviourPun
     private Transform boomerangHandPosition;
 
     private Coroutine damageFlashCoroutine;
+    private Coroutine healthBarCoroutine;
 
     private static event Action<int> onDisableNicknameText;
     private static event Action onPlayerDeath;
@@ -34,6 +35,7 @@ public class PlayerModel : MonoBehaviourPun
 
     private bool isGrounded;
     private bool acceptingInput;
+    private bool hasWonTheRound = false;
 
     public Transform BoomerangHandPosition { get => boomerangHandPosition; }
 
@@ -67,6 +69,7 @@ public class PlayerModel : MonoBehaviourPun
     void UpdatePlayerModel()
     {
         RotatePlayer();
+        CheckIfImRoundWinnerToAddScore();
     }
 
     // Simulacion de FixedUpdate
@@ -169,7 +172,13 @@ public class PlayerModel : MonoBehaviourPun
     private void UpdateHealthBar(int newHealth)
     {
         currentHealth = newHealth;
-        healthBar.value = currentHealth;
+
+        if (healthBarCoroutine != null)
+        {
+            StopCoroutine(healthBarCoroutine);
+        }
+
+        healthBarCoroutine = StartCoroutine(AnimateHealthBar(newHealth));
     }
 
     [PunRPC]
@@ -231,6 +240,19 @@ public class PlayerModel : MonoBehaviourPun
         }
     }
 
+    private void CheckIfImRoundWinnerToAddScore()
+    {
+        if (photonView.IsMine)
+        {
+            if (PlayersManager.Instance.CurrentPlayers.Count < 2 && !hasWonTheRound)
+            {
+                hasWonTheRound = true;
+                acceptingInput = false;
+                StatsManager.Instance.AddScore(photonView.Owner, 1);
+            }
+        }
+    }
+
     private IEnumerator Death()
     {
         PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
@@ -271,6 +293,7 @@ public class PlayerModel : MonoBehaviourPun
     {
         PlayersManager.Instance.photonView.RPC("UnregisterPlayerForAll", RpcTarget.All, myViewId);
         PlayersManager.Instance.UnregisterMeForMe(this);
+        ///onPlayerDeath?.Invoke();
     }
 
     private void GetComponents()
@@ -382,5 +405,24 @@ public class PlayerModel : MonoBehaviourPun
             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f); // visible
             yield return new WaitForSeconds(0.1f);
         }
+    }
+
+    private IEnumerator AnimateHealthBar(int targetHealth)
+    {
+        float duration = 0.35f; // tiempo total de la animación
+        float elapsedTime = 0f;
+        float startValue = healthBar.value;
+        float endValue = targetHealth;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            healthBar.value = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
+
+            yield return null; 
+        }
+
+        healthBar.value = endValue; 
     }
 }

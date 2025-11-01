@@ -119,6 +119,16 @@ public class RoomUI : MonoBehaviour
         {
             if (PhotonNetworkManager.Instance.IsHost)
             {
+                bool isReady = (bool)changedProps["IsReady"];
+                if (!isReady && countdownCoroutine != null)
+                {
+                    StopCoroutine(countdownCoroutine);
+                    countdownCoroutine = null;
+                    photonView.RPC("UpdateCountdownText", RpcTarget.All, -1); // -1 indica reset
+                    return;
+                }
+
+                // Si nadie se bajó, seguimos chequeando si todos están ready
                 CheckAllPlayersReady();
             }
         }
@@ -150,16 +160,15 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    // Poner abajo el texto waiting
     private void OnStopStartingGameIfCurrentPlayersChange()
     {
         if (countdownCoroutine != null)
         {
             StopCoroutine(countdownCoroutine);
             countdownCoroutine = null;
-
-            countdownText.text = "Waiting for all players to be ready";
         }
+
+        countdownText.text = "Waiting for all players to be ready";
     }
 
     private void OnRefreshSlots()
@@ -233,9 +242,14 @@ public class RoomUI : MonoBehaviour
             countdownText.text = $"Game starting in {timeLeft}...";
         }
 
-        else
+        else if (timeLeft == 0)
         {
             countdownText.text = "Starting!";
+        }
+
+        else if (timeLeft == -1) // Valor para reiniciar el mensaje
+        {
+            countdownText.text = "Waiting for all players to be ready";
         }
     }
 

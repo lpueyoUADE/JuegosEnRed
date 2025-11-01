@@ -13,12 +13,6 @@ public class PodiumPlayerSlot : MonoBehaviour
     [SerializeField] private Image skinPreview;
 
 
-    void Awake()
-    {
-
-    }
-
-
     public void AssignPlayerInfoToSlot(Player player)
     {
         assignedPlayer = player;
@@ -31,7 +25,7 @@ public class PodiumPlayerSlot : MonoBehaviour
             int skinIndex = (int)player.CustomProperties["SkinIndex"];
             Color playerColor = PlayerSkinManager.Instance.PlayerSkins[skinIndex];
 
-            //playerNameText.color = playerColor;
+            playerNameText.color = playerColor;
             //playerCurrentScore.color = playerColor;
             //playerCurrentDeaths.color = playerColor;
             skinPreview.color = playerColor;

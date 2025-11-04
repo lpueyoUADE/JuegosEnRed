@@ -984,7 +984,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Damage: 2'
+  m_text: 'Damage: 1'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}
   m_sharedMaterial: {fileID: 564356611108812108, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}
@@ -1119,7 +1119,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Speed: Fast'
+  m_text: 'Speed: NORMAL'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}
   m_sharedMaterial: {fileID: 564356611108812108, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}
@@ -2879,7 +2879,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Speed: SLOW'
+  m_text: 'Speed: HIGH'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}
   m_sharedMaterial: {fileID: 564356611108812108, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}
@@ -3437,7 +3437,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: HEAVY BANANA
+  m_text: FAST BANANA
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}
   m_sharedMaterial: {fileID: 564356611108812108, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}

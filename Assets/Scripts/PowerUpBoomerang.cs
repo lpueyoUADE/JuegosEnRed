@@ -21,7 +21,6 @@ public class PowerUpBoomerang : MonoBehaviourPun
     void Update()
     {
         MoveUpAndDown();
-        RotateLeftAndRight();
     }
 
     void OnTriggerEnter2D(Collider2D collder)

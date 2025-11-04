@@ -242,7 +242,8 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            if (PlayersManager.Instance.CurrentPlayers.Count < 2 && !hasWonTheRound)
+            if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() == 1) return;
+            if (PlayersManager.Instance.CurrentPlayers.Count < 2 && !hasWonTheRound && currentHealth >= minHealth)
             {
                 hasWonTheRound = true;
                 acceptingInput = false;

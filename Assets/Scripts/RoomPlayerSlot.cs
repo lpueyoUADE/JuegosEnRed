@@ -11,7 +11,7 @@ public class RoomPlayerSlot : MonoBehaviour
 
     [SerializeField] private TMP_Text playerNameText;
     [SerializeField] private Image skinPreview;
-    [SerializeField] private Image readyIndicator;
+    [SerializeField] private ReadyOrNotController readyIndicator;
     [SerializeField] private Button prevButton;
     [SerializeField] private Button nextButton;
 
@@ -44,7 +44,7 @@ public class RoomPlayerSlot : MonoBehaviour
         }
 
         bool isReady = player.CustomProperties.ContainsKey("IsReady") && (bool)player.CustomProperties["IsReady"];
-        readyIndicator.color = isReady ? Color.green : Color.red;
+        readyIndicator.SetStatus(isReady);
         readyIndicator.gameObject.SetActive(true);
 
         if (player.CustomProperties.ContainsKey("SkinIndex"))
@@ -66,7 +66,7 @@ public class RoomPlayerSlot : MonoBehaviour
     public void ClearPlayerInfoFromSlot()
     {
         assignedPlayer = null;
-        readyIndicator.color = Color.red;
+        readyIndicator.SetStatus(false);
         readyIndicator.gameObject.SetActive(false);
         playerNameText.text = string.Empty;
         skinPreview.color = Color.black;
@@ -101,7 +101,7 @@ public class RoomPlayerSlot : MonoBehaviour
         if (assignedPlayer != null && targetPlayer == assignedPlayer && changedProps.ContainsKey("IsReady"))
         {
             bool isReady = (bool)changedProps["IsReady"];
-            readyIndicator.color = isReady ? Color.green : Color.red;
+            readyIndicator.SetStatus(isReady);
         }
     }
 }

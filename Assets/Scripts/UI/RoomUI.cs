@@ -54,7 +54,7 @@ public class RoomUI : MonoBehaviour
 
         bool currentReadyState = localPlayer.CustomProperties.ContainsKey("IsReady") && (bool)localPlayer.CustomProperties["IsReady"];
         bool newReadyState = !currentReadyState;
-
+        buttonReadyOrNotText.text = newReadyState ? "CANCEL" : "READY";
         Hashtable props = new Hashtable();
         props["IsReady"] = newReadyState;
         localPlayer.SetCustomProperties(props);

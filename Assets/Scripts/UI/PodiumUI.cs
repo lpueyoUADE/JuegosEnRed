@@ -15,7 +15,10 @@ public class PodiumUI : MonoBehaviour
         HybridCursorManager.Instance.SetUIPointer();
         AssignPodiumPlayers();
     }
-
+    private void Start()
+    {
+        AudioManager.Instance.PlayMusic(MusicTrack.Victory);
+    }
     void Update()
     {
         ShowOrHidePanelToGoBackToMainMenu();

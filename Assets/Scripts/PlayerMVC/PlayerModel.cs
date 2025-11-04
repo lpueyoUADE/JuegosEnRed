@@ -225,7 +225,7 @@ public class PlayerModel : MonoBehaviourPun
     private void OnInformPointAcquiredRPC(string killer, string killed)
     {
         onInformPointAcquired?.Invoke(killer, killed);
-        Debug.Log(killer + "Mato a " + killed);
+        NotificationsUI.Notify(killer + " Mato a " + killed);
     }
 
     private void AddPointToAttackerPlayer(int attackerActorNumber)

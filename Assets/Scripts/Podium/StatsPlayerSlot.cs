@@ -25,11 +25,12 @@ public class StatsPlayerSlot : MonoBehaviour
 
     public void AssignPlayerInfoToSlot(Player player)
     {
+        gameObject.SetActive(true);
+
         assignedPlayer = player;
         playerNameText.text = player.NickName;
         playerCurrentScore.text = player.CustomProperties["Score"].ToString();
         playerCurrentDeaths.text = player.CustomProperties["Deaths"].ToString();
-
         if (player.CustomProperties.ContainsKey("SkinIndex"))
         {
             int skinIndex = (int)player.CustomProperties["SkinIndex"];
@@ -47,6 +48,7 @@ public class StatsPlayerSlot : MonoBehaviour
         playerNameText.text = string.Empty;
         playerCurrentScore.text = string.Empty;
         playerCurrentDeaths.text = string.Empty;
+        gameObject.SetActive(false);
     }
 
 

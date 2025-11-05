@@ -66,7 +66,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     {
         Debug.Log($"El jugador {newPlayer.NickName} se unió a la room");
         onPlayerEnteredRoomEvent?.Invoke();
-        NotificationsUI.Notify($"El jugador {newPlayer.NickName} se unió a la room");
+        NotificationsUI.Notify($"{newPlayer.NickName} join the room");
     }
 
     // Se ejecuta en todas las instancias cuando alguien abandona una room
@@ -74,7 +74,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     {
         Debug.Log($"El jugador {otherPlayer.NickName} se fue de la room");
         onPlayerLeftRoomEvent?.Invoke();
-        NotificationsUI.Notify($"El jugador {otherPlayer.NickName} se fue de la room");
+        NotificationsUI.Notify($"{otherPlayer.NickName} left the room");
     }
 
     // Se ejecuta cuando no se puede crear una room

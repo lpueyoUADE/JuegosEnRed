@@ -4761,5 +4761,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeadPlayerViewPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 3536792489136556535, guid: c2f220a37884e0a4eb699c260b4f8d9f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2f220a37884e0a4eb699c260b4f8d9f, type: 3}

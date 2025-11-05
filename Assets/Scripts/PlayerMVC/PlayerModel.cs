@@ -21,7 +21,7 @@ public class PlayerModel : MonoBehaviourPun
 
     private static event Action<int> onDisableNicknameText;
     private static event Action onPlayerDeath;
-    private static event Action<string, string> onInformPointAcquired;
+    private static event Action onPlayerWinCurrentRound;
 
     [SerializeField] private int startingHealth;
 
@@ -39,8 +39,8 @@ public class PlayerModel : MonoBehaviourPun
     public Transform BoomerangHandPosition { get => boomerangHandPosition; }
 
     public static Action<int> OnDisableNicknameText { get => onDisableNicknameText; set => onDisableNicknameText = value; }
+    public static Action OnPlayerWinCurrentRound { get => onPlayerWinCurrentRound; set => onPlayerWinCurrentRound = value; }
     public static Action OnPlayerDeath { get => onPlayerDeath; set => onPlayerDeath = value; }
-    public static Action<string, string> OnInformPointAcquired { get => onInformPointAcquired; set => onInformPointAcquired = value; }
 
     public int CurrentHealth { get => currentHealth; }
     public int MinHealth { get => minHealth; }
@@ -224,8 +224,7 @@ public class PlayerModel : MonoBehaviourPun
     [PunRPC]
     private void OnInformPointAcquiredRPC(string killer, string killed)
     {
-        onInformPointAcquired?.Invoke(killer, killed);
-        NotificationsUI.Notify(killer + " Mato a " + killed);
+        NotificationsUI.Notify(killer + " killed " + killed);
     }
 
     private void AddPointToAttackerPlayer(int attackerActorNumber)
@@ -248,6 +247,7 @@ public class PlayerModel : MonoBehaviourPun
                 hasWonTheRound = true;
                 acceptingInput = false;
                 StatsManager.Instance.AddScore(photonView.Owner, 1);
+                onPlayerWinCurrentRound?.Invoke();
             }
         }
     }

@@ -22,16 +22,24 @@ public class FinalScreensUI : MonoBehaviour
     private void SuscribeToPlayerModelEvents()
     {
         PlayerModel.OnPlayerDeath += OnShowLoosePanel;
+        PlayerModel.OnPlayerWinCurrentRound += OnShowWinPanel;
     }
 
     private void UnsuscribeToPlayerModelEvents()
     {
         PlayerModel.OnPlayerDeath -= OnShowLoosePanel;
+        PlayerModel.OnPlayerWinCurrentRound -= OnShowWinPanel;
     }
 
     private void OnShowLoosePanel()
     {
         panel.SetActive(true);
         looseText.SetActive(true);
+    }
+
+    private void OnShowWinPanel()
+    {
+        panel.SetActive(true);
+        winText.SetActive(true);
     }
 }

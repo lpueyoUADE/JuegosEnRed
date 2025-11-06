@@ -227,6 +227,13 @@ public class PlayerModel : MonoBehaviourPun
         NotificationsUI.Notify(killer + " killed " + killed);
     }
 
+    [PunRPC]
+    private void DisablePhysicsIfImRoundWinner()
+    {
+        rb.velocity = Vector3.zero;
+        rb.bodyType = RigidbodyType2D.Static;
+    }
+
     private void AddPointToAttackerPlayer(int attackerActorNumber)
     {
         Player attackerPlayer = PhotonNetwork.CurrentRoom.GetPlayer(attackerActorNumber);
@@ -244,6 +251,7 @@ public class PlayerModel : MonoBehaviourPun
             if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() == 1) return;
             if (PlayersManager.Instance.CurrentPlayers.Count < 2 && !hasWonTheRound && currentHealth >= minHealth)
             {
+                photonView.RPC("DisablePhysicsIfImRoundWinner", RpcTarget.All);
                 hasWonTheRound = true;
                 acceptingInput = false;
                 StatsManager.Instance.AddScore(photonView.Owner, 1);
@@ -355,6 +363,8 @@ public class PlayerModel : MonoBehaviourPun
 
     private void Movement()
     {
+        animator.SetFloat("velocity", Mathf.Abs(rb.velocity.x));
+
         if (photonView.IsMine)
         {
             if (!acceptingInput) return;
@@ -362,8 +372,6 @@ public class PlayerModel : MonoBehaviourPun
             Vector2 move = PlayerInputsManager.Instance.GetMoveAxis();
             rb.velocity = new Vector2(move.normalized.x * speed, rb.velocity.y);
         }
-
-        animator.SetFloat("velocity", Mathf.Abs(rb.velocity.x));
     }
 
     private void CheckIsOnFloor()
@@ -371,7 +379,7 @@ public class PlayerModel : MonoBehaviourPun
         if (photonView.IsMine)
         {
             float extraHeight = 0.1f;
-            RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size * new Vector2(0.9f, 1f), 0f, Vector2.down, extraHeight, LayerMask.GetMask("Floor"));
+            RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size * new Vector2(0.9f, 1f), 0f, Vector2.down, extraHeight, LayerMask.GetMask("Floor", "Player"));
 
             isGrounded = hit.collider != null;
         }

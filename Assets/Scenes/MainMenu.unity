@@ -4122,7 +4122,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Rojas Aleiso\r\nAberastury I\xF1aki \r\nNeu Carrasco Francisco \r\nPulice
+  m_text: "Rojas Aleiso\r\nAberastury I\xF1aki \r\nNeu Carrasco Franco \r\nPulice
     Gian\r\nPueyo Luciano\r"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 90e3a627442b50443b1d4dceed6e3ea1, type: 2}

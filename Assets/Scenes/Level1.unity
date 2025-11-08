@@ -134,7 +134,7 @@ GameObject:
   m_Layer: 0
   m_Name: Spawn7
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1417,7 +1417,7 @@ GameObject:
   m_Layer: 0
   m_Name: Spawn5
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1839,7 +1839,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &914350923
 GameObject:
@@ -1853,7 +1853,7 @@ GameObject:
   m_Layer: 0
   m_Name: Spawn4
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1884,7 +1884,7 @@ GameObject:
   m_Layer: 0
   m_Name: Spawn3
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1973,7 +1973,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!1 &1025871213
 GameObject:
@@ -2320,7 +2320,7 @@ GameObject:
   m_Layer: 0
   m_Name: Spawn2
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -2604,7 +2604,7 @@ GameObject:
   m_Layer: 0
   m_Name: Spawn1
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4374,7 +4374,7 @@ GameObject:
   m_Layer: 0
   m_Name: Spawn6
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4513,7 +4513,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 394637645031704148, guid: ce65621c5e69c784da2f1f398794a0f6, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 394637645031704148, guid: ce65621c5e69c784da2f1f398794a0f6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4739,11 +4739,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3536792488828753264, guid: c2f220a37884e0a4eb699c260b4f8d9f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.030029297
       objectReference: {fileID: 0}
     - target: {fileID: 3536792488828753264, guid: c2f220a37884e0a4eb699c260b4f8d9f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.10900879
       objectReference: {fileID: 0}
     - target: {fileID: 3536792488828753264, guid: c2f220a37884e0a4eb699c260b4f8d9f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4761,7 +4761,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeadPlayerViewPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 3536792488828753267, guid: c2f220a37884e0a4eb699c260b4f8d9f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3536792489136556535, guid: c2f220a37884e0a4eb699c260b4f8d9f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3536792489793948753, guid: c2f220a37884e0a4eb699c260b4f8d9f, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}

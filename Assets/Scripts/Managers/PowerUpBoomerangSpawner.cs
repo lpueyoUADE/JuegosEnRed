@@ -24,14 +24,13 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
 
         counterSpawnBoomerang += Time.deltaTime;
 
-        if (counterSpawnBoomerang >= timeToSpawnNewBoomerang)
+        if (counterSpawnBoomerang >= timeToSpawnNewBoomerang || Input.GetKeyDown(KeyCode.K))
         {
             int randomSpawnPosition = Random.Range(0, spawnPositions.Count);
             int randomPowerUp = Random.Range(0, powerUpPrefabs.Count);
 
             PhotonNetwork.Instantiate("Prefabs/PowerUpBoomerangs/" + powerUpPrefabs[randomPowerUp].name, spawnPositions[randomSpawnPosition].position, Quaternion.identity);
             counterSpawnBoomerang = 0;
-            //timeToSpawnNewBoomerang *= 1.5f;
         }
     }
 }

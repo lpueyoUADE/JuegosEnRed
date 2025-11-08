@@ -13,6 +13,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject creditsPanel;
     [SerializeField] private GameObject howToPlayPanel;
+    [SerializeField] private GameObject LeaderboardPanel;
     void Awake()
     {
         SuscribeToPhotonNetworkManagerEvents();
@@ -25,7 +26,8 @@ public class MainMenuUI : MonoBehaviour
         JoinRoom,
         Settings,
         Credits,
-        HowToPlay
+        HowToPlay,
+        Leaderboard
     }
 
 
@@ -38,6 +40,7 @@ public class MainMenuUI : MonoBehaviour
         settingsPanel.SetActive(false);
         creditsPanel.SetActive(false);
         howToPlayPanel.SetActive(false);
+        LeaderboardPanel.SetActive(false);
 
         switch (panelToActivate)
         {
@@ -63,6 +66,10 @@ public class MainMenuUI : MonoBehaviour
 
             case UIPanel.HowToPlay:
                 howToPlayPanel.SetActive(true);
+                break;
+
+            case UIPanel.Leaderboard:
+                LeaderboardPanel.SetActive(true);
                 break;
         }
     }
@@ -156,6 +163,11 @@ public class MainMenuUI : MonoBehaviour
     public void ButtonHowToPlay()
     {
         SetPanels(UIPanel.HowToPlay);
+    }
+
+    public void ButtonLeaderboard()
+    {
+        SetPanels(UIPanel.Leaderboard);
     }
 
     public void ButtonExitGame()

@@ -102,6 +102,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public void SetNickName(string nickName)
     {
         PhotonNetwork.NickName = nickName;
+        StartCoroutine(LootLockerManager.Instance.SetPlayerNameRoutine(nickName));
     }
 
     public void CreateRoom(string roomName, string password)

@@ -6,7 +6,7 @@ using System;
 
 public enum GameScenes
 {
-    MainMenu, Room, Podium, Level1, Level2, Level3, Level4, Level5
+    MainMenu, Room, Level1, Level2, Level3, Podium
 }
 
 public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
@@ -22,12 +22,12 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
     [SerializeField] private float duringTimeExitGamePanel;
 
     private bool isInLoadingScenePanel = false;
-    //private bool isInExitGamePanel = false;
+    private bool isInExitGamePanel = false;
 
     public Action OnSceneGameLoaded { get => onSceneGameLoaded; set => onSceneGameLoaded = value; }
 
     public bool IsInLoadingScenePanel { get => isInLoadingScenePanel; }
-    //public bool IsInExitGamePanel { get => isInExitGamePanel; }
+    public bool IsInExitGamePanel { get => isInExitGamePanel; }
 
 
     void Awake()
@@ -55,7 +55,7 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
     public IEnumerator ExitGame()
     {
         exitGamePanel.SetActive(true);
-        //isInExitGamePanel = true;
+        isInExitGamePanel = true;
 
         yield return new WaitForSecondsRealtime(duringTimeExitGamePanel);
 

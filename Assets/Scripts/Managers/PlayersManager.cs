@@ -2,14 +2,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.Collections;
-using UnityEngine.SceneManagement;
-using System;
 
 public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 {
     [SerializeField] private List<PlayerModel> currentPlayers;
 
     [SerializeField] private float cameraEffectDuringTime;
+
+    [Header("Rondas")]
+    [SerializeField] private int totalRounds = 6;
+    private int currentRound = 0;
+
+    [Header("Niveles")]
+    [SerializeField] private List<GameScenes> levels;
+    private List<GameScenes> currentLevels;
 
     public List<PlayerModel> CurrentPlayers { get => currentPlayers; }
 
@@ -21,6 +27,7 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
     void Start()
     {
+        InitCurrentLevels();
         SuscribeToPlayerModelEvent();
     }
 
@@ -52,6 +59,28 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
             }
         }
     }
+
+    public GameScenes PickAndRemoveLevel()
+    {
+        GameScenes level = PickRandomLevel();
+
+        if (currentLevels.Count == 0)
+        {
+            InitCurrentLevels();
+        }
+
+        return level;
+    }
+
+    private GameScenes PickRandomLevel()
+    {
+        int index = Random.Range(0, currentLevels.Count);
+        GameScenes level = currentLevels[index];
+        currentLevels.RemoveAt(index);
+
+        return level;
+    }
+
 
     public void UnregisterMeForMe(PlayerModel me)
     {
@@ -90,27 +119,28 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
         if (!PhotonNetworkManager.Instance.IsHost) yield break;
 
-        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < 2)
+        // Si se fueron todos los players de la room ir directo a la escena "Podium"
+        /*if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < 2)
         {
+            currentRound = 0;
+            InitCurrentLevels();
+            ScenesManager.Instance.LoadScene("Podium");
+            yield break;
+        }*/
+
+        currentRound++;
+
+        // Si ya jugamos todas las rondas ir directo a la escena "Podium"
+        if (currentRound >= totalRounds)
+        {
+            currentRound = 0;
+            InitCurrentLevels();
             ScenesManager.Instance.LoadScene("Podium");
             yield break;
         }
 
-        string currentSceneName = SceneManager.GetActiveScene().name;
-
-        if (Enum.TryParse(currentSceneName, out GameScenes currentSceneEnum))
-        {
-            int nextSceneValue = (int)currentSceneEnum + 1;
-
-            // Si nos pasamos del enum, volvemos al primer nivel
-            if (!Enum.IsDefined(typeof(GameScenes), nextSceneValue) || nextSceneValue < (int)GameScenes.Level1)
-            {
-                nextSceneValue = (int)GameScenes.Level1;
-            }
-
-            GameScenes nextSceneEnum = (GameScenes)nextSceneValue;
-            ScenesManager.Instance.LoadScene(nextSceneEnum.ToString());
-        }
+        // Si llegamos hasta aca pasamos de nivel de forma random
+        ScenesManager.Instance.LoadScene(PickAndRemoveLevel().ToString());
     }
 
     private IEnumerator ZoomToPlayerBeforeSceneChange(float duration)
@@ -143,5 +173,10 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
         mainCam.transform.position = targetPos;
         mainCam.orthographicSize = targetSize;
+    }
+
+    private void InitCurrentLevels()
+    {
+        currentLevels = new List<GameScenes>(levels);
     }
 }

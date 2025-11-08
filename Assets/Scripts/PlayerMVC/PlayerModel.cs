@@ -101,7 +101,7 @@ public class PlayerModel : MonoBehaviourPun
 
         switch (boomerangController.BoomerangModel.BoomerangType)
         {
-            case BoomerangType.Default: case BoomerangType.Fast:
+            case BoomerangType.Default: case BoomerangType.Fast: case BoomerangType.Damageble:
 
                 // Solo se puede traer si está pegado
                 if (boomerangController.BoomerangModel.Rb.velocity.sqrMagnitude == 0)

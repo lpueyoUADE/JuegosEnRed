@@ -4,14 +4,23 @@ using Photon.Pun;
 
 public class PlayerSpawnerManager : MonoBehaviour
 {
-    [SerializeField] private List<Transform> spawnPositions;
+    private List<Transform> spawnPositions = new List<Transform>();
 
 
     void Awake()
     {
+        GetComponents();
         SpawnPlayer();
     }
 
+
+    private void GetComponents()
+    {
+        foreach (Transform child in transform)
+        {
+            spawnPositions.Add(child);
+        }
+    }
 
     private void SpawnPlayer()
     {

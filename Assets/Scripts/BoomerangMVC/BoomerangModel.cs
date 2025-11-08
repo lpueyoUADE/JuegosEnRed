@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum BoomerangType
 {
-    Default, Fast, Returnable
+    Default, Fast, Returnable, Damageble
 }
 
 public class BoomerangModel : MonoBehaviourPun

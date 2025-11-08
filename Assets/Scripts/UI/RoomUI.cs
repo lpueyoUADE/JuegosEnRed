@@ -35,7 +35,7 @@ public class RoomUI : MonoBehaviour
         // Test para empezar a jugar sin que haya otro jugador en la room
         if (Input.GetKeyDown(KeyCode.T) && PhotonNetworkManager.Instance.IsHost)
         {
-            ScenesManager.Instance.LoadScene("Level1");
+            ScenesManager.Instance.LoadScene(PlayersManager.Instance.PickAndRemoveLevel().ToString());
         }
 
         ShowOrHidePanelToGoBackToMainMenu();
@@ -227,7 +227,7 @@ public class RoomUI : MonoBehaviour
 
         if (PhotonNetworkManager.Instance.IsHost)
         {
-            ScenesManager.Instance.LoadScene("Level1");
+            ScenesManager.Instance.LoadScene(PlayersManager.Instance.PickAndRemoveLevel().ToString());
             PhotonNetworkManager.Instance.CloseRoom();
         }
 

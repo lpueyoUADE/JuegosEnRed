@@ -4,19 +4,35 @@ using UnityEngine;
 
 public class PowerUpBoomerangSpawner : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> powerUpPrefabs;
-    [SerializeField] private List<Transform> spawnPositions;
+    private List<GameObject> powerUpPrefabs = new List<GameObject>();
+    private List<Transform> spawnPositions = new List<Transform>();
 
     [SerializeField] private float timeToSpawnNewBoomerang;
 
     private float counterSpawnBoomerang;
 
 
+    void Awake()
+    {
+        GetComponents();
+    }
+
     void Update()
     {
         SpawnRandomPowerUp();
     }
 
+
+    private void GetComponents()
+    {
+        GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>("Prefabs/PowerUpBoomerangs");
+        powerUpPrefabs.AddRange(loadedPrefabs);
+
+        foreach (Transform child in transform)
+        {
+            spawnPositions.Add(child);
+        }
+    }
 
     private void SpawnRandomPowerUp()
     {

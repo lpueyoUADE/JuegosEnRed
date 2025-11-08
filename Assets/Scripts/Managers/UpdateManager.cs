@@ -16,7 +16,7 @@ public class UpdateManager : SingletonMonoBehaviour<UpdateManager>
 
     void Update()
     {
-        if (!ScenesManager.Instance.IsInLoadingScenePanel && TimeManager.Instance.IsCountDownFinished)
+        if (!ScenesManager.Instance.IsInLoadingScenePanel && !ScenesManager.Instance.IsInExitGamePanel && TimeManager.Instance.IsCountDownFinished)
         {
             onUpdate?.Invoke();
         }
@@ -24,7 +24,7 @@ public class UpdateManager : SingletonMonoBehaviour<UpdateManager>
 
     void FixedUpdate()
     {
-        if (!ScenesManager.Instance.IsInLoadingScenePanel && TimeManager.Instance.IsCountDownFinished)
+        if (!ScenesManager.Instance.IsInLoadingScenePanel && !ScenesManager.Instance.IsInExitGamePanel && TimeManager.Instance.IsCountDownFinished)
         {
             onFixedUpdate?.Invoke();
         }

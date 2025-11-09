@@ -42,6 +42,7 @@ public class PlayerModel : MonoBehaviourPun
     public static Action OnPlayerWinCurrentRound { get => onPlayerWinCurrentRound; set => onPlayerWinCurrentRound = value; }
     public static Action OnPlayerDeath { get => onPlayerDeath; set => onPlayerDeath = value; }
 
+    public static Action OnPointAcquired;
     public int CurrentHealth { get => currentHealth; }
     public int MinHealth { get => minHealth; }
 
@@ -225,6 +226,7 @@ public class PlayerModel : MonoBehaviourPun
     private void OnInformPointAcquiredRPC(string killer, string killed)
     {
         NotificationsUI.Notify(killer + " killed " + killed);
+        OnPointAcquired?.Invoke();
     }
 
     [PunRPC]
@@ -239,7 +241,7 @@ public class PlayerModel : MonoBehaviourPun
         Player attackerPlayer = PhotonNetwork.CurrentRoom.GetPlayer(attackerActorNumber);
         if (attackerPlayer != null)
         {
-            photonView.RPC("OnInformPointAcquiredRPC", RpcTarget.All, attackerPlayer.NickName, PhotonNetwork.LocalPlayer.NickName);
+            photonView.RPC(nameof(OnInformPointAcquiredRPC), RpcTarget.All, attackerPlayer.NickName, PhotonNetwork.LocalPlayer.NickName);
             StatsManager.Instance.AddScore(attackerPlayer, 1);
         }
     }

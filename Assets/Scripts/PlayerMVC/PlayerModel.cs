@@ -114,7 +114,6 @@ public class PlayerModel : MonoBehaviourPun
                 // Siempre se puede traer
                 boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.All);
                 break;
-
         } 
     }
 
@@ -289,11 +288,13 @@ public class PlayerModel : MonoBehaviourPun
     private void SuscribeToGameUIEvent()
     {
         GameUI.OnPlayerLeaveRoomFrameEarlier += OnUnregisterPlayerIfLeaveRoom;
+        GameUI.OnSetMainMenuState += OnStopPhysics;
     }
 
     private void UnsuscribeToGameUIEvent()
     {
         GameUI.OnPlayerLeaveRoomFrameEarlier -= OnUnregisterPlayerIfLeaveRoom;
+        GameUI.OnSetMainMenuState -= OnStopPhysics;
     }
 
     private void OnUnregisterPlayerIfLeaveRoom()
@@ -301,6 +302,11 @@ public class PlayerModel : MonoBehaviourPun
         PlayersManager.Instance.photonView.RPC("UnregisterPlayerForAll", RpcTarget.All, myViewId);
         PlayersManager.Instance.UnregisterMeForMe(this);
         ///onPlayerDeath?.Invoke();
+    }
+
+    private void OnStopPhysics(bool state)
+    {
+        rb.velocity = Vector3.zero;
     }
 
     private void GetComponents()
@@ -367,7 +373,11 @@ public class PlayerModel : MonoBehaviourPun
 
         if (photonView.IsMine)
         {
-            if (!acceptingInput) return;
+            if (!acceptingInput)
+            {
+                rb.velocity = new Vector2(0, rb.velocity.y);
+                return;
+            }
 
             Vector2 move = PlayerInputsManager.Instance.GetMoveAxis();
             rb.velocity = new Vector2(move.normalized.x * speed, rb.velocity.y);

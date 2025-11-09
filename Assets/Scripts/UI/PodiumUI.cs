@@ -64,13 +64,13 @@ public class PodiumUI : MonoBehaviour
 
     private void ShowOrHidePanelToGoBackToMainMenu()
     {
-        if (PlayerInputsManager.Instance.BackUI() && panelBackToMainMenu.activeSelf)
+        if (PlayerInputsManager.Instance.Settings() && panelBackToMainMenu.activeSelf)
         {
             panelBackToMainMenu.SetActive(false);
             return;
         }
 
-        else if (PlayerInputsManager.Instance.BackUI() && !panelBackToMainMenu.activeSelf)
+        else if (PlayerInputsManager.Instance.Settings() && !panelBackToMainMenu.activeSelf)
         {
             panelBackToMainMenu.SetActive(true);
             return;

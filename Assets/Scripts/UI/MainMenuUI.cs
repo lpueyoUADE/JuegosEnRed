@@ -74,7 +74,7 @@ public class MainMenuUI : MonoBehaviour
         }
     }
 
-    private void Start()
+    void Start()
     {
         SetPanels(UIPanel.None);
 
@@ -82,30 +82,10 @@ public class MainMenuUI : MonoBehaviour
 
         HybridCursorManager.Instance.SetUIPointer();
     }
+
     void Update()
     {
-        // Test para crear una room rapida automaticamente
-        if (Input.GetKeyDown(KeyCode.T) && !createRoomPanel.gameObject.activeSelf)
-        {
-            string nickName = "Kong777";
-            string roomName = "asd";
-            string roomPassword = "asd";
-
-            PhotonNetworkManager.Instance.CreateRoom(roomName, roomPassword);
-            PhotonNetworkManager.Instance.SetNickName(nickName);
-        }
-
-        // Test para unirse una room rapida automaticamente
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            string nickName = "WUKong1991";
-            string roomName = "asd";
-            string roomPassword = "asd";
-
-            PhotonNetworkManager.Instance.JoinRoom(roomName, roomPassword);
-            PhotonNetworkManager.Instance.SetNickName(nickName);
-        }
-
+        TestCreateOrJoinRoom();
         CleanAllInformation();
     }
 
@@ -214,6 +194,34 @@ public class MainMenuUI : MonoBehaviour
             case ErrorCode.GameFull:
                 joinRoomPanel.errorMessage.text = "The room is full";
                 break;
+        }
+    }
+
+    private void TestCreateOrJoinRoom()
+    {
+        if (TestManager.Instance.UseTestSystem)
+        {
+            // Test para crear una room rapida automaticamente
+            if (Input.GetKeyDown(KeyCode.T) && !createRoomPanel.gameObject.activeSelf)
+            {
+                string nickName = "Kong777";
+                string roomName = "asd";
+                string roomPassword = "asd";
+
+                PhotonNetworkManager.Instance.CreateRoom(roomName, roomPassword);
+                PhotonNetworkManager.Instance.SetNickName(nickName);
+            }
+
+            // Test para unirse una room rapida automaticamente
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                string nickName = "WUKong1991";
+                string roomName = "asd";
+                string roomPassword = "asd";
+
+                PhotonNetworkManager.Instance.JoinRoom(roomName, roomPassword);
+                PhotonNetworkManager.Instance.SetNickName(nickName);
+            }
         }
     }
 

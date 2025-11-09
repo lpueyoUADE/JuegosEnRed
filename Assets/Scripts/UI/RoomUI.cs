@@ -32,12 +32,7 @@ public class RoomUI : MonoBehaviour
 
     void Update()
     {
-        // Test para empezar a jugar sin que haya otro jugador en la room
-        if (Input.GetKeyDown(KeyCode.T) && PhotonNetworkManager.Instance.IsHost)
-        {
-            ScenesManager.Instance.LoadScene(PlayersManager.Instance.PickAndRemoveLevel().ToString());
-        }
-
+        TestStartGame();
         ShowOrHidePanelToGoBackToMainMenu();
     }
 
@@ -194,6 +189,18 @@ public class RoomUI : MonoBehaviour
         photonView = GetComponent<PhotonView>();    
     }
 
+    private void TestStartGame()
+    {
+        if (TestManager.Instance.UseTestSystem)
+        {
+            // Test para empezar a jugar sin que haya otro jugador en la room
+            if (Input.GetKeyDown(KeyCode.T) && PhotonNetworkManager.Instance.IsHost)
+            {
+                ScenesManager.Instance.LoadScene(PlayersManager.Instance.PickAndRemoveLevel().ToString());
+            }
+        }
+    }
+
     private void CheckAllPlayersReady()
     {
         Player[] players = PhotonNetwork.PlayerList;
@@ -255,13 +262,13 @@ public class RoomUI : MonoBehaviour
 
     private void ShowOrHidePanelToGoBackToMainMenu()
     {
-        if (PlayerInputsManager.Instance.BackUI() && panelBackToMainMenu.activeSelf)
+        if (PlayerInputsManager.Instance.Settings() && panelBackToMainMenu.activeSelf)
         {
             panelBackToMainMenu.SetActive(false);
             return;
         }
 
-        else if (PlayerInputsManager.Instance.BackUI() && !panelBackToMainMenu.activeSelf)
+        else if (PlayerInputsManager.Instance.Settings() && !panelBackToMainMenu.activeSelf)
         {
             panelBackToMainMenu.SetActive(true);
             return;

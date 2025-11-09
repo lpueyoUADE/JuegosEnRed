@@ -19,6 +19,9 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
     public List<PlayerModel> CurrentPlayers { get => currentPlayers; }
 
+    public int TotalRounds { get => totalRounds; }
+    public int CurrentRound { get => currentRound; }  
+
 
     void Awake()
     {
@@ -109,6 +112,19 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
         StartCoroutine(WaitSomeSecondsToChangeScene());
     }
 
+    [PunRPC]
+    private void IncreaseCurrentRoundsForAll()
+    {
+        currentRound++;
+    }
+
+    [PunRPC]
+    private void RestartRaoundsAndLevelsForAll()
+    {
+        currentRound = 0;
+        InitCurrentLevels();
+    }
+
     private IEnumerator WaitSomeSecondsToChangeScene()
     {
         yield return StartCoroutine(ZoomToPlayerBeforeSceneChange(cameraEffectDuringTime)); 
@@ -122,19 +138,17 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
         // Si se fueron todos los players de la room ir directo a la escena "Podium"
         /*if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < 2)
         {
-            currentRound = 0;
-            InitCurrentLevels();
+            photonView.RPC("RestartRaoundsAndLevelsForAll", RpcTarget.All);
             ScenesManager.Instance.LoadScene("Podium");
             yield break;
         }*/
 
-        currentRound++;
+        photonView.RPC("IncreaseCurrentRoundsForAll", RpcTarget.All);
 
         // Si ya jugamos todas las rondas ir directo a la escena "Podium"
         if (currentRound >= totalRounds)
         {
-            currentRound = 0;
-            InitCurrentLevels();
+            photonView.RPC("RestartRaoundsAndLevelsForAll", RpcTarget.All);
             ScenesManager.Instance.LoadScene("Podium");
             yield break;
         }

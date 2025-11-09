@@ -62,7 +62,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &9048812292819199157
 MonoBehaviour:
@@ -118,6 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelBackToMainMenu: {fileID: 6950369834111885641}
   podiumPanel: {fileID: 9048812291723176275}
+  textCurrentRound: {fileID: 9048812292176444466}
 --- !u!1001 &7099396262377489243
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -229,6 +230,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2239918076535908872, guid: d1b11a992caf0c842ab737ea3237d0a3, type: 3}
   m_PrefabInstance: {fileID: 7099396262377489243}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9048812292176444466 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2239918074841169769, guid: d1b11a992caf0c842ab737ea3237d0a3, type: 3}
+  m_PrefabInstance: {fileID: 7099396262377489243}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &9048812292385648513
 PrefabInstance:
   m_ObjectHideFlags: 0

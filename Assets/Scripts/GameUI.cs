@@ -2,6 +2,7 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameUI : MonoBehaviour
@@ -9,6 +10,7 @@ public class GameUI : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject panelBackToMainMenu;
     [SerializeField] private GameObject podiumPanel;
+    [SerializeField] private TMP_Text textCurrentRound;
 
     private static event Action onPlayerLeaveRoomFrameEarlier;
     public static event Action<bool> OnSetMainMenuState;
@@ -18,6 +20,7 @@ public class GameUI : MonoBehaviour
 
     void Start()
     {
+        textCurrentRound.text = (PlayersManager.Instance.CurrentRound + 1).ToString() + " / " + PlayersManager.Instance.TotalRounds.ToString();
         AudioManager.Instance.PlayMusic(MusicTrack.Gameplay);
         HybridCursorManager.Instance.SetBattlePointer();
     }
@@ -38,14 +41,14 @@ public class GameUI : MonoBehaviour
     public void ButtonNo()
     {
         panelBackToMainMenu.SetActive(false);
-        OnSetMainMenuState?.Invoke(true);
+        StartCoroutine(EnableInputsNextFrame());
         HybridCursorManager.Instance.SetBattlePointer();
     }
 
 
     private void ShowOrHidePanelToGoBackToMainMenu()
     {
-        if (PlayerInputsManager.Instance.BackUI())
+        if (PlayerInputsManager.Instance.Settings())
         {
             if (panelBackToMainMenu.activeSelf)
             {
@@ -69,5 +72,11 @@ public class GameUI : MonoBehaviour
         if (panelBackToMainMenu.activeSelf) return;
 
         podiumPanel.SetActive(PlayerInputsManager.Instance.TabUI());
+    }
+
+    private IEnumerator EnableInputsNextFrame()
+    {
+        yield return null; // esperar un frame
+        OnSetMainMenuState?.Invoke(true);
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public enum BoomerangType
 {
@@ -268,6 +269,20 @@ public class BoomerangModel : MonoBehaviourPun
             auxiliarPlayerHitActorNumber = hitPlayerActorNr;
             transform.SetParent(playerModel.transform, true);
         }
+    }
+
+    private IEnumerator Corrutine(PlayerModel playerModel, int hitPlayerActorNr)
+    {
+        yield return null;
+
+        if (playerModel.CurrentHealth < playerModel.MinHealth)
+        {
+            photonView.RPC("ReturnBoomerang", RpcTarget.All);
+            yield break;
+        }
+
+        auxiliarPlayerHitActorNumber = hitPlayerActorNr;
+        transform.SetParent(playerModel.transform, true);
     }
 
     [PunRPC]

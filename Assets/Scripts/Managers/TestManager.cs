@@ -9,6 +9,6 @@ public class TestManager : SingletonMonoBehaviour<TestManager>
 
     void Awake()
     {
-        CreateSingleton(false);
+        CreateSingleton(true);
     }
 }

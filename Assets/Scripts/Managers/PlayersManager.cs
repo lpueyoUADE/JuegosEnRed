@@ -37,6 +37,7 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
         SuscribeToPlayerModelEvent();
     }
 
+
     [PunRPC]
     public void RegisterPlayerForAll(int viewID)
     {
@@ -144,12 +145,13 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
         if (!PhotonNetworkManager.Instance.IsHost) yield break;
 
         // Si se fueron todos los players de la room ir directo a la escena "Podium"
-        /*if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < 2)
+        if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < 2)
         {
             photonView.RPC("RestartRaoundsAndLevelsForAll", RpcTarget.All);
-            ScenesManager.Instance.LoadScene("Podium");
+            SceneManager.LoadScene("Podium");
+            //ScenesManager.Instance.LoadScene("Podium");
             yield break;
-        }*/
+        }
 
         photonView.RPC("IncreaseCurrentRoundsForAll", RpcTarget.All);
 

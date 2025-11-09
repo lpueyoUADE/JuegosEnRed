@@ -39,10 +39,9 @@ public class PlayerModel : MonoBehaviourPun
     public Transform BoomerangHandPosition { get => boomerangHandPosition; }
 
     public static Action<int> OnDisableNicknameText { get => onDisableNicknameText; set => onDisableNicknameText = value; }
-    public static Action OnPlayerWinCurrentRound { get => onPlayerWinCurrentRound; set => onPlayerWinCurrentRound = value; }
     public static Action OnPlayerDeath { get => onPlayerDeath; set => onPlayerDeath = value; }
+    public static Action OnPlayerWinCurrentRound { get => onPlayerWinCurrentRound; set => onPlayerWinCurrentRound = value; }
 
-    public static Action OnPointAcquired;
     public int CurrentHealth { get => currentHealth; }
     public int MinHealth { get => minHealth; }
 
@@ -62,6 +61,7 @@ public class PlayerModel : MonoBehaviourPun
         InitializeSkin();
         InitializeHealthAndHealthBar();
         InitializeBoomerang();
+        InitializeLayer();
     }
 
     // Simulacion de Update
@@ -225,7 +225,6 @@ public class PlayerModel : MonoBehaviourPun
     private void OnInformPointAcquiredRPC(string killer, string killed)
     {
         NotificationsUI.Notify(killer + " killed " + killed);
-        OnPointAcquired?.Invoke();
     }
 
     [PunRPC]
@@ -303,7 +302,6 @@ public class PlayerModel : MonoBehaviourPun
     {
         PlayersManager.Instance.photonView.RPC("UnregisterPlayerForAll", RpcTarget.All, myViewId);
         PlayersManager.Instance.UnregisterMeForMe(this);
-        ///onPlayerDeath?.Invoke();
     }
 
     private void OnStopPhysics(bool state)
@@ -366,6 +364,14 @@ public class PlayerModel : MonoBehaviourPun
             GameObject boomerangGO = PhotonNetwork.Instantiate("Prefabs/Boomerangs/BoomerangDefault", boomerangHandPosition.position, Quaternion.identity);
             boomerangController = boomerangGO.GetComponent<BoomerangController>();
             boomerangController.BoomerangModel.photonView.RPC("Initialize", RpcTarget.All, photonView.OwnerActorNr);
+        }
+    }
+
+    private void InitializeLayer()
+    {
+        if (photonView.IsMine)
+        {
+            gameObject.layer = LayerMask.NameToLayer("Default");
         }
     }
 

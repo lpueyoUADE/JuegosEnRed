@@ -2,6 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Linq;
 using UnityEngine;
+using ExitGames.Client.Photon;
 
 public class StatsPanelUI : MonoBehaviour
 {
@@ -10,15 +11,26 @@ public class StatsPanelUI : MonoBehaviour
 
     void Awake()
     {
-        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += RefreshSlots;
-        PlayerModel.OnPointAcquired += RefreshSlots;
+        SuscribeToPhotonNetworkManagerEvent();
         RefreshSlots();
     }
 
     void OnDestroy()
     {
+        UnsuscribeToPhotonNetworkManagerEvent();
+    }
+
+
+    private void SuscribeToPhotonNetworkManagerEvent()
+    {
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += RefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerPropertiesUpdateEvent += RefreshSlots;
+    }
+
+    private void UnsuscribeToPhotonNetworkManagerEvent()
+    {
         PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= RefreshSlots;
-        PlayerModel.OnPointAcquired -= RefreshSlots;
+        PhotonNetworkManager.Instance.OnPlayerPropertiesUpdateEvent -= RefreshSlots;
     }
 
     private void RefreshSlots()
@@ -41,5 +53,10 @@ public class StatsPanelUI : MonoBehaviour
                 statsPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
             }
         }
+    }
+
+    private void RefreshSlots(Player player, Hashtable changedProps)
+    {
+        RefreshSlots();
     }
 }

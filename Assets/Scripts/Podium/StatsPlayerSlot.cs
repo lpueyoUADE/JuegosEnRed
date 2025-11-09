@@ -31,14 +31,10 @@ public class StatsPlayerSlot : MonoBehaviour
         playerNameText.text = player.NickName;
         playerCurrentScore.text = player.CustomProperties["Score"].ToString();
         playerCurrentDeaths.text = player.CustomProperties["Deaths"].ToString();
-        if (player.CustomProperties.ContainsKey("SkinIndex"))
-        {
-            int skinIndex = (int)player.CustomProperties["SkinIndex"];
-            Color playerColor = PlayerSkinManager.Instance.PlayerSkins[skinIndex];
 
-            playerNameText.color = playerColor;
-            //playerCurrentScore.color = playerColor;
-            //playerCurrentDeaths.color = playerColor;
+        if (player.IsLocal)
+        {
+            playerNameText.color = new Color32(255, 165, 0, 255); // Naranja
         }
     }
 

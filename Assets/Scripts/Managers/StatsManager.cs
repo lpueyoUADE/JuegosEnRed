@@ -1,6 +1,7 @@
 using Photon.Pun;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
+using System;
 
 public class StatsManager : SingletonMonoBehaviour<StatsManager>
 {

@@ -1,7 +1,10 @@
+using Photon.Pun;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
-using System.Collections;
+using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 {
@@ -34,7 +37,6 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
         SuscribeToPlayerModelEvent();
     }
 
-
     [PunRPC]
     public void RegisterPlayerForAll(int viewID)
     {
@@ -62,15 +64,21 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
             }
         }
     }
+    private void InitCurrentLevels()
+    {
+        currentLevels = new List<GameScenes>(levels);
+        Enum.TryParse(SceneManager.GetActiveScene().name, out GameScenes currentScene);
+        currentLevels.Remove(currentScene); // Remuevo la escena actual para que no toque repetida
+    }
 
     public GameScenes PickAndRemoveLevel()
     {
-        GameScenes level = PickRandomLevel();
-
         if (currentLevels.Count == 0)
         {
             InitCurrentLevels();
         }
+
+        GameScenes level = PickRandomLevel();
 
         return level;
     }
@@ -187,10 +195,5 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
         mainCam.transform.position = targetPos;
         mainCam.orthographicSize = targetSize;
-    }
-
-    private void InitCurrentLevels()
-    {
-        currentLevels = new List<GameScenes>(levels);
     }
 }

@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using System.Linq;
 using UnityEngine;
 
 public class StatsPanelUI : MonoBehaviour
@@ -7,27 +8,17 @@ public class StatsPanelUI : MonoBehaviour
     [Header("PlayerInformation:")]
     [SerializeField] private StatsPlayerSlot[] statsPlayerSlots;
 
-
     void Awake()
     {
-        SuscribeToPhotonNetworkManagerEvent();
+        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += RefreshSlots;
+        PlayerModel.OnPointAcquired += RefreshSlots;
         RefreshSlots();
     }
 
     void OnDestroy()
     {
-        UnsuscribeToPhotonNetworkManagerEvent();
-    }
-
-
-    private void SuscribeToPhotonNetworkManagerEvent()
-    {
-        PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent += RefreshSlots;
-    }
-
-    private void UnsuscribeToPhotonNetworkManagerEvent()
-    {
         PhotonNetworkManager.Instance.OnPlayerLeftRoomEvent -= RefreshSlots;
+        PlayerModel.OnPointAcquired -= RefreshSlots;
     }
 
     private void RefreshSlots()
@@ -39,7 +30,11 @@ public class StatsPanelUI : MonoBehaviour
 
         // Asignar jugadores actuales
         Player[] players = PhotonNetwork.PlayerList;
-        for (int i = 0; i < 4; i++)
+
+        players = players.OrderByDescending(p => p.CustomProperties.ContainsKey("Score") ? (int)p.CustomProperties["Score"] : 0)
+            .ThenBy(p => p.CustomProperties.ContainsKey("Deaths") ? (int)p.CustomProperties["Deaths"] : 0).ToArray();
+
+        for (int i = 0; i < statsPlayerSlots.Length; i++)
         {
             if (i < players.Length)
             {

@@ -144,7 +144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boomerangType: 1
   damage: 1
-  movementSpeed: 14
+  movementSpeed: 17
   rotationSpeed: 500
   timeToGetBoomerangBackIfIsCollidingWithSomePlayer: 5
   damageCooldown: 1.15
@@ -302,11 +302,11 @@ TrailRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 9
   m_Time: 0.2
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 0.2
     widthCurve:
       serializedVersion: 2
       m_Curve:

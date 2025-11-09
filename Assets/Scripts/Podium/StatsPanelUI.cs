@@ -5,7 +5,7 @@ using UnityEngine;
 public class StatsPanelUI : MonoBehaviour
 {
     [Header("PlayerInformation:")]
-    [SerializeField] private StatsPlayerSlot[] tatsPlayerSlots;
+    [SerializeField] private StatsPlayerSlot[] statsPlayerSlots;
 
 
     void Awake()
@@ -32,7 +32,7 @@ public class StatsPanelUI : MonoBehaviour
 
     private void RefreshSlots()
     {
-        foreach (var slot in tatsPlayerSlots)
+        foreach (var slot in statsPlayerSlots)
         {
             slot.ClearPlayerInfoFromSlot();
         }
@@ -43,7 +43,7 @@ public class StatsPanelUI : MonoBehaviour
         {
             if (i < players.Length)
             {
-                tatsPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
+                statsPlayerSlots[i].AssignPlayerInfoToSlot(players[i]);
             }
         }
     }

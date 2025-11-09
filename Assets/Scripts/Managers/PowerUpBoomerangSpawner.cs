@@ -40,7 +40,7 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
 
         counterSpawnBoomerang += Time.deltaTime;
 
-        if (counterSpawnBoomerang >= timeToSpawnNewBoomerang || Input.GetKeyDown(KeyCode.K))
+        if (counterSpawnBoomerang >= timeToSpawnNewBoomerang)
         {
             int randomSpawnPosition = Random.Range(0, spawnPositions.Count);
             int randomPowerUp = Random.Range(0, powerUpPrefabs.Count);

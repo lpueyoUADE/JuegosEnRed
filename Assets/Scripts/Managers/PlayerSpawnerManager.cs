@@ -4,20 +4,31 @@ using Photon.Pun;
 
 public class PlayerSpawnerManager : MonoBehaviour
 {
-    [SerializeField] private List<Transform> spawnPositions;
+    private List<Transform> spawnPositions = new List<Transform>();
 
 
     void Awake()
     {
+        GetComponents();
         SpawnPlayer();
     }
 
 
+    private void GetComponents()
+    {
+        foreach (Transform child in transform)
+        {
+            spawnPositions.Add(child);
+        }
+    }
+
     private void SpawnPlayer()
     {
-        int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
-        int index = (actorNumber - 1) % spawnPositions.Count;
+        var players = PhotonNetwork.PlayerList; // Jugadores ordenados por Join
+        int index = System.Array.IndexOf(players, PhotonNetwork.LocalPlayer);
 
-        PhotonNetwork.Instantiate("Prefabs/Player/Player", spawnPositions[index].position, Quaternion.identity);
+        GameObject go = PhotonNetwork.Instantiate("Prefabs/Player/Player", spawnPositions[index % spawnPositions.Count].position, Quaternion.identity);
+        PlayerView playerView = go.GetComponent<PlayerView>();
+        playerView.SpawnIndex = index;
     }
 }

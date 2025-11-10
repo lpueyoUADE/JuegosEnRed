@@ -1,15 +1,29 @@
+using Photon.Pun;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
-using System.Collections;
 using UnityEngine.SceneManagement;
-using System;
+using Random = UnityEngine.Random;
 
 public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 {
     [SerializeField] private List<PlayerModel> currentPlayers;
 
     [SerializeField] private float cameraEffectDuringTime;
+
+    [Header("Rondas")]
+    [SerializeField] private int totalRounds = 6;
+    private int currentRound = 0;
+
+    [Header("Niveles")]
+    [SerializeField] private List<GameScenes> levels;
+    private List<GameScenes> currentLevels;
+
+    public List<PlayerModel> CurrentPlayers { get => currentPlayers; }
+
+    public int TotalRounds { get => totalRounds; }
+    public int CurrentRound { get => currentRound; }  
 
 
     void Awake()
@@ -19,9 +33,9 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
     void Start()
     {
+        InitCurrentLevels();
         SuscribeToPlayerModelEvent();
     }
-
 
     [PunRPC]
     public void RegisterPlayerForAll(int viewID)
@@ -50,6 +64,34 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
             }
         }
     }
+    private void InitCurrentLevels()
+    {
+        currentLevels = new List<GameScenes>(levels);
+        Enum.TryParse(SceneManager.GetActiveScene().name, out GameScenes currentScene);
+        currentLevels.Remove(currentScene); // Remuevo la escena actual para que no toque repetida
+    }
+
+    public GameScenes PickAndRemoveLevel()
+    {
+        if (currentLevels.Count == 0)
+        {
+            InitCurrentLevels();
+        }
+
+        GameScenes level = PickRandomLevel();
+
+        return level;
+    }
+
+    private GameScenes PickRandomLevel()
+    {
+        int index = Random.Range(0, currentLevels.Count);
+        GameScenes level = currentLevels[index];
+        currentLevels.RemoveAt(index);
+
+        return level;
+    }
+
 
     public void UnregisterMeForMe(PlayerModel me)
     {
@@ -67,54 +109,61 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
     private void OnUpdateCurrentPlayer()
     {
-        photonView.RPC("ChangeNextLevel", RpcTarget.All);
+        photonView.RPC("TryChangeNextLevel", RpcTarget.All);
     }
 
     [PunRPC]
-    private void ChangeNextLevel()
+    private void TryChangeNextLevel()
     {
         if (currentPlayers.Count > 1) return;
 
-        for (int i = 0; i < currentPlayers.Count; i++)
-        {
-            currentPlayers[i].AcceptingInput = false;
-        }
-
         StartCoroutine(WaitSomeSecondsToChangeScene());
+    }
+
+    [PunRPC]
+    private void IncreaseCurrentRoundsForAll()
+    {
+        currentRound++;
+    }
+
+    [PunRPC]
+    private void RestartRaoundsAndLevelsForAll()
+    {
+        currentRound = 0;
+        InitCurrentLevels();
     }
 
     private IEnumerator WaitSomeSecondsToChangeScene()
     {
         yield return StartCoroutine(ZoomToPlayerBeforeSceneChange(cameraEffectDuringTime)); 
 
-
         yield return new WaitForSecondsRealtime(1.5f);
 
         currentPlayers.Clear();
 
-        /*foreach (var player in Instance.currentPlayers.ToArray())
+        if (!PhotonNetworkManager.Instance.IsHost) yield break;
+
+        // Si se fueron todos los players de la room ir directo a la escena "Podium"
+        //if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < 2)
+        //{
+        //    photonView.RPC("RestartRaoundsAndLevelsForAll", RpcTarget.All);
+        //    SceneManager.LoadScene("Podium");
+        //    //ScenesManager.Instance.LoadScene("Podium");
+        //    yield break;
+        //}
+
+        photonView.RPC("IncreaseCurrentRoundsForAll", RpcTarget.All);
+
+        // Si ya jugamos todas las rondas ir directo a la escena "Podium"
+        if (currentRound >= totalRounds)
         {
-            if (player.photonView.IsMine)
-            {
-                PhotonNetwork.Destroy(player.gameObject);
-            }
-        }*/
-
-        string currentSceneName = SceneManager.GetActiveScene().name;
-
-        if (Enum.TryParse(currentSceneName, out GameScenes currentSceneEnum))
-        {
-            int nextSceneValue = (int)currentSceneEnum + 1;
-
-            // Si nos pasamos del enum, volvemos al primer nivel
-            if (!Enum.IsDefined(typeof(GameScenes), nextSceneValue) || nextSceneValue < (int)GameScenes.Level1)
-            {
-                nextSceneValue = (int)GameScenes.Level1;
-            }
-
-            GameScenes nextSceneEnum = (GameScenes)nextSceneValue;
-            ScenesManager.Instance.LoadScene(nextSceneEnum.ToString());
+            photonView.RPC("RestartRaoundsAndLevelsForAll", RpcTarget.All);
+            ScenesManager.Instance.LoadScene("Podium");
+            yield break;
         }
+
+        // Si llegamos hasta aca pasamos de nivel de forma random
+        ScenesManager.Instance.LoadScene(PickAndRemoveLevel().ToString());
     }
 
     private IEnumerator ZoomToPlayerBeforeSceneChange(float duration)

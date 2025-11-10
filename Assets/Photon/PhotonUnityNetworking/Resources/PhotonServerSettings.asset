@@ -79,6 +79,18 @@ MonoBehaviour:
   - DisablePowerUpTriggerEnter
   - DisablePowerUp
   - PlayAudio
+  - PointAcquired
+  - TryChangeNextLevel
+  - RPC_UpdateCountdown
+  - UpdateCountdownText
+  - OnInformPointAcquiredRPC
+  - ClearAllPlayersFromListForAll
+  - ZoomCamera
+  - DisablePhysicsIfImRoundWinner
+  - IncreaseCurrentRoundsForAll
+  - RestartRaoundsAndLevelsForAll
+  - MoveUpAndDown
+  - SetInterpolation
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

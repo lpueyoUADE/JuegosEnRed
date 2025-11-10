@@ -80,9 +80,10 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
     private void HandleMovement()
     {
         if (ScenesManager.Instance.IsInLoadingScenePanel) return;
+        if (ScenesManager.Instance.IsInExitGamePanel) return;
 
-            // 1) Preferimos mouse absoluto si movieron el mouse
-            bool mousePresent = Mouse.current != null;
+        // 1) Preferimos mouse absoluto si movieron el mouse
+        bool mousePresent = Mouse.current != null;
         bool mouseMoved = mousePresent && Mouse.current.delta.ReadValue() != Vector2.zero;
 
         if (mouseMoved)
@@ -131,6 +132,7 @@ public class HybridCursorManager : SingletonMonoBehaviour<HybridCursorManager>
     private void HandleUIInteraction()
     {
         if (ScenesManager.Instance.IsInLoadingScenePanel) return;
+        if (ScenesManager.Instance.IsInExitGamePanel) return;
 
         pointerData.position = cursorPos;
         List<RaycastResult> results = new List<RaycastResult>();

@@ -108,6 +108,45 @@
             ]
         },
         {
+            "name": "TabUI",
+            "id": "7762b72f-1594-485b-a44c-2537628086e0",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "d59983c0-9e24-44ca-a73f-2b7c498c75c2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "06a9ad20-1e8b-42df-83f1-5b1cccc2bb84",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dad112fd-ddee-4dc3-aaff-0fe85dee72bb",
+                    "path": "<DualShockGamepad>/touchpadButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Jump",
             "id": "c42204d5-d1bd-40d7-aa59-62059fabf8be",
             "actions": [
@@ -214,7 +253,46 @@
                 {
                     "name": "",
                     "id": "938950da-6621-40ae-8a80-c2955ba9e6f3",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Settings",
+            "id": "935d69d4-1e6f-4691-a545-dc9575f79810",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "21852d04-04e5-4627-802b-88af601817fa",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "79ea6719-94ce-4b35-980d-8d44b1e4692c",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae60029e-28df-44bc-91e6-1712f191034f",
+                    "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

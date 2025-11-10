@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class PowerUpBoomerangSpawner : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> powerUpPrefabs;
-    [SerializeField] private List<Transform> spawnPositions;
+    private List<GameObject> powerUpPrefabs = new List<GameObject>();
+    private List<Transform> spawnPositions = new List<Transform>();
 
     [SerializeField] private float timeToSpawnNewBoomerang;
 
     private float counterSpawnBoomerang;
 
+
+    void Awake()
+    {
+        GetComponents();
+    }
 
     void Update()
     {
@@ -18,9 +23,21 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
     }
 
 
+    private void GetComponents()
+    {
+        GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>("Prefabs/PowerUpBoomerangs");
+        powerUpPrefabs.AddRange(loadedPrefabs);
+
+        foreach (Transform child in transform)
+        {
+            spawnPositions.Add(child);
+        }
+    }
+
     private void SpawnRandomPowerUp()
     {
         if (!PhotonNetwork.IsMasterClient) return;
+        if (PlayersManager.Instance.CurrentPlayers.Count == 1) return; // Esto evitar que se instancien powerUps si finalizo la ronda
 
         counterSpawnBoomerang += Time.deltaTime;
 
@@ -29,9 +46,8 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
             int randomSpawnPosition = Random.Range(0, spawnPositions.Count);
             int randomPowerUp = Random.Range(0, powerUpPrefabs.Count);
 
-            PhotonNetwork.Instantiate("Prefabs/PowerUpBoomerangs/" + powerUpPrefabs[randomPowerUp].name, spawnPositions[randomSpawnPosition].position, Quaternion.identity);
+            PhotonNetwork.InstantiateRoomObject("Prefabs/PowerUpBoomerangs/" + powerUpPrefabs[randomPowerUp].name, spawnPositions[randomSpawnPosition].position, Quaternion.identity);
             counterSpawnBoomerang = 0;
-            timeToSpawnNewBoomerang *= 1.5f;
         }
     }
 }

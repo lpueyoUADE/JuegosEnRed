@@ -43,6 +43,11 @@ public class AudioManager : MonoBehaviour
     private const string MUSIC_VOLUME = "MusicVolume"; 
     private const string SFX_VOLUME = "SFXVolume";
 
+    private const float DEFAULT_MASTER_VOLUME = 1f;
+    private const float DEFAULT_MUSIC_VOLUME = 0.5f;
+    private const float DEFAULT_SFX_VOLUME = 0.5f;
+
+
     public static event Action InitCompleted;
 
     private System.Random rng = new System.Random();
@@ -137,9 +142,9 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        SetMasterVolume(PlayerPrefs.GetFloat(MASTER_VOLUME));
-        SetMusicVolume(PlayerPrefs.GetFloat(MUSIC_VOLUME));
-        SetSFXVolume(PlayerPrefs.GetFloat(SFX_VOLUME));
+        SetMasterVolume(PlayerPrefs.GetFloat(MASTER_VOLUME, DEFAULT_MASTER_VOLUME));
+        SetMusicVolume(PlayerPrefs.GetFloat(MUSIC_VOLUME, DEFAULT_MUSIC_VOLUME));
+        SetSFXVolume(PlayerPrefs.GetFloat(SFX_VOLUME, DEFAULT_SFX_VOLUME));
 
         InitCompleted?.Invoke();
         PlayMusic(MusicTrack.MainMenu);

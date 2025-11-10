@@ -11,6 +11,7 @@ public class RoomPlayerSlot : MonoBehaviour
 
     [SerializeField] private TMP_Text playerNameText;
     [SerializeField] private Image skinPreview;
+    [SerializeField] private ReadyOrNotController readyIndicator;
     [SerializeField] private Button prevButton;
     [SerializeField] private Button nextButton;
 
@@ -35,6 +36,17 @@ public class RoomPlayerSlot : MonoBehaviour
         prevButton.gameObject.SetActive(isLocal);
         nextButton.gameObject.SetActive(isLocal);
 
+        if (isLocal)
+        {
+            Hashtable props = new Hashtable();
+            props["IsReady"] = false;
+            assignedPlayer.SetCustomProperties(props);
+        }
+
+        bool isReady = player.CustomProperties.ContainsKey("IsReady") && (bool)player.CustomProperties["IsReady"];
+        readyIndicator.SetStatus(isReady);
+        readyIndicator.gameObject.SetActive(true);
+
         if (player.CustomProperties.ContainsKey("SkinIndex"))
         {
             int skinIndex = (int)player.CustomProperties["SkinIndex"];
@@ -54,6 +66,8 @@ public class RoomPlayerSlot : MonoBehaviour
     public void ClearPlayerInfoFromSlot()
     {
         assignedPlayer = null;
+        readyIndicator.SetStatus(false);
+        readyIndicator.gameObject.SetActive(false);
         playerNameText.text = string.Empty;
         skinPreview.color = Color.black;
         prevButton.gameObject.SetActive(false);
@@ -64,11 +78,13 @@ public class RoomPlayerSlot : MonoBehaviour
     private void SuscribeToPhotonNetworkManagerEvent()
     {
         PhotonNetworkManager.Instance.OnPlayerPropertiesUpdateEvent += OnUpdateSkinProperties;
+        PhotonNetworkManager.Instance.OnPlayerPropertiesUpdateEvent += OnUpdateReadyIndicator;
     }
 
     private void UnsuscribeToPhotonNetworkManagerEvent()
     {
         PhotonNetworkManager.Instance.OnPlayerPropertiesUpdateEvent -= OnUpdateSkinProperties;
+        PhotonNetworkManager.Instance.OnPlayerPropertiesUpdateEvent -= OnUpdateReadyIndicator;
     }
 
     private void OnUpdateSkinProperties(Player targetPlayer, Hashtable changedProps)
@@ -77,6 +93,15 @@ public class RoomPlayerSlot : MonoBehaviour
         {
             int skinIndex = (int)changedProps["SkinIndex"];
             skinPreview.color = PlayerSkinManager.Instance.PlayerSkins[skinIndex];
+        }
+    }
+
+    private void OnUpdateReadyIndicator(Player targetPlayer, Hashtable changedProps)
+    {
+        if (assignedPlayer != null && targetPlayer == assignedPlayer && changedProps.ContainsKey("IsReady"))
+        {
+            bool isReady = (bool)changedProps["IsReady"];
+            readyIndicator.SetStatus(isReady);
         }
     }
 }

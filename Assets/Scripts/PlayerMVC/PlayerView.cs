@@ -11,11 +11,19 @@ public class PlayerView : MonoBehaviourPun
     private Vector3 textInitialScale;
     private Vector3 sliderInitialScale;
 
+    private int spawnIndex;
+
+    public int SpawnIndex { get => spawnIndex; set => spawnIndex = value; }
+
 
     void Awake()
     {
         SuscribeToPlayerModelEvent();
         GetComponents();
+    }
+
+    void Start()
+    {
         InitializeRotationLookAt();
         InitializeNickNameText();
         InitializeHealthBarSlider();
@@ -59,13 +67,13 @@ public class PlayerView : MonoBehaviourPun
 
     private void InitializeRotationLookAt()
     {
-        switch (photonView.OwnerActorNr)
+        switch (spawnIndex)
         {
-            case 1: case 2:
+            case 0: case 1:
                 transform.localScale = new Vector3(1, 1, 1);
                 break;
 
-            case 3: case 4:
+            case 2: case 3:
                 transform.localScale = new Vector3(-1, 1, 1);
                 break;
         }

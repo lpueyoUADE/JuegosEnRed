@@ -1,15 +1,16 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum BoomerangType
 {
-    Default, Fast, Returnable
+    Default, Fast, Returnable, Damageble
 }
 
 public class BoomerangModel : MonoBehaviourPun
 {
+    private PhotonTransformViewClassic ptvc;
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
 
@@ -183,6 +184,7 @@ public class BoomerangModel : MonoBehaviourPun
 
     private void GetComponents()
     {
+        ptvc = GetComponent<PhotonTransformViewClassic>();
         rb = GetComponent<Rigidbody2D>();
         circleCollider = GetComponent<CircleCollider2D>();
     }
@@ -200,6 +202,16 @@ public class BoomerangModel : MonoBehaviourPun
         {
             rb.velocity = currentDir.normalized * movementSpeed;
         }
+
+        /*if (rb.velocity.magnitude < 0.01f && photonView.IsMine)
+        {
+            photonView.RPC("SetInterpolation", RpcTarget.All, false);
+        }
+
+        else
+        {
+            photonView.RPC("SetInterpolation", RpcTarget.All, true);
+        }*/
     }
 
     private void Rotation()
@@ -216,19 +228,18 @@ public class BoomerangModel : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        if (auxiliarPlayerHitActorNumber != null) 
+        if (auxiliarPlayerHitActorNumber != null)
         {
-            if (auxiliarPlayerModel == null)
+            if (auxiliarPlayerModel == null) // Significa que el player el cual tenia pegado el boomerang lo mataron, entonces debe volver
             {
                 photonView.RPC("ReturnBoomerang", RpcTarget.All);
                 counterBoomerangComeBackAutomatically = 0f;
-                auxiliarPlayerHitActorNumber = null;
                 return;
             }
 
             counterBoomerangComeBackAutomatically += Time.deltaTime;
 
-            if (counterBoomerangComeBackAutomatically >= timeToGetBoomerangBackIfIsCollidingWithSomePlayer)
+            if (counterBoomerangComeBackAutomatically >= timeToGetBoomerangBackIfIsCollidingWithSomePlayer) // Significa que el boomerang esta pegado a un player hace mucho tiempo
             {
                 photonView.RPC("ReturnBoomerang", RpcTarget.All);
                 counterBoomerangComeBackAutomatically = 0f;
@@ -240,6 +251,14 @@ public class BoomerangModel : MonoBehaviourPun
         {
             counterBoomerangComeBackAutomatically = 0f;
         }
+    }
+
+    [PunRPC]
+    private void SetInterpolation(bool enable)
+    {
+        ptvc.m_PositionModel.InterpolateOption = enable ?
+            PhotonTransformViewPositionModel.InterpolateOptions.Lerp :
+            PhotonTransformViewPositionModel.InterpolateOptions.Disabled;
     }
 
     [PunRPC]
@@ -274,6 +293,8 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     private void OnBoomerangCollisionEnterWithScenary()
     {
+        currentDir = Vector2.zero;
+        rb.velocity = Vector2.zero;
         AudioManager.Instance.PlaySound(SoundEffect.BananaStick);
         rb.bodyType = RigidbodyType2D.Static;
         onShowTrail?.Invoke(photonView.ViewID, false);
@@ -285,6 +306,8 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     private void OnBoomerangTriggerEnterWithOwnPlayer()
     {
+        currentDir = Vector2.zero;
+        rb.velocity = Vector2.zero;
         Vector3 rot = transform.eulerAngles;
         rot.z = 0f;
         transform.rotation = Quaternion.Euler(rot);
@@ -309,8 +332,8 @@ public class BoomerangModel : MonoBehaviourPun
             PhotonView playerPV = collision.gameObject.GetComponent<PhotonView>();
 
             if (playerPV.OwnerActorNr != ownerActorNumber)
-            {
-                playerPV.RPC("GetDamage", playerPV.Owner, damage);
+            {    
+                playerPV.RPC("GetDamage", playerPV.Owner, damage, ownerActorNumber);
                 photonView.RPC("OnBoomerangCollisionEnterWithOtherPlayers", RpcTarget.All, playerPV.OwnerActorNr, playerPV.ViewID);
             }
         }
@@ -372,10 +395,10 @@ public class BoomerangModel : MonoBehaviourPun
                 hitCooldowns[targetActorNr] = 0f;
             }
 
-            // Chequeamos si ya pasó suficiente tiempo desde el último daño
+            // Chequeamos si ya pasÃ³ suficiente tiempo desde el Ãºltimo daÃ±o
             if (Time.time >= hitCooldowns[targetActorNr])
             {
-                playerPV.RPC("GetDamage", playerPV.Owner, damage);
+                playerPV.RPC("GetDamage", playerPV.Owner, damage, ownerActorNumber);
 
                 hitCooldowns[targetActorNr] = Time.time + damageCooldown;
             }

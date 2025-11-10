@@ -1,24 +1,22 @@
-using UnityEngine;
-using TMPro;
+using Photon.Pun;
 using Photon.Realtime;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuUI : MonoBehaviour
 {
-    [Header("Main Menu")]
+    [Header("UI Panels")]
     [SerializeField] private GameObject mainMenuPanel;
-
-    [Header("Create Room")]
     [SerializeField] private ConnectionToRoomPanel createRoomPanel;
-
-    [Header("Join Room")]
     [SerializeField] private ConnectionToRoomPanel joinRoomPanel;
-
-    [Header("Settings")]
     [SerializeField] private GameObject settingsPanel;
-
-    [Header("Credits")]
     [SerializeField] private GameObject creditsPanel;
+    [SerializeField] private GameObject howToPlayPanel;
+    [SerializeField] private GameObject LeaderboardPanel;
     void Awake()
     {
         SuscribeToPhotonNetworkManagerEvents();
@@ -30,7 +28,9 @@ public class MainMenuUI : MonoBehaviour
         CreateRoom,
         JoinRoom,
         Settings,
-        Credits
+        Credits,
+        HowToPlay,
+        Leaderboard
     }
 
 
@@ -42,6 +42,8 @@ public class MainMenuUI : MonoBehaviour
         joinRoomPanel.gameObject.SetActive(false);
         settingsPanel.SetActive(false);
         creditsPanel.SetActive(false);
+        howToPlayPanel.SetActive(false);
+        LeaderboardPanel.SetActive(false);
 
         switch (panelToActivate)
         {
@@ -64,10 +66,18 @@ public class MainMenuUI : MonoBehaviour
             case UIPanel.Credits:
                 creditsPanel.SetActive(true);
                 break;
+
+            case UIPanel.HowToPlay:
+                howToPlayPanel.SetActive(true);
+                break;
+
+            case UIPanel.Leaderboard:
+                LeaderboardPanel.SetActive(true);
+                break;
         }
     }
 
-    private void Start()
+    void Start()
     {
         SetPanels(UIPanel.None);
 
@@ -75,30 +85,10 @@ public class MainMenuUI : MonoBehaviour
 
         HybridCursorManager.Instance.SetUIPointer();
     }
+
     void Update()
     {
-        // Test para crear una room rapida automaticamente
-        if (Input.GetKeyDown(KeyCode.T) && !createRoomPanel.gameObject.activeSelf)
-        {
-            string nickName = "Kong777";
-            string roomName = "asd";
-            string roomPassword = "asd";
-
-            PhotonNetworkManager.Instance.CreateRoom(roomName, roomPassword);
-            PhotonNetworkManager.Instance.SetNickName(nickName);
-        }
-
-        // Test para unirse una room rapida automaticamente
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            string nickName = "WUKong1991";
-            string roomName = "asd";
-            string roomPassword = "asd";
-
-            PhotonNetworkManager.Instance.JoinRoom(roomName, roomPassword);
-            PhotonNetworkManager.Instance.SetNickName(nickName);
-        }
-
+        TestCreateOrJoinRoom();
         CleanAllInformation();
     }
 
@@ -153,6 +143,15 @@ public class MainMenuUI : MonoBehaviour
     {
         SetPanels(UIPanel.Credits);
     }
+    public void ButtonHowToPlay()
+    {
+        SetPanels(UIPanel.HowToPlay);
+    }
+
+    public void ButtonLeaderboard()
+    {
+        SetPanels(UIPanel.Leaderboard);
+    }
 
     public void ButtonExitGame()
     {
@@ -165,6 +164,7 @@ public class MainMenuUI : MonoBehaviour
         PhotonNetworkManager.Instance.OnConnectedToMasterEvent += OnConnectedToMasterEvent;
         PhotonNetworkManager.Instance.OnCreateRoomFailedEvent += OnShowErrorWhileCreatingRoom;
         PhotonNetworkManager.Instance.OnJoinRoomFailedEvent += OnShowErrorWhileJoiningRoom;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void UnsuscribeToPhotonNetworkManagerEvents()
@@ -172,10 +172,22 @@ public class MainMenuUI : MonoBehaviour
         PhotonNetworkManager.Instance.OnConnectedToMasterEvent -= OnConnectedToMasterEvent;
         PhotonNetworkManager.Instance.OnCreateRoomFailedEvent -= OnShowErrorWhileCreatingRoom;
         PhotonNetworkManager.Instance.OnJoinRoomFailedEvent -= OnShowErrorWhileJoiningRoom;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void OnConnectedToMasterEvent()
     {
+        SetPanels(UIPanel.Main);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        StartCoroutine(WaitLoaingToFinish());
+    }
+
+    private IEnumerator WaitLoaingToFinish()
+    {
+        yield return new WaitForSecondsRealtime(2f);
         SetPanels(UIPanel.Main);
     }
 
@@ -198,6 +210,34 @@ public class MainMenuUI : MonoBehaviour
             case ErrorCode.GameFull:
                 joinRoomPanel.errorMessage.text = "The room is full";
                 break;
+        }
+    }
+
+    private void TestCreateOrJoinRoom()
+    {
+        if (TestManager.Instance.UseTestSystem)
+        {
+            // Test para crear una room rapida automaticamente
+            if (Input.GetKeyDown(KeyCode.T) && !createRoomPanel.gameObject.activeSelf)
+            {
+                string nickName = "Kong777";
+                string roomName = "asd";
+                string roomPassword = "asd";
+
+                PhotonNetworkManager.Instance.CreateRoom(roomName, roomPassword);
+                PhotonNetworkManager.Instance.SetNickName(nickName);
+            }
+
+            // Test para unirse una room rapida automaticamente
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                string nickName = "WUKong1991";
+                string roomName = "asd";
+                string roomPassword = "asd";
+
+                PhotonNetworkManager.Instance.JoinRoom(roomName, roomPassword);
+                PhotonNetworkManager.Instance.SetNickName(nickName);
+            }
         }
     }
 

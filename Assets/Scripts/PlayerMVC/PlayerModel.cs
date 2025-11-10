@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -16,10 +17,11 @@ public class PlayerModel : MonoBehaviourPun
     private Transform boomerangHandPosition;
 
     private Coroutine damageFlashCoroutine;
+    private Coroutine healthBarCoroutine;
 
     private static event Action<int> onDisableNicknameText;
     private static event Action onPlayerDeath;
-    private static event Action onPlayerWin;
+    private static event Action onPlayerWinCurrentRound;
 
     [SerializeField] private int startingHealth;
 
@@ -29,15 +31,16 @@ public class PlayerModel : MonoBehaviourPun
     private int myViewId;
     private int currentHealth;
     private int minHealth = 1;
-    
+
     private bool isGrounded;
     private bool acceptingInput;
+    private bool hasWonTheRound = false;
 
     public Transform BoomerangHandPosition { get => boomerangHandPosition; }
 
     public static Action<int> OnDisableNicknameText { get => onDisableNicknameText; set => onDisableNicknameText = value; }
     public static Action OnPlayerDeath { get => onPlayerDeath; set => onPlayerDeath = value; }
-    public static Action OnPlayerWin { get => onPlayerWin; set => onPlayerWin = value; }
+    public static Action OnPlayerWinCurrentRound { get => onPlayerWinCurrentRound; set => onPlayerWinCurrentRound = value; }
 
     public int CurrentHealth { get => currentHealth; }
     public int MinHealth { get => minHealth; }
@@ -58,12 +61,15 @@ public class PlayerModel : MonoBehaviourPun
         InitializeSkin();
         InitializeHealthAndHealthBar();
         InitializeBoomerang();
+        InitializeLayer();
+        photonView.RPC("UpdateHealthBar", RpcTarget.All, currentHealth);
     }
 
     // Simulacion de Update
     void UpdatePlayerModel()
     {
         RotatePlayer();
+        CheckIfImRoundWinnerToAddScore();
     }
 
     // Simulacion de FixedUpdate
@@ -97,7 +103,7 @@ public class PlayerModel : MonoBehaviourPun
 
         switch (boomerangController.BoomerangModel.BoomerangType)
         {
-            case BoomerangType.Default: case BoomerangType.Fast:
+            case BoomerangType.Default: case BoomerangType.Fast: case BoomerangType.Damageble:
 
                 // Solo se puede traer si está pegado
                 if (boomerangController.BoomerangModel.Rb.velocity.sqrMagnitude == 0)
@@ -110,7 +116,6 @@ public class PlayerModel : MonoBehaviourPun
                 // Siempre se puede traer
                 boomerangController.BoomerangModel.photonView.RPC("ReturnBoomerang", RpcTarget.All);
                 break;
-
         } 
     }
 
@@ -139,7 +144,7 @@ public class PlayerModel : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void GetDamage(int damage)
+    public void GetDamage(int damage, int attackerActorNumber)
     {
         currentHealth -= damage;
         photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.HitOtherPlayers);
@@ -155,6 +160,8 @@ public class PlayerModel : MonoBehaviourPun
             photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.Death1);
             photonView.RPC("DisablePlayer", RpcTarget.All);
             boomerangController.BoomerangModel.photonView.RPC("DisableBoomerang", RpcTarget.All);
+
+            AddPointToAttackerPlayer(attackerActorNumber);
             StartCoroutine(Death());
         }
     }
@@ -164,7 +171,13 @@ public class PlayerModel : MonoBehaviourPun
     private void UpdateHealthBar(int newHealth)
     {
         currentHealth = newHealth;
-        healthBar.value = currentHealth;
+
+        if (healthBarCoroutine != null)
+        {
+            StopCoroutine(healthBarCoroutine);
+        }
+
+        healthBarCoroutine = StartCoroutine(AnimateHealthBar(newHealth));
     }
 
     [PunRPC]
@@ -209,9 +222,50 @@ public class PlayerModel : MonoBehaviourPun
         animator.SetTrigger(paramterName);
     }
 
+    [PunRPC]
+    private void OnInformPointAcquiredRPC(string killer, string killed)
+    {
+        NotificationsUI.Notify(killer + " killed " + killed);
+    }
+
+    [PunRPC]
+    private void DisablePhysicsIfImRoundWinner()
+    {
+        rb.velocity = Vector3.zero;
+        rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    private void AddPointToAttackerPlayer(int attackerActorNumber)
+    {
+        Player attackerPlayer = PhotonNetwork.CurrentRoom.GetPlayer(attackerActorNumber);
+        if (attackerPlayer != null)
+        {
+            photonView.RPC(nameof(OnInformPointAcquiredRPC), RpcTarget.All, attackerPlayer.NickName, PhotonNetwork.LocalPlayer.NickName);
+            StatsManager.Instance.AddScore(attackerPlayer, 1);
+        }
+    }
+
+    private void CheckIfImRoundWinnerToAddScore()
+    {
+        if (photonView.IsMine)
+        {
+            if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() == 1) return;
+            if (PlayersManager.Instance.CurrentPlayers.Count < 2 && !hasWonTheRound && currentHealth >= minHealth)
+            {
+                photonView.RPC("DisablePhysicsIfImRoundWinner", RpcTarget.All);
+                hasWonTheRound = true;
+                acceptingInput = false;
+                StatsManager.Instance.AddScore(photonView.Owner, 1);
+                onPlayerWinCurrentRound?.Invoke();
+            }
+        }
+    }
+
     private IEnumerator Death()
     {
         PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
+        PhotonNetwork.Instantiate("Prefabs/Player/blood", transform.position, Quaternion.identity);
+        StatsManager.Instance.AddDeath(1);
 
         yield return null;
 
@@ -236,17 +290,24 @@ public class PlayerModel : MonoBehaviourPun
     private void SuscribeToGameUIEvent()
     {
         GameUI.OnPlayerLeaveRoomFrameEarlier += OnUnregisterPlayerIfLeaveRoom;
+        GameUI.OnSetMainMenuState += OnStopPhysics;
     }
 
     private void UnsuscribeToGameUIEvent()
     {
         GameUI.OnPlayerLeaveRoomFrameEarlier -= OnUnregisterPlayerIfLeaveRoom;
+        GameUI.OnSetMainMenuState -= OnStopPhysics;
     }
 
     private void OnUnregisterPlayerIfLeaveRoom()
     {
         PlayersManager.Instance.photonView.RPC("UnregisterPlayerForAll", RpcTarget.All, myViewId);
         PlayersManager.Instance.UnregisterMeForMe(this);
+    }
+
+    private void OnStopPhysics(bool state)
+    {
+        rb.velocity = Vector3.zero;
     }
 
     private void GetComponents()
@@ -301,23 +362,35 @@ public class PlayerModel : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            GameObject boomerangGO = PhotonNetwork.Instantiate("Prefabs/Boomerangs/BoomerangReturnable", boomerangHandPosition.position, Quaternion.identity);
+            GameObject boomerangGO = PhotonNetwork.Instantiate("Prefabs/Boomerangs/BoomerangDefault", boomerangHandPosition.position, Quaternion.identity);
             boomerangController = boomerangGO.GetComponent<BoomerangController>();
             boomerangController.BoomerangModel.photonView.RPC("Initialize", RpcTarget.All, photonView.OwnerActorNr);
         }
     }
 
-    private void Movement()
+    private void InitializeLayer()
     {
         if (photonView.IsMine)
         {
-            if (!acceptingInput) return;
+            gameObject.layer = LayerMask.NameToLayer("Default");
+        }
+    }
+
+    private void Movement()
+    {
+        animator.SetFloat("velocity", Mathf.Abs(rb.velocity.x));
+
+        if (photonView.IsMine)
+        {
+            if (!acceptingInput)
+            {
+                rb.velocity = new Vector2(0, rb.velocity.y);
+                return;
+            }
 
             Vector2 move = PlayerInputsManager.Instance.GetMoveAxis();
             rb.velocity = new Vector2(move.normalized.x * speed, rb.velocity.y);
         }
-
-        animator.SetFloat("velocity", Mathf.Abs(rb.velocity.x));
     }
 
     private void CheckIsOnFloor()
@@ -325,7 +398,7 @@ public class PlayerModel : MonoBehaviourPun
         if (photonView.IsMine)
         {
             float extraHeight = 0.1f;
-            RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size * new Vector2(0.9f, 1f), 0f, Vector2.down, extraHeight, LayerMask.GetMask("Floor"));
+            RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size * new Vector2(0.9f, 1f), 0f, Vector2.down, extraHeight, LayerMask.GetMask("Floor", "Player"));
 
             isGrounded = hit.collider != null;
         }
@@ -358,5 +431,24 @@ public class PlayerModel : MonoBehaviourPun
             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f); // visible
             yield return new WaitForSeconds(0.1f);
         }
+    }
+
+    private IEnumerator AnimateHealthBar(int targetHealth)
+    {
+        float duration = 0.35f; // tiempo total de la animación
+        float elapsedTime = 0f;
+        float startValue = healthBar.value;
+        float endValue = targetHealth;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            healthBar.value = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
+
+            yield return null; 
+        }
+
+        healthBar.value = endValue; 
     }
 }

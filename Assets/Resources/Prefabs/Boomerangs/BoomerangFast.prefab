@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8736338082022428417}
   - component: {fileID: 3988968977579914130}
   - component: {fileID: 7587192442436889908}
-  - component: {fileID: -5026562740232816254}
+  - component: {fileID: 5066717081562893700}
   m_Layer: 7
   m_Name: BoomerangFast
   m_TagString: Boomerang
@@ -34,7 +34,7 @@ Transform:
   m_GameObject: {fileID: 9182680524284778750}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.226, y: -2.028, z: 0}
-  m_LocalScale: {x: 0.3565584, y: 0.3565584, z: 0.3565584}
+  m_LocalScale: {x: 0.4399574, y: 0.3900749, z: 0.3565584}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6458147229347611277}
@@ -82,8 +82,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300000, guid: b7e7e0dcdf19ecc4f87b5d03e018e7fc, type: 3}
-  m_Color: {r: 1, g: 0.21682882, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 4b3e9423ada98cf42922b98e9021065d, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boomerangType: 1
   damage: 1
-  movementSpeed: 14
+  movementSpeed: 13
   rotationSpeed: 500
   timeToGetBoomerangBackIfIsCollidingWithSomePlayer: 5
   damageCooldown: 1.15
@@ -193,7 +193,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 7587192442436889908}
-  - {fileID: -5026562740232816254}
+  - {fileID: 5066717081562893700}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
---- !u!114 &-5026562740232816254
+--- !u!114 &5066717081562893700
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -222,13 +222,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 9182680524284778750}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Script: {fileID: 11500000, guid: 8efc6b1d64977384eb3405357896c656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 1
-  m_UseLocal: 1
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 500
+    InterpolateOption: 4
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 1
+    ExtrapolateOption: 2
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 0
+    ExtrapolateNumberOfStoredPositions: 1
+  m_RotationModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 0
+    InterpolateRotateTowardsSpeed: 180
+    InterpolateLerpSpeed: 5
+  m_ScaleModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0
 --- !u!1 &9188603863822922384
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,11 +319,11 @@ TrailRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 9
   m_Time: 0.2
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 0.2
     widthCurve:
       serializedVersion: 2
       m_Curve:

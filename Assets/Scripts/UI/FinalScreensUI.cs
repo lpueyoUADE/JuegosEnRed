@@ -13,18 +13,6 @@ public class FinalScreensUI : MonoBehaviour
         panel.SetActive(false);
     }
 
-    void Update()
-    {
-        // Test
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            if (PhotonNetworkManager.Instance.IsHost)
-            {
-                ScenesManager.Instance.LoadScene("Level2");   
-            }
-        }
-    }
-
     void OnDestroy()
     {
         UnsuscribeToPlayerModelEvents();
@@ -33,32 +21,25 @@ public class FinalScreensUI : MonoBehaviour
 
     private void SuscribeToPlayerModelEvents()
     {
-        PlayerModel.OnPlayerWin += OnShowWinPanel;
         PlayerModel.OnPlayerDeath += OnShowLoosePanel;
+        PlayerModel.OnPlayerWinCurrentRound += OnShowWinPanel;
     }
 
     private void UnsuscribeToPlayerModelEvents()
     {
-        PlayerModel.OnPlayerWin -= OnShowWinPanel;
         PlayerModel.OnPlayerDeath -= OnShowLoosePanel;
-    }
-
-    private void OnShowWinPanel()
-    {
-        PlayerModel[] playerModels = FindObjectsOfType<PlayerModel>();
-
-        Debug.Log(playerModels.Length);
-
-        if (playerModels.Length == 1)
-        {
-            panel.SetActive(true);
-            winText.SetActive(true);
-        }
+        PlayerModel.OnPlayerWinCurrentRound -= OnShowWinPanel;
     }
 
     private void OnShowLoosePanel()
     {
         panel.SetActive(true);
         looseText.SetActive(true);
+    }
+
+    private void OnShowWinPanel()
+    {
+        panel.SetActive(true);
+        winText.SetActive(true);
     }
 }

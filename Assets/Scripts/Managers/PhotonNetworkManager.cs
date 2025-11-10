@@ -8,7 +8,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
 {
     private event Action onConnectedToMasterEvent;
     private event Action onJoinedRoomEvent;
-    //private event Action onLeftRoomEvent;
+    private event Action onLeftRoomEvent;
     private event Action onPlayerEnteredRoomEvent;
     private event Action onPlayerLeftRoomEvent;
     private event Action<short> onCreateRoomFailedEvent;
@@ -17,7 +17,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
 
     public Action OnConnectedToMasterEvent { get => onConnectedToMasterEvent; set => onConnectedToMasterEvent = value; }
     public Action OnJoinedRoomEvent { get => onJoinedRoomEvent; set => onJoinedRoomEvent = value; }
-    //public Action OnLeftRoomEvent { get => onLeftRoomEvent; set => onLeftRoomEvent = value; }
+    public Action OnLeftRoomEvent { get => onLeftRoomEvent; set => onLeftRoomEvent = value; }
     public Action OnPlayerEnteredRoomEvent { get => onPlayerEnteredRoomEvent; set => onPlayerEnteredRoomEvent = value; }
     public Action OnPlayerLeftRoomEvent { get => onPlayerLeftRoomEvent; set => onPlayerLeftRoomEvent = value; }
     public Action<short> OnCreateRoomFailedEvent { get => onCreateRoomFailedEvent; set => onCreateRoomFailedEvent = value; }
@@ -66,6 +66,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     {
         Debug.Log($"El jugador {newPlayer.NickName} se unió a la room");
         onPlayerEnteredRoomEvent?.Invoke();
+        NotificationsUI.Notify($"{newPlayer.NickName} join the room");
     }
 
     // Se ejecuta en todas las instancias cuando alguien abandona una room
@@ -73,6 +74,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     {
         Debug.Log($"El jugador {otherPlayer.NickName} se fue de la room");
         onPlayerLeftRoomEvent?.Invoke();
+        NotificationsUI.Notify($"{otherPlayer.NickName} left the room");
     }
 
     // Se ejecuta cuando no se puede crear una room
@@ -100,6 +102,7 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
     public void SetNickName(string nickName)
     {
         PhotonNetwork.NickName = nickName;
+        StartCoroutine(LootLockerManager.Instance.SetPlayerNameRoutine(nickName));
     }
 
     public void CreateRoom(string roomName, string password)
@@ -161,6 +164,6 @@ public class PhotonNetworkManager : SingletonMonoBehaviourPunCallbacks<PhotonNet
 
         yield return new WaitForSecondsRealtime(1);
 
-        //onLeftRoomEvent?.Invoke();
+        onLeftRoomEvent?.Invoke();
     }
 }

@@ -227,7 +227,7 @@ GameObject:
   - component: {fileID: 6439779878241398900}
   - component: {fileID: 5362282960802055819}
   m_Layer: 5
-  m_Name: BacktToMainMenuPanel
+  m_Name: BackToMainMenuPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

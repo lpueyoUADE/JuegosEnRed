@@ -122,6 +122,50 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1634480
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1634482}
+  - component: {fileID: 1634481}
+  m_Layer: 0
+  m_Name: SetHighscoresManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1634481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbb53fe8412c7ca48a84f13e4f6db121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1634482
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634480}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 867.1793, y: 555.5719, z: 4.675741}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &280640922 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5614935809458000715, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
@@ -632,6 +676,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 348844978}
     m_Modifications:
+    - target: {fileID: 2104530203729229443, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: jumpForce
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 2104530203729229443, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: minWaitTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5614935809458000712, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
       propertyPath: m_Name
       value: PodiumPanel
@@ -719,6 +771,42 @@ PrefabInstance:
     - target: {fileID: 5614935809458000715, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631527516106622482, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: jumpForce
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631527516106622482, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: maxWaitTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631527516106622482, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: minWaitTime
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631527516108809779, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: jumpForce
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631527516108809779, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: maxWaitTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631527516108809779, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: minWaitTime
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631527516858057987, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: jumpForce
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631527516858057987, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: maxWaitTime
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631527516858057987, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
+      propertyPath: minWaitTime
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7689811726803332191, guid: d591f8384f64e0a40a948dcc0ff879db, type: 3}
       propertyPath: panelBackToMainMenu

@@ -89,6 +89,8 @@ MonoBehaviour:
   - DisablePhysicsIfImRoundWinner
   - IncreaseCurrentRoundsForAll
   - RestartRaoundsAndLevelsForAll
+  - MoveUpAndDown
+  - SetInterpolation
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

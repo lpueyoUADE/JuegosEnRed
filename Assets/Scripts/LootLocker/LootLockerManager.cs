@@ -116,7 +116,6 @@ public class LootLockerManager : SingletonMonoBehaviourPun<LootLockerManager>
     private IEnumerator flow()
     {
         yield return StartCoroutine(LoginRoutine());         // Espera a que termine el login
-        yield return StartCoroutine(SubmitScoreRoutine(20)); // Luego envía el score
     }
 
 

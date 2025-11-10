@@ -551,6 +551,7 @@ GameObject:
   - component: {fileID: 4629349282320176583}
   - component: {fileID: 4629349282320176577}
   - component: {fileID: 4629349282320176576}
+  - component: {fileID: 2595449463189804224}
   m_Layer: 5
   m_Name: CurrentSkinPreview
   m_TagString: Untagged
@@ -616,6 +617,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2595449463189804224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4629349282320176582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3a7b3867961281408992187ac58c301, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpForce: 200
+  gravity: -450
+  minWaitTime: 1
+  maxWaitTime: 2
 --- !u!1 &4629349283378493232
 GameObject:
   m_ObjectHideFlags: 0

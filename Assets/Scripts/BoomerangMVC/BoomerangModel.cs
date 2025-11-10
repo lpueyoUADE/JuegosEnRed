@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 
 public enum BoomerangType
 {
@@ -11,6 +10,7 @@ public enum BoomerangType
 
 public class BoomerangModel : MonoBehaviourPun
 {
+    private PhotonTransformViewClassic ptvc;
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
 
@@ -184,6 +184,7 @@ public class BoomerangModel : MonoBehaviourPun
 
     private void GetComponents()
     {
+        ptvc = GetComponent<PhotonTransformViewClassic>();
         rb = GetComponent<Rigidbody2D>();
         circleCollider = GetComponent<CircleCollider2D>();
     }
@@ -201,6 +202,16 @@ public class BoomerangModel : MonoBehaviourPun
         {
             rb.velocity = currentDir.normalized * movementSpeed;
         }
+
+        /*if (rb.velocity.magnitude < 0.01f && photonView.IsMine)
+        {
+            photonView.RPC("SetInterpolation", RpcTarget.All, false);
+        }
+
+        else
+        {
+            photonView.RPC("SetInterpolation", RpcTarget.All, true);
+        }*/
     }
 
     private void Rotation()
@@ -243,6 +254,14 @@ public class BoomerangModel : MonoBehaviourPun
     }
 
     [PunRPC]
+    private void SetInterpolation(bool enable)
+    {
+        ptvc.m_PositionModel.InterpolateOption = enable ?
+            PhotonTransformViewPositionModel.InterpolateOptions.Lerp :
+            PhotonTransformViewPositionModel.InterpolateOptions.Disabled;
+    }
+
+    [PunRPC]
     private void OnBoomerangCollisionEnterWithOtherPlayers(int hitPlayerActorNr, int playerModelViewID)
     {
         currentDir = Vector2.zero;
@@ -271,23 +290,11 @@ public class BoomerangModel : MonoBehaviourPun
         }
     }
 
-    private IEnumerator Corrutine(PlayerModel playerModel, int hitPlayerActorNr)
-    {
-        yield return null;
-
-        if (playerModel.CurrentHealth < playerModel.MinHealth)
-        {
-            photonView.RPC("ReturnBoomerang", RpcTarget.All);
-            yield break;
-        }
-
-        auxiliarPlayerHitActorNumber = hitPlayerActorNr;
-        transform.SetParent(playerModel.transform, true);
-    }
-
     [PunRPC]
     private void OnBoomerangCollisionEnterWithScenary()
     {
+        currentDir = Vector2.zero;
+        rb.velocity = Vector2.zero;
         AudioManager.Instance.PlaySound(SoundEffect.BananaStick);
         rb.bodyType = RigidbodyType2D.Static;
         onShowTrail?.Invoke(photonView.ViewID, false);
@@ -299,6 +306,8 @@ public class BoomerangModel : MonoBehaviourPun
     [PunRPC]
     private void OnBoomerangTriggerEnterWithOwnPlayer()
     {
+        currentDir = Vector2.zero;
+        rb.velocity = Vector2.zero;
         Vector3 rot = transform.eulerAngles;
         rot.z = 0f;
         transform.rotation = Quaternion.Euler(rot);

@@ -37,6 +37,7 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
     private void SpawnRandomPowerUp()
     {
         if (!PhotonNetwork.IsMasterClient) return;
+        if (PlayersManager.Instance.CurrentPlayers.Count == 1) return; // Esto evitar que se instancien powerUps si finalizo la ronda
 
         counterSpawnBoomerang += Time.deltaTime;
 
@@ -45,7 +46,7 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
             int randomSpawnPosition = Random.Range(0, spawnPositions.Count);
             int randomPowerUp = Random.Range(0, powerUpPrefabs.Count);
 
-            PhotonNetwork.Instantiate("Prefabs/PowerUpBoomerangs/" + powerUpPrefabs[randomPowerUp].name, spawnPositions[randomSpawnPosition].position, Quaternion.identity);
+            PhotonNetwork.InstantiateRoomObject("Prefabs/PowerUpBoomerangs/" + powerUpPrefabs[randomPowerUp].name, spawnPositions[randomSpawnPosition].position, Quaternion.identity);
             counterSpawnBoomerang = 0;
         }
     }

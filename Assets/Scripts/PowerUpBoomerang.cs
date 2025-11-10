@@ -5,11 +5,11 @@ public class PowerUpBoomerang : MonoBehaviourPun
 {
     [SerializeField] private GameObject boomerangToInstantiate;
 
+    private Vector3 startPosition;
+    
     [Header("Floating Effect")]
     [SerializeField] private float amplitude;
-    [SerializeField] private float speed; 
-
-    private Vector3 startPosition;
+    [SerializeField] private float speed;
 
 
     void Awake()
@@ -38,12 +38,6 @@ public class PowerUpBoomerang : MonoBehaviourPun
     {
         float newY = startPosition.y + Mathf.Sin(Time.time * speed) * amplitude;
         transform.position = new Vector3(startPosition.x, newY, startPosition.z);
-    }
-
-    private void RotateLeftAndRight()
-    {
-        float scaleX = Mathf.Sin(Time.time * speed) * 0.5f;
-        transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
     }
 
     private void OnTriggerEnterWithPlayer(Collider2D collider)

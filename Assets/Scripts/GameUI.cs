@@ -20,7 +20,7 @@ public class GameUI : MonoBehaviour
 
     void Start()
     {
-        textCurrentRound.text = (PlayersManager.Instance.CurrentRound + 1).ToString() + " / " + PlayersManager.Instance.TotalRounds.ToString();
+        textCurrentRound.text = (PlayersManager.Instance.CurrentRound + 1).ToString() + "/" + PlayersManager.Instance.TotalRounds.ToString();
         AudioManager.Instance.PlayMusic(MusicTrack.Gameplay);
         HybridCursorManager.Instance.SetBattlePointer();
     }

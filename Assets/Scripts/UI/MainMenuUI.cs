@@ -1,8 +1,11 @@
 using Photon.Pun;
 using Photon.Realtime;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -161,6 +164,7 @@ public class MainMenuUI : MonoBehaviour
         PhotonNetworkManager.Instance.OnConnectedToMasterEvent += OnConnectedToMasterEvent;
         PhotonNetworkManager.Instance.OnCreateRoomFailedEvent += OnShowErrorWhileCreatingRoom;
         PhotonNetworkManager.Instance.OnJoinRoomFailedEvent += OnShowErrorWhileJoiningRoom;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void UnsuscribeToPhotonNetworkManagerEvents()
@@ -168,10 +172,22 @@ public class MainMenuUI : MonoBehaviour
         PhotonNetworkManager.Instance.OnConnectedToMasterEvent -= OnConnectedToMasterEvent;
         PhotonNetworkManager.Instance.OnCreateRoomFailedEvent -= OnShowErrorWhileCreatingRoom;
         PhotonNetworkManager.Instance.OnJoinRoomFailedEvent -= OnShowErrorWhileJoiningRoom;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void OnConnectedToMasterEvent()
     {
+        SetPanels(UIPanel.Main);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        StartCoroutine(WaitLoaingToFinish());
+    }
+
+    private IEnumerator WaitLoaingToFinish()
+    {
+        yield return new WaitForSecondsRealtime(2f);
         SetPanels(UIPanel.Main);
     }
 

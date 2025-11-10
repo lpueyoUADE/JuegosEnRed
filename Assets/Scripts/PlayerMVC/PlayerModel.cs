@@ -62,6 +62,7 @@ public class PlayerModel : MonoBehaviourPun
         InitializeHealthAndHealthBar();
         InitializeBoomerang();
         InitializeLayer();
+        photonView.RPC("UpdateHealthBar", RpcTarget.All, currentHealth);
     }
 
     // Simulacion de Update

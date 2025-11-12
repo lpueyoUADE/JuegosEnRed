@@ -355,8 +355,8 @@ public class BoomerangModel : MonoBehaviourPun
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Boomerang") && !isReturning)
         {
+            /// Se elimino la linea que hacia que el boomerang que colisiona tambien ejecute el RPC de "ReturnBoomerang"
             PhotonView boomerangPV = collision.gameObject.GetComponent<PhotonView>();
-            boomerangPV.RPC("ReturnBoomerang", RpcTarget.All);
             photonView.RPC("ReturnBoomerang", RpcTarget.All);
         }
     }

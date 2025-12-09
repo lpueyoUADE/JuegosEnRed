@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using Unity.Services.Analytics;
+using System.Linq;
+
 
 public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 {
@@ -16,6 +19,8 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
     [SerializeField] private int totalRounds = 6;
     private int currentRound = 0;
 
+    private float roundStartTime;
+
     [Header("Niveles")]
     [SerializeField] private List<GameScenes> levels;
     private List<GameScenes> currentLevels;
@@ -23,7 +28,7 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
     public List<PlayerModel> CurrentPlayers { get => currentPlayers; }
 
     public int TotalRounds { get => totalRounds; }
-    public int CurrentRound { get => currentRound; }  
+    public int CurrentRound { get => currentRound; }
 
 
     void Awake()
@@ -36,6 +41,35 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
         InitCurrentLevels();
         SuscribeToPlayerModelEvent();
     }
+
+    void OnEnable()
+    {
+        roundStartTime = Time.time;
+        Debug.Log($"[Analytics] Ronda {currentRound} - Tiempo de inicio registrado: {roundStartTime}");
+    }
+
+    private void RecordRoundEvent(float duration)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        try
+        {
+            var customEvent = new CustomEvent("ROUND_ENDED");
+
+            customEvent.Add("RoundDuration", duration);
+            customEvent.Add("RoundNumber", currentRound);
+            customEvent.Add("LevelName", SceneManager.GetActiveScene().name);
+
+            AnalyticsService.Instance.RecordEvent(customEvent);
+
+            Debug.Log($"[Analytics] ROUND_ENDED enviado. Duración: {duration:F2}s");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Error al enviar evento ROUND_ENDED a Analytics: " + e.Message);
+        }
+    }
+
 
     [PunRPC]
     public void RegisterPlayerForAll(int viewID)
@@ -68,7 +102,7 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
     {
         currentLevels = new List<GameScenes>(levels);
         Enum.TryParse(SceneManager.GetActiveScene().name, out GameScenes currentScene);
-        currentLevels.Remove(currentScene); // Remuevo la escena actual para que no toque repetida
+        currentLevels.Remove(currentScene); 
     }
 
     public GameScenes PickAndRemoveLevel()
@@ -135,26 +169,21 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
 
     private IEnumerator WaitSomeSecondsToChangeScene()
     {
-        yield return StartCoroutine(ZoomToPlayerBeforeSceneChange(cameraEffectDuringTime)); 
+        yield return StartCoroutine(ZoomToPlayerBeforeSceneChange(cameraEffectDuringTime));
 
         yield return new WaitForSecondsRealtime(1.5f);
 
         currentPlayers.Clear();
 
-        if (!PhotonNetworkManager.Instance.IsHost) yield break;
+        if (!PhotonNetwork.IsMasterClient) yield break;
 
-        // Si se fueron todos los players de la room ir directo a la escena "Podium"
-        //if (PhotonNetworkManager.Instance.GetCurrentPlayersCountInRoom() < 2)
-        //{
-        //    photonView.RPC("RestartRaoundsAndLevelsForAll", RpcTarget.All);
-        //    SceneManager.LoadScene("Podium");
-        //    //ScenesManager.Instance.LoadScene("Podium");
-        //    yield break;
-        //}
+        float roundDuration = Time.time - roundStartTime;
+
+        RecordRoundEvent(roundDuration);
+
 
         photonView.RPC("IncreaseCurrentRoundsForAll", RpcTarget.All);
 
-        // Si ya jugamos todas las rondas ir directo a la escena "Podium"
         if (currentRound >= totalRounds)
         {
             photonView.RPC("RestartRaoundsAndLevelsForAll", RpcTarget.All);
@@ -162,7 +191,6 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
             yield break;
         }
 
-        // Si llegamos hasta aca pasamos de nivel de forma random
         ScenesManager.Instance.LoadScene(PickAndRemoveLevel().ToString());
     }
 
@@ -179,7 +207,7 @@ public class PlayersManager : SingletonMonoBehaviourPun<PlayersManager>
         Vector3 targetPos = new Vector3(target.position.x, target.position.y, startPos.z);
 
         float startSize = mainCam.orthographicSize;
-        float targetSize = startSize / 2f; 
+        float targetSize = startSize / 2f;
 
         float elapsed = 0f;
 

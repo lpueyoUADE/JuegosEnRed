@@ -34,6 +34,11 @@ public class GameUI : MonoBehaviour
 
     public void ButtonYes()
     {
+        string playerID = PhotonNetwork.LocalPlayer.UserId;
+        int rounds = PlayersManager.Instance.CurrentRound;
+
+        AnalyticsEvents.Instance.SendPlayerLeftMatch(playerID,rounds, "MENU_QUIT");
+
         onPlayerLeaveRoomFrameEarlier?.Invoke();
         PhotonNetworkManager.Instance.LeaveRoom();
     }

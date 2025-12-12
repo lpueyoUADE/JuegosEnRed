@@ -132,24 +132,35 @@ public class AnalyticsEvents : MonoBehaviour
     // Métrica 5 y 7: Abandono de Partida
     public void SendPlayerLeftMatch(string playerID, int roundsPlayed, string exitSource)
     {
-        if (!IsInitializedAndReady()) return;
+        if (!IsInitializedAndReady())
+        {
+            Debug.LogWarning("[Analytics] Unity Services no inicializado. No se envía PLAYER_LEFT_MATCH.");
+            return;
+        }
 
+        // Validaciones simples
+        if (string.IsNullOrEmpty(playerID)) playerID = "UNKNOWN_PLAYER";
+        if (string.IsNullOrEmpty(exitSource)) exitSource = "UNKNOWN_EXIT";
+        if (roundsPlayed < 0) roundsPlayed = 0;
+
+        // Acortar MatchID si fuese demasiado largo
         string myMatchID = GetMatchID();
+        if (myMatchID.Length > 128) myMatchID = myMatchID.Substring(0, 128);
 
         try
         {
             var exitEvent = new CustomEvent("PLAYER_LEFT_MATCH");
-            exitEvent.Add("MatchID", myMatchID);
-            exitEvent.Add("PlayerID", playerID);
-            exitEvent.Add("RoundsPlayedBeforeExit", roundsPlayed); // Métrica 5
-            exitEvent.Add("ExitSource", exitSource);               // Métrica 7 (Ej: MENU_QUIT, ALTF4_QUIT)
+            exitEvent.Add("MatchID", myMatchID);                       // STRING
+            exitEvent.Add("PlayerID", playerID);                       // STRING
+            exitEvent.Add("RoundsPlayedBeforeExit", roundsPlayed);     // INTEGER
+            exitEvent.Add("ExitSource", exitSource);                   // STRING
 
             AnalyticsService.Instance.RecordEvent(exitEvent);
-            Debug.Log($"[Analytics] PLAYER_LEFT_MATCH. Source: {exitSource}, Rondas: {roundsPlayed}");
+            Debug.Log($"[Analytics] Sent PLAYER_LEFT_MATCH: PlayerID={playerID}, Rounds={roundsPlayed}, ExitSource={exitSource}, MatchID={myMatchID}");
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[Analytics] Error al registrar PLAYER_LEFT_MATCH: {e.Message}");
+            Debug.LogError($"[Analytics] Error al enviar PLAYER_LEFT_MATCH: {e.Message}");
         }
     }
 

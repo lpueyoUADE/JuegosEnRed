@@ -333,7 +333,7 @@ public class BoomerangModel : MonoBehaviourPun
 
             if (playerPV.OwnerActorNr != ownerActorNumber)
             {    
-                playerPV.RPC("GetDamage", playerPV.Owner, damage, ownerActorNumber);
+                playerPV.RPC("GetDamage", playerPV.Owner, damage, ownerActorNumber, boomerangType.ToString());
                 photonView.RPC("OnBoomerangCollisionEnterWithOtherPlayers", RpcTarget.All, playerPV.OwnerActorNr, playerPV.ViewID);
             }
         }
@@ -398,7 +398,7 @@ public class BoomerangModel : MonoBehaviourPun
             // Chequeamos si ya pasó suficiente tiempo desde el último daño
             if (Time.time >= hitCooldowns[targetActorNr])
             {
-                playerPV.RPC("GetDamage", playerPV.Owner, damage, ownerActorNumber);
+                playerPV.RPC("GetDamage", playerPV.Owner, damage, ownerActorNumber, boomerangType.ToString());
 
                 hitCooldowns[targetActorNr] = Time.time + damageCooldown;
             }

@@ -1,7 +1,6 @@
 using Photon.Pun;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -34,10 +33,8 @@ public class GameUI : MonoBehaviour
 
     public void ButtonYes()
     {
-        string playerID = PhotonNetwork.LocalPlayer.UserId;
-        int rounds = PlayersManager.Instance.CurrentRound;
-
-        AnalyticsEvents.Instance.SendPlayerLeftMatch(playerID,rounds, "MENU_QUIT");
+        string playerId = PlayerAnalyticsId.GetOrCreateId();
+        AnalyticsEventsManager.Instance.PlayerLeftMatchEvent(playerId, PhotonNetwork.CurrentRoom.Name, PlayersManager.Instance.CurrentRound + 1, "ViaMainMenuUI");
 
         onPlayerLeaveRoomFrameEarlier?.Invoke();
         PhotonNetworkManager.Instance.LeaveRoom();

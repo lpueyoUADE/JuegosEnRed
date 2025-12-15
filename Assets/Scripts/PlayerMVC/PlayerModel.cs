@@ -144,7 +144,7 @@ public class PlayerModel : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void GetDamage(int damage, int attackerActorNumber)
+    public void GetDamage(int damage, int attackerActorNumber, string boomerangType)
     {
         currentHealth -= damage;
         photonView.RPC("PlaySound", RpcTarget.All, SoundEffect.HitOtherPlayers);
@@ -161,7 +161,7 @@ public class PlayerModel : MonoBehaviourPun
             photonView.RPC("DisablePlayer", RpcTarget.All);
             boomerangController.BoomerangModel.photonView.RPC("DisableBoomerang", RpcTarget.All);
 
-            AddPointToAttackerPlayer(attackerActorNumber);
+            AddPointToAttackerPlayer(attackerActorNumber, boomerangType);
             StartCoroutine(Death());
         }
     }
@@ -235,13 +235,14 @@ public class PlayerModel : MonoBehaviourPun
         rb.bodyType = RigidbodyType2D.Static;
     }
 
-    private void AddPointToAttackerPlayer(int attackerActorNumber)
+    private void AddPointToAttackerPlayer(int attackerActorNumber, string boomerangType)
     {
         Player attackerPlayer = PhotonNetwork.CurrentRoom.GetPlayer(attackerActorNumber);
         if (attackerPlayer != null)
         {
             photonView.RPC(nameof(OnInformPointAcquiredRPC), RpcTarget.All, attackerPlayer.NickName, PhotonNetwork.LocalPlayer.NickName);
             StatsManager.Instance.AddScore(attackerPlayer, 1);
+            AnalyticsEventsManager.Instance.PlayerKilledEvent(boomerangType, PhotonNetwork.CurrentRoom.Name);
         }
     }
 

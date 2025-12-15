@@ -98,6 +98,7 @@ public class ScenesManager : SingletonMonoBehaviour<ScenesManager>
         yield return new WaitForSecondsRealtime(duringTimeconnectingToOnlineServicesPanel);
 
         connectingToOnlineServicesPanel.SetActive(false);
+        string analyticsId = PlayerAnalyticsId.GetOrCreateId();
     }
 
     private IEnumerator ShowLoadingPanel()

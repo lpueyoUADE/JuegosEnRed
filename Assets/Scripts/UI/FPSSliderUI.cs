@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,36 +7,45 @@ public class FPSSliderUI : MonoBehaviour
 {
     public TextMeshProUGUI valueText;
     public Toggle showToggle;
+    public Slider slider;
 
     [SerializeField] List<int> fps;
-
-    private Slider slider;
 
     const string SHOW_FPS = "ShowFPS";
     const string FPS_INDEX = "FPSIndex";
 
-    const int DEFAULT_SHOW_FPS_VALUE = 0;
+    const int DEFAULT_SHOW_FPS_VALUE = 60;
     const int DEFAULT_FPS_INDEX = 1;
 
-    private void Start()
+
+    void Start()
     {
-        // Slider
-        slider = GetComponent<Slider>();
         slider.maxValue = fps.Count - 1;
         slider.onValueChanged.AddListener(UpdateValueAndText);
-        slider.value = PlayerPrefs.GetInt(FPS_INDEX, DEFAULT_FPS_INDEX);       
 
-        // Toggle
+        int savedIndex = PlayerPrefs.GetInt(FPS_INDEX, fps.IndexOf(DEFAULT_SHOW_FPS_VALUE));
+        slider.value = savedIndex;
+
+        int initialFPS = fps[savedIndex];
+        valueText.text = initialFPS.ToString();
+        Application.targetFrameRate = initialFPS;
+        QualitySettings.vSyncCount = 0;
+
         showToggle.onValueChanged.AddListener(ToggleActive);
-        print(showToggle.isOn);
-        print(PlayerPrefs.GetInt(SHOW_FPS, DEFAULT_SHOW_FPS_VALUE));
-        showToggle.isOn = PlayerPrefs.GetInt(SHOW_FPS, DEFAULT_SHOW_FPS_VALUE) == 1;
+        showToggle.isOn = PlayerPrefs.GetInt(SHOW_FPS, 0) == 1;
+        if (showToggle.isOn && FPSDisplayManager.Instance != null)
+            FPSDisplayManager.Instance.gameObject.SetActive(true);
     }
-    private void OnDestroy()
+
+    void OnDestroy()
     {
+        if (slider != null)
         slider.onValueChanged.RemoveListener(UpdateValueAndText);
+        
+        if (showToggle != null)
         showToggle.onValueChanged.RemoveListener(ToggleActive);
     }
+
 
     void UpdateValueAndText(float value)
     {

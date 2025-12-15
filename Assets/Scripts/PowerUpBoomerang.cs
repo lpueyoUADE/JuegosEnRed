@@ -11,6 +11,10 @@ public class PowerUpBoomerang : MonoBehaviourPun
     [SerializeField] private float amplitude;
     [SerializeField] private float speed;
 
+    private float timeAfterSpawn = 0f;
+
+    private string powerUpId;
+
 
     void Awake()
     {
@@ -21,11 +25,18 @@ public class PowerUpBoomerang : MonoBehaviourPun
     void Update()
     {
         MoveUpAndDown();
+        countTimeAfterSpawn();
     }
 
     void OnTriggerEnter2D(Collider2D collder)
     {
         OnTriggerEnterWithPlayer(collder);
+    }
+
+
+    public void Initialize(string powerUpId)
+    {
+        this.powerUpId = powerUpId;
     }
 
 
@@ -40,6 +51,14 @@ public class PowerUpBoomerang : MonoBehaviourPun
         transform.position = new Vector3(startPosition.x, newY, startPosition.z);
     }
 
+    private void countTimeAfterSpawn()
+    {
+        if (gameObject.activeSelf)
+        {
+            timeAfterSpawn += Time.deltaTime;
+        }
+    }
+
     private void OnTriggerEnterWithPlayer(Collider2D collider)
     {
         if (collider.gameObject.CompareTag("Player"))
@@ -52,10 +71,12 @@ public class PowerUpBoomerang : MonoBehaviourPun
             newBoomerang.BoomerangModel.photonView.RPC("Initialize", RpcTarget.All, player.photonView.OwnerActorNr);
             player.PlayerModel.ChangeCurrentBoomerangToNewOne(newBoomerang);
             AudioManager.Instance.PlaySound(SoundEffect.PickUp);
+
+            string playerId = PlayerAnalyticsId.GetOrCreateId();
+            AnalyticsEventsManager.Instance.PowerUpColledtedEvent(playerId, powerUpId, timeAfterSpawn);
             photonView.RPC("DisablePowerUp", RpcTarget.All);
         }
     }
-
 
     [PunRPC]
     private void PlaySound(SoundEffect soundType)

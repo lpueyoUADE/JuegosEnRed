@@ -1,21 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : SingletonMonoBehaviour<AudioManager>
 {
-    public static AudioManager Instance;
-
-    [System.Serializable]
+    [Serializable]
     public class Sound
     {
         public SoundEffect id;
         public AudioClip clip;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class Music
     {
         public MusicTrack id;
@@ -39,31 +36,31 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)] public float musicVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
+    private bool hasModifiedSound = false; // Evento solo se dispara la primera vez
+    private bool isInitializing = true; // Flag de inicialización
+
     private const string MASTER_VOLUME = "MasterVolume"; 
     private const string MUSIC_VOLUME = "MusicVolume"; 
     private const string SFX_VOLUME = "SFXVolume";
 
-    private const float DEFAULT_MASTER_VOLUME = 1f;
+    private const float DEFAULT_MASTER_VOLUME = 0.5f;
     private const float DEFAULT_MUSIC_VOLUME = 0.5f;
     private const float DEFAULT_SFX_VOLUME = 0.5f;
 
+    private const string HAS_MODIFIED_SOUND_KEY = "HAS_MODIFIED_SOUND"; // PlayerPrefs key
 
     public static event Action InitCompleted;
 
     private System.Random rng = new System.Random();
+
+
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
+        CreateSingleton(true);
+    }
 
+    void Start()
+    {
         soundDict = new Dictionary<SoundEffect, AudioClip>();
         foreach (Sound s in sounds)
         {
@@ -77,7 +74,18 @@ public class AudioManager : MonoBehaviour
             if (!musicDict.ContainsKey(m.id))
                 musicDict.Add(m.id, m.clip);
         }
+
+        hasModifiedSound = PlayerPrefs.GetInt(HAS_MODIFIED_SOUND_KEY, 0) == 1;
+
+        SetMasterVolume(PlayerPrefs.GetFloat(MASTER_VOLUME, DEFAULT_MASTER_VOLUME));
+        SetMusicVolume(PlayerPrefs.GetFloat(MUSIC_VOLUME, DEFAULT_MUSIC_VOLUME));
+        SetSFXVolume(PlayerPrefs.GetFloat(SFX_VOLUME, DEFAULT_SFX_VOLUME));
+        isInitializing = false;
+
+        InitCompleted?.Invoke();
+        PlayMusic(MusicTrack.MainMenu);
     }
+
 
     public void PlaySoundChoice(params SoundEffect[] soundsToChoose)
     {
@@ -119,6 +127,8 @@ public class AudioManager : MonoBehaviour
         masterVolume = Mathf.Clamp01(value);
         audioMixer.SetFloat(MASTER_VOLUME, ToDecibels(masterVolume));
         PlayerPrefs.SetFloat(MASTER_VOLUME, masterVolume);
+
+        TriggerPlayerModifiedSoundEvent();
     }
 
     public void SetMusicVolume(float value)
@@ -126,6 +136,8 @@ public class AudioManager : MonoBehaviour
         musicVolume = Mathf.Clamp01(value);
         audioMixer.SetFloat(MUSIC_VOLUME, ToDecibels(musicVolume));
         PlayerPrefs.SetFloat(MUSIC_VOLUME, musicVolume);
+
+        TriggerPlayerModifiedSoundEvent();
     }
 
     public void SetSFXVolume(float value)
@@ -133,6 +145,8 @@ public class AudioManager : MonoBehaviour
         sfxVolume = Mathf.Clamp01(value);
         audioMixer.SetFloat(SFX_VOLUME, ToDecibels(sfxVolume));
         PlayerPrefs.SetFloat(SFX_VOLUME, sfxVolume);
+
+        TriggerPlayerModifiedSoundEvent();
     }
 
     private float ToDecibels(float value)
@@ -140,14 +154,19 @@ public class AudioManager : MonoBehaviour
         return value > 0 ? Mathf.Log10(value) * 20f : -80f; // -80 dB = silencio
     }
 
-    private void Start()
+    private void TriggerPlayerModifiedSoundEvent()
     {
-        SetMasterVolume(PlayerPrefs.GetFloat(MASTER_VOLUME, DEFAULT_MASTER_VOLUME));
-        SetMusicVolume(PlayerPrefs.GetFloat(MUSIC_VOLUME, DEFAULT_MUSIC_VOLUME));
-        SetSFXVolume(PlayerPrefs.GetFloat(SFX_VOLUME, DEFAULT_SFX_VOLUME));
+        if (!hasModifiedSound && !isInitializing)
+        {
+            hasModifiedSound = true;
 
-        InitCompleted?.Invoke();
-        PlayMusic(MusicTrack.MainMenu);
+            PlayerPrefs.SetInt(HAS_MODIFIED_SOUND_KEY, 1);
+            PlayerPrefs.Save();
+
+            string playerId = PlayerAnalyticsId.GetOrCreateId();
+            AnalyticsEventsManager.Instance.PlayerModifiedSoundEvent(playerId);
+            Debug.Log("Si");
+        }
     }
 }
 

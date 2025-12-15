@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PowerUpBoomerangSpawner : MonoBehaviour
 {
@@ -14,12 +15,30 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
 
     void Awake()
     {
+        SuscribeToUpdateManagerEvent();
         GetComponents();
     }
 
-    void Update()
+    // Simulacion de Update
+    void UpdatePowerUpBoomerangSpawner()
     {
         SpawnRandomPowerUp();
+    }
+
+    void OnDestroy()
+    {
+        UnsuscribeToUpdateManagerEvent();
+    }
+
+
+    private void SuscribeToUpdateManagerEvent()
+    {
+        UpdateManager.OnUpdate += UpdatePowerUpBoomerangSpawner;
+    }
+
+    private void UnsuscribeToUpdateManagerEvent()
+    {
+        UpdateManager.OnUpdate -= UpdatePowerUpBoomerangSpawner;
     }
 
 
@@ -37,16 +56,24 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
     private void SpawnRandomPowerUp()
     {
         if (!PhotonNetwork.IsMasterClient) return;
-        if (PlayersManager.Instance.CurrentPlayers.Count == 1) return; // Esto evitar que se instancien powerUps si finalizo la ronda
+
+        if (!TestManager.Instance.UseTestSystem)
+        {
+            if (PlayersManager.Instance.CurrentPlayers.Count == 1) return; // Esto evitar que se instancien powerUps si finalizo la ronda
+        }
 
         counterSpawnBoomerang += Time.deltaTime;
 
         if (counterSpawnBoomerang >= timeToSpawnNewBoomerang)
         {
-            int randomSpawnPosition = Random.Range(0, spawnPositions.Count);
-            int randomPowerUp = Random.Range(0, powerUpPrefabs.Count);
+            int randomSpawnPosition = UnityEngine.Random.Range(0, spawnPositions.Count);
+            int randomPowerUp = UnityEngine.Random.Range(0, powerUpPrefabs.Count);
 
-            PhotonNetwork.InstantiateRoomObject("Prefabs/PowerUpBoomerangs/" + powerUpPrefabs[randomPowerUp].name, spawnPositions[randomSpawnPosition].position, Quaternion.identity);
+            string powerUpId = Guid.NewGuid().ToString();
+
+            GameObject powerUpGo = PhotonNetwork.InstantiateRoomObject("Prefabs/PowerUpBoomerangs/" + powerUpPrefabs[randomPowerUp].name, spawnPositions[randomSpawnPosition].position, Quaternion.identity);
+            PowerUpBoomerang powerUp = powerUpGo.GetComponent<PowerUpBoomerang>();
+            powerUp.Initialize(powerUpId);
             counterSpawnBoomerang = 0;
         }
     }

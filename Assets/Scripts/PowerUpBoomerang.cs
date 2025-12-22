@@ -33,7 +33,7 @@ public class PowerUpBoomerang : MonoBehaviourPun
         OnTriggerEnterWithPlayer(collder);
     }
 
-
+    [PunRPC]
     public void Initialize(string powerUpId)
     {
         this.powerUpId = powerUpId;

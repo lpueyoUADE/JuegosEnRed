@@ -73,7 +73,8 @@ public class PowerUpBoomerangSpawner : MonoBehaviour
 
             GameObject powerUpGo = PhotonNetwork.InstantiateRoomObject("Prefabs/PowerUpBoomerangs/" + powerUpPrefabs[randomPowerUp].name, spawnPositions[randomSpawnPosition].position, Quaternion.identity);
             PowerUpBoomerang powerUp = powerUpGo.GetComponent<PowerUpBoomerang>();
-            powerUp.Initialize(powerUpId);
+            powerUp.photonView.RPC("Initialize", RpcTarget.All, powerUpId);
+            //powerUp.Initialize(powerUpId);
             counterSpawnBoomerang = 0;
         }
     }

@@ -1280,7 +1280,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 342818767}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &342818769
 Camera:
   m_ObjectHideFlags: 0
@@ -1473,7 +1473,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &436390178
 Transform:
   m_ObjectHideFlags: 0
@@ -5309,7 +5309,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1929862662
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6174,6 +6174,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerExitReporter
       objectReference: {fileID: 0}
+    - target: {fileID: 60226836298150108, guid: 30249454a4c744b4498feda40c35491f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3876064701783591663, guid: 30249454a4c744b4498feda40c35491f, type: 3}
       propertyPath: m_RootOrder
       value: 15
@@ -6439,6 +6443,10 @@ PrefabInstance:
     - target: {fileID: 9048812292819199155, guid: 3f2f96d6bf6eab7449698a49716e9cd5, type: 3}
       propertyPath: m_Name
       value: CanvasGameUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 9048812292819199155, guid: 3f2f96d6bf6eab7449698a49716e9cd5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9048812292819199159, guid: 3f2f96d6bf6eab7449698a49716e9cd5, type: 3}
       propertyPath: m_Pivot.x

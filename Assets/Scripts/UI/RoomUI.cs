@@ -33,7 +33,7 @@ public class RoomUI : MonoBehaviour
     void Update()
     {
         TestStartGame();
-        ShowOrHidePanelToGoBackToMainMenu();
+        //ShowOrHidePanelToGoBackToMainMenu();
     }
 
     void OnDestroy()

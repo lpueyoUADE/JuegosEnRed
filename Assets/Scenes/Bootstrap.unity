@@ -176,8 +176,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentPlayers: []
   cameraEffectDuringTime: 5
-  totalRounds: 4
-  levels: 020000000300000004000000
+  totalRounds: 1
+  levels: 03000000
 --- !u!4 &1084902804
 Transform:
   m_ObjectHideFlags: 0

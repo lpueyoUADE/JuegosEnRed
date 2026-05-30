@@ -4912,7 +4912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55b00ca759951fa4b8223844347ef9ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useTestSystem: 1
+  useTestSystem: 0
 --- !u!4 &1718744070
 Transform:
   m_ObjectHideFlags: 0
@@ -4979,7 +4979,7 @@ MonoBehaviour:
   canvas: {fileID: 2121142011}
   CursorImage: {fileID: 2132931121}
   battleCursor: {fileID: 21300000, guid: fc68afba519eedf43b6be810a3789326, type: 3}
-  uICursor: {fileID: 21300000, guid: 7ba95e8abb6abc442be6cb8dda30af1a, type: 3}
+  uICursor: {fileID: 21300000, guid: fc68afba519eedf43b6be810a3789326, type: 3}
   joystickSpeed: 2000
 --- !u!1001 &1770980863
 PrefabInstance:

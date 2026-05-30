@@ -34,7 +34,7 @@ public class NotificationsUI : SingletonMonoBehaviour<NotificationsUI>
 
     private void HandleNotification(string message)
     {
-        StartCoroutine(AddNotificationRoutine(message));
+        //StartCoroutine(AddNotificationRoutine(message));
     }
 
     private IEnumerator AddNotificationRoutine(string message)

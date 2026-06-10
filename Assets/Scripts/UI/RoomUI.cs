@@ -33,7 +33,7 @@ public class RoomUI : MonoBehaviour
     void Update()
     {
         TestStartGame();
-        ShowOrHidePanelToGoBackToMainMenu();
+        //ShowOrHidePanelToGoBackToMainMenu();
     }
 
     void OnDestroy()
@@ -78,7 +78,7 @@ public class RoomUI : MonoBehaviour
 
     public void ButtonNo()
     {
-        panelBackToMainMenu.SetActive(false);
+        //panelBackToMainMenu.SetActive(false);
     }
 
 

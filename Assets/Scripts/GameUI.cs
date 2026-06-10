@@ -27,8 +27,8 @@ public class GameUI : MonoBehaviour
     void Update()
     {
         if (ScenesManager.Instance.IsInLoadingScenePanel) return;
-        ShowOrHidePanelToGoBackToMainMenu();
-        ShowOrHidePodiumPanel();
+        //ShowOrHidePanelToGoBackToMainMenu();
+        //ShowOrHidePodiumPanel();
     }
 
     public void ButtonYes()

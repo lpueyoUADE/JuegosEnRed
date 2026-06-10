@@ -264,7 +264,7 @@ public class PlayerModel : MonoBehaviourPun
 
     private IEnumerator Death()
     {
-        PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
+        //PhotonNetwork.Instantiate("Prefabs/Skull/Skull", transform.position, Quaternion.identity);
         PhotonNetwork.Instantiate("Prefabs/Player/blood", transform.position, Quaternion.identity);
         StatsManager.Instance.AddDeath(1);
 

@@ -4840,7 +4840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55b00ca759951fa4b8223844347ef9ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useTestSystem: 1
+  useTestSystem: 0
 --- !u!4 &1718744070
 Transform:
   m_ObjectHideFlags: 0
